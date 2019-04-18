@@ -1,4 +1,4 @@
-//  C'est un test
+//  
 //  Cartographie.swift
 //  eFFUNOV5
 //
