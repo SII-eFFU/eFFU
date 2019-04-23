@@ -369,7 +369,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         print(dataTableView[sender.tag][0])
         if dataTableView[sender.tag][0] == "Airports" {
             localisationCenterMap = CLLocationCoordinate2D(latitude: airportsDatabase[Int(dataTableView[sender.tag][1])!]!.swLatitude, longitude: airportsDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude)
-            zoomLevelMap = 15
+            zoomLevelMap = 12
             directionMap = 0
             affichageFondCartesMapbox()
             
@@ -377,7 +377,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
 
         if dataTableView[sender.tag][0] == "Ville" {
             localisationCenterMap = CLLocationCoordinate2D(latitude: villesDatabase[Int(dataTableView[sender.tag][1])!]!.swLatitude, longitude: villesDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude)
-            zoomLevelMap = 15
+            zoomLevelMap = 12
             directionMap = 0
             affichageFondCartesMapbox()
             
@@ -385,7 +385,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         
         if dataTableView[sender.tag][0] == "Repéres Visuels" || dataTableView[sender.tag][0] == "Lac" || dataTableView[sender.tag][0] == "Forêt" || dataTableView[sender.tag][0] == "Montagne" || dataTableView[sender.tag][0] == "Volcan" {
             localisationCenterMap = CLLocationCoordinate2D(latitude: reperesVisuelsDatabase[Int(dataTableView[sender.tag][1])!]!.swLatitude, longitude: reperesVisuelsDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude)
-            zoomLevelMap = 17
+            zoomLevelMap = 12
             directionMap = 0
             affichageFondCartesMapbox()
             
@@ -393,7 +393,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         
         if dataTableView[sender.tag][0] == "Warning Terminal" {
             localisationCenterMap = CLLocationCoordinate2D(latitude: navWarningDatabase[Int(dataTableView[sender.tag][1])!]!.swLatitude, longitude: navWarningDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude)
-            zoomLevelMap = 17
+            zoomLevelMap = 12
             directionMap = 0
             affichageFondCartesMapbox()
             
@@ -401,7 +401,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         
         if dataTableView[sender.tag][0] == "Navaids Terminal" || dataTableView[sender.tag][0] == "Navaids En Route" {
             localisationCenterMap = CLLocationCoordinate2D(latitude: villesDatabase[Int(dataTableView[sender.tag][1])!]!.swLatitude, longitude: villesDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude)
-            zoomLevelMap = 17
+            zoomLevelMap = 12
             directionMap = 0
             affichageFondCartesMapbox()
             
