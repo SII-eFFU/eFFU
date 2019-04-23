@@ -71,7 +71,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
     }
    
     func numberOfSections(in tableView: UITableView) -> Int {
-        print ("data count est à \(data.count)")
+        //print ("data count est à \(data.count)")
         return data.count
     }
     
