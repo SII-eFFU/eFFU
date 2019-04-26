@@ -17,6 +17,12 @@ var applicationParametres = ApplicationParametres()
 var imageLigne: String = ""
 var nameImage: String = ""
 
+// Permet de tester si deja existant
+var departureOn: Bool = false
+var arrivalOn: Bool = false
+
+var flight_Plan = FlightPlan()
+
 class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDelegate, CLLocationManagerDelegate, UITableViewDelegate, UITableViewDataSource {
     
     var tableView = UITableView()
@@ -241,8 +247,9 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         let buttonPopup3  = UIButton(type: .custom)
         buttonPopup3.setImage(UIImage(named: "Arrival_45x45"), for: .normal)
         buttonPopup3.frame = CGRect(x: 109, y: 8, width: 45, height: 45)
-        buttonPopup3.addTarget(self, action: #selector(alertPopup), for: .touchUpInside)
-        buttonPopup3.tag = 2103
+        buttonPopup3.tag = indexPath.section
+        buttonPopup3.addTarget(self, action: #selector(arrivalPopup(_:)), for: .touchUpInside)
+        //buttonPopup3.tag = 2103
         buttonPopup3.alpha = 1.0
         popup2.addSubview(buttonPopup3)
 
@@ -372,7 +379,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         print("C'est un/une \(dataTableView[sender.tag][0])")
         if dataTableView[sender.tag][0] == "Airports" {
             localisationCenterMap = CLLocationCoordinate2D(latitude: airportsDatabase[Int(dataTableView[sender.tag][1])!]!.swLatitude, longitude: airportsDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude)
-            zoomLevelMap = 12
+            zoomLevelMap = 14.5
             directionMap = 0
             affichageFondCartesMapbox()
             
@@ -380,7 +387,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
 
         if dataTableView[sender.tag][0] == "Ville" {
             localisationCenterMap = CLLocationCoordinate2D(latitude: villesDatabase[Int(dataTableView[sender.tag][1])!]!.swLatitude, longitude: villesDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude)
-            zoomLevelMap = 12
+            zoomLevelMap = 14.5
             directionMap = 0
             affichageFondCartesMapbox()
             
@@ -388,7 +395,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         
         if dataTableView[sender.tag][0] == "Repéres Visuels" || dataTableView[sender.tag][0] == "Lac" || dataTableView[sender.tag][0] == "Forêt" || dataTableView[sender.tag][0] == "Montagne" || dataTableView[sender.tag][0] == "Volcan" {
             localisationCenterMap = CLLocationCoordinate2D(latitude: reperesVisuelsDatabase[Int(dataTableView[sender.tag][1])!]!.swLatitude, longitude: reperesVisuelsDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude)
-            zoomLevelMap = 12
+            zoomLevelMap = 14.5
             directionMap = 0
             affichageFondCartesMapbox()
             
@@ -396,7 +403,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         
         if dataTableView[sender.tag][0] == "Warning Terminal" {
             localisationCenterMap = CLLocationCoordinate2D(latitude: navWarningDatabase[Int(dataTableView[sender.tag][1])!]!.swLatitude, longitude: navWarningDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude)
-            zoomLevelMap = 12
+            zoomLevelMap = 14.5
             directionMap = 0
             affichageFondCartesMapbox()
             
@@ -404,7 +411,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         
         if dataTableView[sender.tag][0] == "Navaids Terminal" || dataTableView[sender.tag][0] == "Navaids En Route" {
             localisationCenterMap = CLLocationCoordinate2D(latitude: villesDatabase[Int(dataTableView[sender.tag][1])!]!.swLatitude, longitude: villesDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude)
-            zoomLevelMap = 12
+            zoomLevelMap = 14.5
             directionMap = 0
             affichageFondCartesMapbox()
             
@@ -425,24 +432,93 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         
         self.present(alert, animated: true, completion: nil)
     }
+
+    @objc func alertPopupSuppPoint() {
+        let alert = UIAlertController(title: "Alert", message: "Voulez-vous supprimer les points ?", preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "Oui", style: UIAlertAction.Style.default, handler: { action in self.suppMarkers() } ))
+        alert.addAction(UIAlertAction(title: "Non", style: UIAlertAction.Style.default, handler: nil))
+        
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    // Permet de supprimer les annotations
+    func suppMarkers(){
+        let allAnnotations = self.mapView.annotations
+        self.mapView.removeAnnotations(allAnnotations!)
+        departureOn = false
+        arrivalOn = false
+        
+        flight_Plan.unset_Departure_Airfield()
+        flight_Plan.unset_Arrival_Airfield()
+    }
     
     @objc func departurePopup(_ sender:UIButton){
         // on on effectue le traitement que si airports
         print("C'est un/une \(dataTableView[sender.tag][0])")
-        if dataTableView[sender.tag][0] == "Airports" {
+        if dataTableView[sender.tag][0] == "Airports" && departureOn == false {
+            
+            let aiIcaoAirport = airportsDatabase[Int(dataTableView[sender.tag][1])!]!.aiIcao
+            print ("L'Icao est \(aiIcaoAirport)")
+            let nomAirport = airportsDatabase[Int(dataTableView[sender.tag][1])!]!.aiName
+            print("c'est l'\(nomAirport)")
+            
             // Creer un point depart sur les coordonnees de l'aerodrome
             // recuperer latitude et longitude de l'element
             let latitude = airportsDatabase[Int(dataTableView[sender.tag][1])!]!.swLatitude
             let longitude = airportsDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude
+            
             print("la latitude est de \(latitude) et la longitude de \(longitude)")
-            mapView.delegate = self
+            
+            flight_Plan.set_Departure_Airfield(aiIcao: aiIcaoAirport, name: nomAirport, latitude: latitude, longitude: longitude)
+            
+            print(flight_Plan.airport_Departure)
+            
+            //mapView.delegate = self
             //let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
             // Creer le point depart
             let departure = MGLPointAnnotation()
             departure.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
             // Ajouter le point a la map
             mapView.addAnnotation(departure)
+            //departureOn = true
             
+        } else if departureOn == true {
+            alertPopupSuppPoint()
+        } else {
+            alertPopupNotAirports()
+        }
+        
+    }
+    
+    @objc func arrivalPopup(_ sender:UIButton){
+        // on on effectue le traitement que si airports
+        print("C'est un/une \(dataTableView[sender.tag][0])")
+        if dataTableView[sender.tag][0] == "Airports" && arrivalOn == false{
+            // Creer un point depart sur les coordonnees de l'aerodrome
+            let aiIcaoAirport = airportsDatabase[Int(dataTableView[sender.tag][1])!]!.aiIcao
+            print ("L'Icao est \(aiIcaoAirport)")
+            let nomAirport = airportsDatabase[Int(dataTableView[sender.tag][1])!]!.aiName
+            print("c'est l'\(nomAirport)")
+            // recuperer latitude et longitude de l'element
+            let latitude = airportsDatabase[Int(dataTableView[sender.tag][1])!]!.swLatitude
+            let longitude = airportsDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude
+            print("la latitude est de \(latitude) et la longitude de \(longitude)")
+            
+            flight_Plan.set_Arrival_Airfield(aiIcao: aiIcaoAirport, name: nomAirport, latitude: latitude, longitude: longitude)
+            
+            print(flight_Plan.airport_Arrival)
+            
+            //mapView.delegate = self
+            //let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+            // Creer le point arrivee
+            let arrival = MGLPointAnnotation()
+            arrival.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+            // Ajouter le point a la map
+            mapView.addAnnotation(arrival)
+            //arrivalOn = true
+            
+        } else if arrivalOn == true{
+            alertPopupSuppPoint()
         } else {
             alertPopupNotAirports()
         }
@@ -827,16 +903,33 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             }
         }
 
-        var annotationImage = mapView.dequeueReusableAnnotationImage(withIdentifier: "departure")
-        
-        if annotationImage == nil {
-            var image = UIImage(named: "Departure_45x45")
-            image = image?.withAlignmentRectInsets(UIEdgeInsets(top: 0, left: 0, bottom: image!.size.height/2, right: 0))
-            annotationImage = MGLAnnotationImage(image: image!, reuseIdentifier: "departure")
+        if departureOn == false {
+            var annotationImage = mapView.dequeueReusableAnnotationImage(withIdentifier: "departure")
+            
+            if annotationImage == nil {
+                var image = UIImage(named: "Departure_45x45")
+                image = image?.withAlignmentRectInsets(UIEdgeInsets(top: 0, left: 0, bottom: image!.size.height/2, right: 0))
+                annotationImage = MGLAnnotationImage(image: image!, reuseIdentifier: "departure")
+            }
+            departureOn = true
+            return annotationImage
         }
-        return annotationImage
+        
+        if arrivalOn == false {
+            var annotationImage = mapView.dequeueReusableAnnotationImage(withIdentifier: "arrival")
+            
+            if annotationImage == nil {
+                var image = UIImage(named: "Arrival_45x45")
+                image = image?.withAlignmentRectInsets(UIEdgeInsets(top: 0, left: 0, bottom: image!.size.height/2, right: 0))
+                annotationImage = MGLAnnotationImage(image: image!, reuseIdentifier: "arrival")
+            }
+            arrivalOn = true
+            return annotationImage
+        }
+        
+        
         // Fallback to the default marker image.
-        // return nil
+        return nil
     }
     
     func mapView(_ mapView: MGLMapView, annotationCanShowCallout annotation: MGLAnnotation) -> Bool {
