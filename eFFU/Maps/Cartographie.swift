@@ -1144,49 +1144,63 @@ extension ViewController: MGLMapViewDelegate {
     
     
     func drawRoutePlane() {
-        if applicationParametres.buttonOptionMapView[0] {
-            mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 25, tagger: "Route")
-            
+        if applicationParametres.buttonOptionMapView[0]{
+            if !flight_Plan.arrival_Airfield_isEmpty() && !flight_Plan.departure_Airfield_isEmpty() {
+                mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 25, tagger: "Route")
+                
+                let departure_Airfield_Latitude = flight_Plan.get_Departure_Airfield_Latitude()
+                let departure_Airfield_Longitude = flight_Plan.get_Departure_Airfield_Longitude()
+                
+                let arrival_Airfield_Latitude = flight_Plan.get_Arrival_Airfield_Latitude()
+                let arrival_Airfield_Longitude = flight_Plan.get_Arrival_Airfield_Longitude()
+                
                 // Create array of lat,lon points.
-                var coordinatesDepartureProc = [
-                    CLLocationCoordinate2D(latitude: 43.59114444444444, longitude: 1.49645),
-                    CLLocationCoordinate2D(latitude: 43.629048, longitude: 1.481489),
-                    CLLocationCoordinate2D(latitude: 43.63428, longitude: 1.481398),
-                    CLLocationCoordinate2D(latitude: 43.638592, longitude: 1.484876),
-                    CLLocationCoordinate2D(latitude: 43.65416666666667, longitude: 1.52472222222222)
-                ];
+                /**
+                 var coordinatesDepartureProc = [
+                    CLLocationCoordinate2D(latitude: departure_Airfield_Latitude, longitude: departure_Airfield_Longitude)
+                 ];
+                 **/
                 var coordinatesEnroute = [
-                    CLLocationCoordinate2D(latitude: 43.65416666666667, longitude: 1.52472222222222),
-                    CLLocationCoordinate2D(latitude: 44.09083333333333, longitude: 1.45027777777778),
-                    CLLocationCoordinate2D(latitude: 44.10472222222222, longitude: 1.085),
-                    CLLocationCoordinate2D(latitude: 44.30027777777778, longitude: 0.34166666666667),
-                    CLLocationCoordinate2D(latitude: 44.31527777777778, longitude: 0.08888888888889),
-                    CLLocationCoordinate2D(latitude: 44.49416666666667, longitude: -0.63805555555556),
-                    CLLocationCoordinate2D(latitude: 44.55277777777778, longitude: -0.86805555555556),
-                    CLLocationCoordinate2D(latitude: 44.652099, longitude: -1.02133),
-                    CLLocationCoordinate2D(latitude: 44.64361111111111, longitude: -1.04833333333333)
+                    CLLocationCoordinate2D(latitude: departure_Airfield_Latitude, longitude: departure_Airfield_Longitude),
+                    CLLocationCoordinate2D(latitude: arrival_Airfield_Latitude, longitude: arrival_Airfield_Longitude)
                 ];
-                var coordinatesArrivalProc = [
-                    CLLocationCoordinate2D(latitude: 44.64361111111111, longitude: -1.04833333333333),
-                    CLLocationCoordinate2D(latitude: 44.615483, longitude: -1.051423),
-                    CLLocationCoordinate2D(latitude: 44.604922, longitude: -1.127804),
-                    CLLocationCoordinate2D(latitude: 44.580868, longitude: -1.117855),
-                    CLLocationCoordinate2D(latitude: 44.578758, longitude: -1.126971),
-                    CLLocationCoordinate2D(latitude: 44.591484, longitude: -1.13332),
-                    CLLocationCoordinate2D(latitude: 44.59473055555556, longitude: -1.11918888888889)
-                ];
-            
-            
-                let shape1 = MGLPolyline(coordinates: &coordinatesDepartureProc, count: UInt(coordinatesDepartureProc.count))
-                shape1.subtitle = "Departure"
-                mapView.add(shape1)
+                /**
+                 var coordinatesArrivalProc = [
+                    CLLocationCoordinate2D(latitude: arrival_Airfield_Latitude, longitude: arrival_Airfield_Longitude)
+                 ];
+                 **/
+                
+                //let shape1 = MGLPolyline(coordinates: &coordinatesDepartureProc, count: UInt(coordinatesDepartureProc.count))
+                //shape1.subtitle = "Departure"
+                //mapView.add(shape1)
+                
                 let shape2 = MGLPolyline(coordinates: &coordinatesEnroute, count: UInt(coordinatesEnroute.count))
                 shape2.subtitle = "enRoute"
                 mapView.add(shape2)
-                let shape3 = MGLPolyline(coordinates: &coordinatesArrivalProc, count: UInt(coordinatesArrivalProc.count))
-                shape3.subtitle = "Arrival"
-                mapView.add(shape3)
-            
+                
+                //let shape3 = MGLPolyline(coordinates: &coordinatesArrivalProc, count: UInt(coordinatesArrivalProc.count))
+                //shape3.subtitle = "Arrival"
+                //mapView.add(shape3)
+            } else if !flight_Plan.departure_Airfield_isEmpty() && flight_Plan.arrival_Airfield_isEmpty(){
+                
+                let latitude = flight_Plan.get_Departure_Airfield_Latitude()
+                let longitude = flight_Plan.get_Departure_Airfield_Longitude()
+                let departure = MGLPointAnnotation()
+                departure.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+                mapView.addAnnotation(departure)
+                
+            } else if flight_Plan.departure_Airfield_isEmpty() && !flight_Plan.arrival_Airfield_isEmpty(){
+                
+                let latitude = flight_Plan.get_Arrival_Airfield_Latitude()
+                let longitude = flight_Plan.get_Arrival_Airfield_Longitude()
+                let arrival = MGLPointAnnotation()
+                arrival.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+                mapView.addAnnotation(arrival)
+                
+            } else {
+                applicationParametres.buttonOptionMapView[0] = false
+                alertnoAirportsAssigned()
+            }
         } else {
             var viewWithTag25 = self.view.viewWithTag(25)
             viewWithTag25?.removeFromSuperview()
@@ -1199,11 +1213,13 @@ extension ViewController: MGLMapViewDelegate {
         return 1.0
     }
     
+    // Taille du trait
     func mapView(_ : MGLMapView, lineWidthForPolylineAnnotation annotation: MGLPolyline) -> CGFloat {
         // Set the line width for polyline annotations
         return 7.0
     }
     
+    // Couleur du trait
     func mapView(_ mapView: MGLMapView, strokeColorForShapeAnnotation annotation: MGLShape) -> UIColor {
         var couleurMGLPolygon: UIColor = .yellow
         if  annotation.subtitle == "Departure" {

@@ -441,7 +441,14 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         self.present(alert, animated: true, completion: nil)
     }
     
-    // Permet de supprimer les annotations
+    @objc func alertnoAirportsAssigned(){
+        let alert = UIAlertController(title: "Alert", message: "Aucun aerodrome", preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "Click", style: UIAlertAction.Style.default, handler: nil))
+        
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    // Permet de supprimer les annotations de la view
     func suppMarkers(){
         let allAnnotations = self.mapView.annotations
         self.mapView.removeAnnotations(allAnnotations!)

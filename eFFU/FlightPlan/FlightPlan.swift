@@ -70,20 +70,45 @@ class FlightPlan {
         self.arrival_Airfield.append([(name: name, aiIcao: aiIcao, latitude: latitude, longitude: longitude)])
     }
     
+    func departure_Airfield_isEmpty() -> Bool {
+        return self.departure_Airfield.isEmpty
+    }
+    
+    func arrival_Airfield_isEmpty() -> Bool {
+        return self.arrival_Airfield.isEmpty
+    }
+    
     func unset_Departure_Airfield(){
-        if (!self.departure_Airfield.isEmpty){
+        // supprimer seulement si pas vide
+        if (!departure_Airfield_isEmpty()){
             self.departure_Airfield.removeLast()
         }
     }
     
     func unset_Arrival_Airfield(){
-        if (!self.arrival_Airfield.isEmpty){
+        // supprimer seulement si pas vide
+        if (!arrival_Airfield_isEmpty()){
             self.arrival_Airfield.removeLast()
         }
     }
     
-    public var airport_Departure: String {return "Aerodrome de depart =  nom : \(departure_Airfield[0][0].name), aiIcao : \(departure_Airfield[0][0].aiIcao),latitude : \(departure_Airfield[0][0].latitude) et longitude : \(departure_Airfield[0][0].longitude)"}
+    //Fonctions permettant de "Get" les donnees "latitude" et "longitude"
+    func get_Departure_Airfield_Latitude() -> Double {
+        return self.departure_Airfield[0][0].latitude
+    }
+    func get_Departure_Airfield_Longitude() -> Double {
+        return self.departure_Airfield[0][0].longitude
+    }
+    func get_Arrival_Airfield_Latitude() -> Double {
+        return self.arrival_Airfield[0][0].latitude
+    }
+    func get_Arrival_Airfield_Longitude() -> Double {
+        return self.arrival_Airfield[0][0].longitude
+    }
     
-     public var airport_Arrival: String {return "Aerodrome d'arrivee = nom : \(arrival_Airfield[0][0].name), aiIcao : \(arrival_Airfield[0][0].aiIcao),latitude : \(arrival_Airfield[0][0].latitude) et longitude : \(arrival_Airfield[0][0].longitude)"}
+    
+    public var airport_Departure: String {return "Aerodrome de depart =  nom : \(self.departure_Airfield[0][0].name), aiIcao : \(self.departure_Airfield[0][0].aiIcao), latitude : \(self.departure_Airfield[0][0].latitude) et longitude : \(self.departure_Airfield[0][0].longitude)"}
+    
+    public var airport_Arrival: String {return "Aerodrome d'arrivee = nom : \(self.arrival_Airfield[0][0].name), aiIcao : \(self.arrival_Airfield[0][0].aiIcao), latitude : \(self.arrival_Airfield[0][0].latitude) et longitude : \(self.arrival_Airfield[0][0].longitude)"}
     
 }
