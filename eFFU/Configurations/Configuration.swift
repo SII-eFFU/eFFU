@@ -51,7 +51,7 @@ public struct ApplicationParametres {
     //13 => menuMapOtionsViewMap2
     //14 => menuMapOtionsViewMap3
     //15 => menuMapOtionsViewMap4
-    var buttonOptionMapView: [Bool] = [false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false,false, false]
+    var buttonOptionMapView: [Bool] = [true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false,false, false]
     
     // Styles
     

@@ -1142,10 +1142,11 @@ extension ViewController: MGLMapViewDelegate {
     }
   }
     
-    
     func drawRoutePlane() {
         if applicationParametres.buttonOptionMapView[0]{
+            
             if !flight_Plan.arrival_Airfield_isEmpty() && !flight_Plan.departure_Airfield_isEmpty() {
+                
                 mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 25, tagger: "Route")
                 
                 let departure_Airfield_Latitude = flight_Plan.get_Departure_Airfield_Latitude()
@@ -1181,30 +1182,36 @@ extension ViewController: MGLMapViewDelegate {
                 //let shape3 = MGLPolyline(coordinates: &coordinatesArrivalProc, count: UInt(coordinatesArrivalProc.count))
                 //shape3.subtitle = "Arrival"
                 //mapView.add(shape3)
-            } else if !flight_Plan.departure_Airfield_isEmpty() && flight_Plan.arrival_Airfield_isEmpty(){
                 
+                mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 26, tagger: "Route")
                 let latitude = flight_Plan.get_Departure_Airfield_Latitude()
                 let longitude = flight_Plan.get_Departure_Airfield_Longitude()
-                let departure = MGLPointAnnotation()
                 departure.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
                 mapView.addAnnotation(departure)
                 
-            } else if flight_Plan.departure_Airfield_isEmpty() && !flight_Plan.arrival_Airfield_isEmpty(){
-                
-                let latitude = flight_Plan.get_Arrival_Airfield_Latitude()
-                let longitude = flight_Plan.get_Arrival_Airfield_Longitude()
-                let arrival = MGLPointAnnotation()
-                arrival.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+                mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 27, tagger: "Route")
+                let latitude1 = flight_Plan.get_Arrival_Airfield_Latitude()
+                let longitude1 = flight_Plan.get_Arrival_Airfield_Longitude()
+                arrival.coordinate = CLLocationCoordinate2D(latitude: latitude1, longitude: longitude1)
                 mapView.addAnnotation(arrival)
                 
             } else {
-                applicationParametres.buttonOptionMapView[0] = false
-                alertnoAirportsAssigned()
+                //applicationParametres.buttonOptionMapView[0] = false
+                print("pas de depart ni d'arrivee")
             }
         } else {
             var viewWithTag25 = self.view.viewWithTag(25)
             viewWithTag25?.removeFromSuperview()
+            //viewWithTag25?.isHidden = true
             viewWithTag25 = nil
+            var viewWithTag26 = self.view.viewWithTag(26)
+            viewWithTag26?.removeFromSuperview()
+            viewWithTag26 = nil
+            var viewWithTag27 = self.view.viewWithTag(27)
+            viewWithTag27?.removeFromSuperview()
+            viewWithTag27 = nil
+            departureOn = false
+            arrivalOn = false
         }
     }
     

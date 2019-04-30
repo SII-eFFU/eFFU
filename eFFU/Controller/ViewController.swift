@@ -21,6 +21,10 @@ var nameImage: String = ""
 var departureOn: Bool = false
 var arrivalOn: Bool = false
 
+// Creer points de depart et d'arrivee
+var departure = MGLPointAnnotation()
+var arrival = MGLPointAnnotation()
+
 var flight_Plan = FlightPlan()
 
 class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDelegate, CLLocationManagerDelegate, UITableViewDelegate, UITableViewDataSource {
@@ -483,10 +487,10 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             //mapView.delegate = self
             //let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
             // Creer le point depart
-            let departure = MGLPointAnnotation()
-            departure.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+            //let departure = MGLPointAnnotation()
+            //departure.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
             // Ajouter le point a la map
-            mapView.addAnnotation(departure)
+            //mapView.addAnnotation(departure)
             //departureOn = true
             
         } else if departureOn == true {
@@ -518,10 +522,10 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             //mapView.delegate = self
             //let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
             // Creer le point arrivee
-            let arrival = MGLPointAnnotation()
-            arrival.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+            //let arrival = MGLPointAnnotation()
+            //arrival.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
             // Ajouter le point a la map
-            mapView.addAnnotation(arrival)
+            //mapView.addAnnotation(arrival)
             //arrivalOn = true
             
         } else if arrivalOn == true{
@@ -914,7 +918,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             var annotationImage = mapView.dequeueReusableAnnotationImage(withIdentifier: "departure")
             
             if annotationImage == nil {
-                var image = UIImage(named: "Departure_45x45")
+                var image = UIImage(named: "departures_map")
                 image = image?.withAlignmentRectInsets(UIEdgeInsets(top: 0, left: 0, bottom: image!.size.height/2, right: 0))
                 annotationImage = MGLAnnotationImage(image: image!, reuseIdentifier: "departure")
             }
@@ -926,7 +930,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             var annotationImage = mapView.dequeueReusableAnnotationImage(withIdentifier: "arrival")
             
             if annotationImage == nil {
-                var image = UIImage(named: "Arrival_45x45")
+                var image = UIImage(named: "arrivals_map")
                 image = image?.withAlignmentRectInsets(UIEdgeInsets(top: 0, left: 0, bottom: image!.size.height/2, right: 0))
                 annotationImage = MGLAnnotationImage(image: image!, reuseIdentifier: "arrival")
             }
