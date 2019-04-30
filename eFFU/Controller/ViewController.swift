@@ -437,9 +437,17 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         self.present(alert, animated: true, completion: nil)
     }
 
-    @objc func alertPopupSuppPoint() {
-        let alert = UIAlertController(title: "Alert", message: "Voulez-vous supprimer les points ?", preferredStyle: UIAlertController.Style.alert)
-        alert.addAction(UIAlertAction(title: "Oui", style: UIAlertAction.Style.default, handler: { action in self.suppMarkers() } ))
+    @objc func alertPopupSuppPointDeparture() {
+        let alert = UIAlertController(title: "Alert", message: "Voulez-vous supprimer le point de depart ?", preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "Oui", style: UIAlertAction.Style.default, handler: { action in self.suppPointDeparture() } ))
+        alert.addAction(UIAlertAction(title: "Non", style: UIAlertAction.Style.default, handler: nil))
+        
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    @objc func alertPopupSuppPointArrival() {
+        let alert = UIAlertController(title: "Alert", message: "Voulez-vous supprimer le point d'arrivee ?", preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "Oui", style: UIAlertAction.Style.default, handler: { action in self.suppPointArrival() } ))
         alert.addAction(UIAlertAction(title: "Non", style: UIAlertAction.Style.default, handler: nil))
         
         self.present(alert, animated: true, completion: nil)
@@ -452,16 +460,22 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         self.present(alert, animated: true, completion: nil)
     }
     
+    /**
     // Permet de supprimer les annotations de la view
     func suppMarkers(){
-        let allAnnotations = self.mapView.annotations
-        self.mapView.removeAnnotations(allAnnotations!)
+        
+        //let allAnnotations = self.mapView.annotations
+        //self.mapView.removeAnnotations(allAnnotations!)
+        
+        suppRoutePlane()
+        
         departureOn = false
         arrivalOn = false
         
         flight_Plan.unset_Departure_Airfield()
         flight_Plan.unset_Arrival_Airfield()
     }
+    **/
     
     @objc func departurePopup(_ sender:UIButton){
         // on on effectue le traitement que si airports
@@ -484,6 +498,9 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             
             print(flight_Plan.airport_Departure)
             
+            displayPointDeparture()
+            displayRoutePlane()
+            
             //mapView.delegate = self
             //let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
             // Creer le point depart
@@ -494,7 +511,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             //departureOn = true
             
         } else if departureOn == true {
-            alertPopupSuppPoint()
+            alertPopupSuppPointDeparture()
         } else {
             alertPopupNotAirports()
         }
@@ -519,6 +536,9 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             
             print(flight_Plan.airport_Arrival)
             
+            displayPointArrival()
+            displayRoutePlane()
+            
             //mapView.delegate = self
             //let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
             // Creer le point arrivee
@@ -529,7 +549,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             //arrivalOn = true
             
         } else if arrivalOn == true{
-            alertPopupSuppPoint()
+            alertPopupSuppPointArrival()
         } else {
             alertPopupNotAirports()
         }
