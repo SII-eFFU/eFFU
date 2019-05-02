@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "eFFU/Maps/Cartographie.swift"
-            timestampString = "578327225.012301"
+            timestampString = "578495752.617638"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1226"
-            endingLineNumber = "1226"
+            startingLineNumber = "1232"
+            endingLineNumber = "1232"
             landmarkName = "drawRoutePlane()"
             landmarkType = "7">
          </BreakpointContent>
@@ -26,7 +26,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "eFFU/Controller/ViewController.swift"
-            timestampString = "578327225.012841"
+            timestampString = "578495752.618102"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "380"
@@ -42,7 +42,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "eFFU/Controller/ViewController.swift"
-            timestampString = "578327225.012917"
+            timestampString = "578495752.618176"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "922"
@@ -57,13 +57,61 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "eFFU/Maps/Cartographie.swift"
-            timestampString = "578327225.012988"
+            filePath = "eFFU/FlightPlan/FlightPlan.swift"
+            timestampString = "578492821.971475"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1145"
-            endingLineNumber = "1145"
-            landmarkName = "displayPointDeparture()"
+            startingLineNumber = "97"
+            endingLineNumber = "97"
+            landmarkName = "get_Departure_Airfield_Latitude()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "eFFU/FlightPlan/FlightPlan.swift"
+            timestampString = "578492821.97153"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "100"
+            endingLineNumber = "100"
+            landmarkName = "get_Departure_Airfield_Longitude()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "eFFU/FlightPlan/FlightPlan.swift"
+            timestampString = "578492821.971581"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "103"
+            endingLineNumber = "103"
+            landmarkName = "get_Arrival_Airfield_Latitude()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "eFFU/FlightPlan/FlightPlan.swift"
+            timestampString = "578492821.971633"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "106"
+            endingLineNumber = "106"
+            landmarkName = "get_Arrival_Airfield_Longitude()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

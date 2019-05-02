@@ -1147,9 +1147,13 @@ extension ViewController: MGLMapViewDelegate {
         mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 26, tagger: "Route")
         let latitude = flight_Plan.get_Departure_Airfield_Latitude()
         let longitude = flight_Plan.get_Departure_Airfield_Longitude()
-        departure.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-        print("Depart : \(latitude) - \(longitude)")
-        mapView.addAnnotation(departure)
+        let departures = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(latitude, longitude),
+                                          title:"departures", subtitle:"")
+        departures.image = UIImage(named: "departures_map")
+        departures.reuseIdentifier = "departures"
+        mapView.addAnnotation(departures)
+        departureOn = true
+        
     }
     
     // Permet de creer le point d'arrivee
@@ -1158,10 +1162,12 @@ extension ViewController: MGLMapViewDelegate {
         mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 27, tagger: "Route")
         let latitude = flight_Plan.get_Arrival_Airfield_Latitude()
         let longitude = flight_Plan.get_Arrival_Airfield_Longitude()
-        arrival.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-        print("Arrivee : \(latitude) - \(longitude)")
-        mapView.addAnnotation(arrival)
-
+        let arrivals = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(latitude, longitude),
+                                               title:"arrivals", subtitle:"")
+        arrivals.image = UIImage(named: "arrivals_map")
+        arrivals.reuseIdentifier = "arrivals"
+        mapView.addAnnotation(arrivals)
+        arrivalOn = true
     }
     
     // Permet de creer la route en fonction des points de depart et d'arrivee
@@ -1228,10 +1234,13 @@ extension ViewController: MGLMapViewDelegate {
         let viewWithTag25 = self.view.viewWithTag(25)
         
         let viewWithTag26 = self.view.viewWithTag(26)
+        //print("departure latitude : \(departure.coordinate.latitude) et longitude : \(departure.coordinate.longitude)")
         
         let viewWithTag27 = self.view.viewWithTag(27)
+        //print("arrival latitude : \(arrival.coordinate.latitude) et longitude : \(arrival.coordinate.longitude)")
         
         if applicationParametres.buttonOptionMapView[0]{
+            
             if !flight_Plan.departure_Airfield_isEmpty(){
                 departureOn = false
                 displayPointDeparture()
@@ -1240,6 +1249,7 @@ extension ViewController: MGLMapViewDelegate {
                 arrivalOn = false
                 displayPointArrival()
             }
+ 
             if !flight_Plan.arrival_Airfield_isEmpty() && !flight_Plan.departure_Airfield_isEmpty() {
                 
                 //////////////////////////

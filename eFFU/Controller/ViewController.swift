@@ -933,7 +933,31 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
                 return MGLAnnotationImage(image: image, reuseIdentifier: reuseIdentifier)
             }
         }
-
+        
+        if let departures = annotation as? CustomPointAnnotation,
+            let image = departures.image,
+            let reuseIdentifier = departures.reuseIdentifier {
+            
+            if let annotationImage = mapView.dequeueReusableAnnotationImage(withIdentifier: reuseIdentifier) {
+                return annotationImage
+            } else {
+                
+                return MGLAnnotationImage(image: image, reuseIdentifier: reuseIdentifier)
+            }
+        }
+        
+        if let arrivals = annotation as? CustomPointAnnotation,
+            let image = arrivals.image,
+            let reuseIdentifier = arrivals.reuseIdentifier {
+            
+            if let annotationImage = mapView.dequeueReusableAnnotationImage(withIdentifier: reuseIdentifier) {
+                return annotationImage
+            } else {
+                
+                return MGLAnnotationImage(image: image, reuseIdentifier: reuseIdentifier)
+            }
+        }
+        /**
         if departureOn == false {
             var annotationImage = mapView.dequeueReusableAnnotationImage(withIdentifier: "departure")
             
@@ -957,7 +981,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             arrivalOn = true
             return annotationImage
         }
-        
+        **/
         
         // Fallback to the default marker image.
         return nil
