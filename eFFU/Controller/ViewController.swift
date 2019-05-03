@@ -436,7 +436,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         
         self.present(alert, animated: true, completion: nil)
     }
-
+    /**
     @objc func alertPopupSuppPointDeparture() {
         let alert = UIAlertController(title: "Alert", message: "Voulez-vous supprimer le point de depart ?", preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "Oui", style: UIAlertAction.Style.default, handler: { action in self.suppPointDeparture() } ))
@@ -452,13 +452,21 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         
         self.present(alert, animated: true, completion: nil)
     }
-    
+
     @objc func alertnoAirportsAssigned(){
         let alert = UIAlertController(title: "Alert", message: "Aucun aerodrome", preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "Click", style: UIAlertAction.Style.default, handler: nil))
         
         self.present(alert, animated: true, completion: nil)
     }
+    **/
+    @objc func alertPopupNoAirportsDepartures() {
+        let alert = UIAlertController(title: "Alert", message: "L'aerodrome de depart n'est pas configure", preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "Click", style: UIAlertAction.Style.default, handler: nil))
+        
+        self.present(alert, animated: true, completion: nil)
+    }
+    
     
     /**
     // Permet de supprimer les annotations de la view
@@ -480,7 +488,11 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
     @objc func departurePopup(_ sender:UIButton){
         // on on effectue le traitement que si airports
         print("C'est un/une \(dataTableView[sender.tag][0])")
-        if dataTableView[sender.tag][0] == "Airports" && departureOn == false {
+        if dataTableView[sender.tag][0] == "Airports" {
+            
+            if !flight_Plan.departure_Airfield_isEmpty() == true {
+                flight_Plan.unset_Departure_Airfield()
+            }
             
             let aiIcaoAirport = airportsDatabase[Int(dataTableView[sender.tag][1])!]!.aiIcao
             print ("L'Icao est \(aiIcaoAirport)")
@@ -501,17 +513,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             displayPointDeparture()
             displayRoutePlane()
             
-            //mapView.delegate = self
-            //let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-            // Creer le point depart
-            //let departure = MGLPointAnnotation()
-            //departure.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-            // Ajouter le point a la map
-            //mapView.addAnnotation(departure)
-            //departureOn = true
-            
-        } else if departureOn == true {
-            alertPopupSuppPointDeparture()
         } else {
             alertPopupNotAirports()
         }
@@ -521,7 +522,12 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
     @objc func arrivalPopup(_ sender:UIButton){
         // on on effectue le traitement que si airports
         print("C'est un/une \(dataTableView[sender.tag][0])")
-        if dataTableView[sender.tag][0] == "Airports" && arrivalOn == false{
+        if dataTableView[sender.tag][0] == "Airports" && departureOn == true {
+            
+            if !flight_Plan.arrival_Airfield_isEmpty() {
+                flight_Plan.unset_Arrival_Airfield()
+            }
+            
             // Creer un point depart sur les coordonnees de l'aerodrome
             let aiIcaoAirport = airportsDatabase[Int(dataTableView[sender.tag][1])!]!.aiIcao
             print ("L'Icao est \(aiIcaoAirport)")
@@ -539,17 +545,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             displayPointArrival()
             displayRoutePlane()
             
-            //mapView.delegate = self
-            //let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-            // Creer le point arrivee
-            //let arrival = MGLPointAnnotation()
-            //arrival.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-            // Ajouter le point a la map
-            //mapView.addAnnotation(arrival)
-            //arrivalOn = true
-            
-        } else if arrivalOn == true{
-            alertPopupSuppPointArrival()
+        } else if dataTableView[sender.tag][0] == "Airports" && departureOn == false {
+            alertPopupNoAirportsDepartures()
         } else {
             alertPopupNotAirports()
         }
