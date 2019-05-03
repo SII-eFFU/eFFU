@@ -1240,7 +1240,11 @@ extension ViewController: MGLMapViewDelegate {
         //print("arrival latitude : \(arrival.coordinate.latitude) et longitude : \(arrival.coordinate.longitude)")
         
         if applicationParametres.buttonOptionMapView[0]{
-            
+            //////////////////////////////////////////////
+            // necessaire pour   /////////////////////////
+            // l'actualisation   /////////////////////////
+            // quand mouvement   /////////////////////////
+            //////////////////////////////////////////////
             if !flight_Plan.departure_Airfield_isEmpty(){
                 departureOn = false
                 displayPointDeparture()
@@ -1252,13 +1256,9 @@ extension ViewController: MGLMapViewDelegate {
  
             if !flight_Plan.arrival_Airfield_isEmpty() && !flight_Plan.departure_Airfield_isEmpty() {
                 
-                //////////////////////////
-                // necessaire pour   /////
-                // l'actualisation   /////
-                // quand mouvement   /////
-                //////////////////////////
+                
                 displayRoutePlane()
-                //////////////////////////
+                //////////////////////////////////////////
                 
                 // Permet d'afficher les view
                 viewWithTag25?.isHidden = false
@@ -1282,7 +1282,17 @@ extension ViewController: MGLMapViewDelegate {
             viewWithTag26?.isHidden = true
 
             viewWithTag27?.isHidden = true
-
+            
+            //Permet d'afficher le plan de vol au bout de 5 secondes
+            let deadlineTime = DispatchTime.now() + .seconds(5)
+            DispatchQueue.main.asyncAfter(deadline: deadlineTime, execute: {
+                if applicationParametres.buttonOptionMapView[0] == false {
+                    applicationParametres.buttonOptionMapView[0] = true
+                    self.ReloadMapboxViewOption()
+                    self.drawRoutePlane()
+                }
+            })
+ 
         }
     }
     
