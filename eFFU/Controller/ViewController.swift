@@ -42,8 +42,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
     var iconesData = ["A", "B", "C", "D"]
     var dataTableView = [["A", "B"], ["D", "E"]]
     
-    var loopCoordinate = CLLocationCoordinate2D()
-    
     
 //    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 //
@@ -959,8 +957,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         if let hippodrome = annotation as? CustomPointAnnotation,
             let image = hippodrome.image,
             let reuseIdentifier = hippodrome.reuseIdentifier {
-            
-            loopCoordinate = hippodrome.coordinate
             
             if let annotationImage = mapView.dequeueReusableAnnotationImage(withIdentifier: reuseIdentifier) {
                 return annotationImage

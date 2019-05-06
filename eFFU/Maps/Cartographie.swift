@@ -1222,29 +1222,6 @@ extension ViewController: MGLMapViewDelegate {
                 loop = false
                 suppPointLoop()
             }
-        } else if flight_Plan.departure_Airfield_isEmpty() && loop {
-            
-            let latitudeDepartures = loopCoordinate.latitude
-            let longitudeDepartures = loopCoordinate.longitude
-            
-            mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 26, tagger: "Route")
-            let departures = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(latitudeDepartures, longitudeDepartures),
-                                                   title:"departures", subtitle:"")
-            departures.image = UIImage(named: "departures_map")
-            departures.reuseIdentifier = "departures"
-            mapView.addAnnotation(departures)
-            departureOn = true
-            
-            mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 27, tagger: "Route")
-            let arrivals = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(latitude, longitude),
-                                                 title:"arrivals", subtitle:"")
-            arrivals.image = UIImage(named: "arrivals_map")
-            arrivals.reuseIdentifier = "arrivals"
-            mapView.addAnnotation(arrivals)
-            arrivalOn = true
-            loop = false
-            suppPointLoop()
-            
         } else {
             
             mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 27, tagger: "Route")
@@ -1256,7 +1233,6 @@ extension ViewController: MGLMapViewDelegate {
             arrivalOn = true
             loop = false
             suppPointLoop()
-            
         }
         
         
