@@ -388,6 +388,22 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             affichageFondCartesMapbox()
             
         }
+        
+        if dataTableView[sender.tag][0] == "Departures" {
+            localisationCenterMap = CLLocationCoordinate2D(latitude: flight_Plan.get_Departure_Airfield_Latitude(), longitude: flight_Plan.get_Departure_Airfield_Longitude())
+            zoomLevelMap = 14.5
+            directionMap = 0
+            affichageFondCartesMapbox()
+            
+        }
+        
+        if dataTableView[sender.tag][0] == "Arrivals" {
+            localisationCenterMap = CLLocationCoordinate2D(latitude: flight_Plan.get_Arrival_Airfield_Latitude(), longitude: flight_Plan.get_Arrival_Airfield_Longitude())
+            zoomLevelMap = 14.5
+            directionMap = 0
+            affichageFondCartesMapbox()
+            
+        }
 
         if dataTableView[sender.tag][0] == "Ville" {
             localisationCenterMap = CLLocationCoordinate2D(latitude: villesDatabase[Int(dataTableView[sender.tag][1])!]!.swLatitude, longitude: villesDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude)

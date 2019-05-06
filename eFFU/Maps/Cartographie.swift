@@ -1633,6 +1633,55 @@ extension ViewController: MGLMapViewDelegate {
         var ancienName: String = ""
         var ancienName1: String = ""
         
+        var nameDepartures: String = ""
+        var aiIcaoDepartures: String = ""
+        
+        var nameArrivals: String = ""
+        var aiIcaoArrivals: String = ""
+        
+        //print("bool de departures : \(departureOn) et de arrivals : \(arrivalOn)")
+        
+        // Departures aerodrome
+        if departureOn {
+            let secondLocationDeparture = CLLocation(latitude: flight_Plan.get_Departure_Airfield_Latitude(), longitude: flight_Plan.get_Departure_Airfield_Longitude())
+            let distanceDeparture = getBearingBetweenTwoPoints1(point1: myLocation, point2: secondLocationDeparture)
+            if distanceDeparture < distanceMax {
+                if nameDepartures != "Departures" {
+                    print ("Departures airports : \(flight_Plan.get_Departure_Airfield_aiIcao()) \(flight_Plan.get_Departure_Airfield_Name()) -> \(distanceDeparture)")
+                    headerTitles.append("Aérodromes")
+                    nameDepartures = "Departures"
+                    affichagePopupList = true
+                }
+                if aiIcaoDepartures != flight_Plan.get_Departure_Airfield_aiIcao() {
+                    data.append(["\(flight_Plan.get_Departure_Airfield_aiIcao()) (\(flight_Plan.get_Departure_Airfield_Name()))"])
+                    iconesData.append("departures_map")
+                    dataTableView.append(["Departures"])
+                    aiIcaoDepartures = flight_Plan.get_Departure_Airfield_aiIcao()
+                }
+            }
+        }
+        
+        // Arrivals aerodrome
+        if arrivalOn {
+            let secondLocationArrival = CLLocation(latitude: flight_Plan.get_Arrival_Airfield_Latitude(), longitude: flight_Plan.get_Arrival_Airfield_Longitude())
+            let distanceArrival = getBearingBetweenTwoPoints1(point1: myLocation, point2: secondLocationArrival)
+            if distanceArrival < distanceMax {
+                if nameArrivals != "Arrivals" {
+                    print ("Arrivals airports : \(flight_Plan.get_Arrival_Airfield_aiIcao()) \(flight_Plan.get_Arrival_Airfield_Name()) -> \(distanceArrival)")
+                    headerTitles.append("Aérodromes")
+                    nameArrivals = "Arrivals"
+                    affichagePopupList = true
+                }
+                if aiIcaoArrivals != flight_Plan.get_Arrival_Airfield_aiIcao() {
+                    data.append(["\(flight_Plan.get_Arrival_Airfield_aiIcao()) (\(flight_Plan.get_Arrival_Airfield_Name()))"])
+                    iconesData.append("arrivals_map")
+                    dataTableView.append(["Arrivals"])
+                    aiIcaoArrivals = flight_Plan.get_Arrival_Airfield_aiIcao()
+                }
+            }
+        }
+        
+        
         //Aeroports
         if applicationParametres.buttonOptionMapView[1] {
         for i in 0...airportsDatabase.count-1 {

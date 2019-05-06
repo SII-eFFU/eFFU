@@ -63,6 +63,22 @@ class FlightPlan {
         return self.arrival_Airfield[0][0].longitude
     }
     
+    func get_Departure_Airfield_aiIcao() -> String {
+        return self.departure_Airfield[0][0].aiIcao
+    }
+    
+    func get_Departure_Airfield_Name() -> String {
+        return self.departure_Airfield[0][0].name
+    }
+    
+    func get_Arrival_Airfield_aiIcao() -> String {
+        return self.arrival_Airfield[0][0].aiIcao
+    }
+    
+    func get_Arrival_Airfield_Name() -> String {
+        return self.arrival_Airfield[0][0].name
+    }
+    
     // Test des variables   //
     public var airport_Departure: String {return "Aerodrome de depart =  nom : \(self.departure_Airfield[0][0].name), aiIcao : \(self.departure_Airfield[0][0].aiIcao), latitude : \(self.departure_Airfield[0][0].latitude) et longitude : \(self.departure_Airfield[0][0].longitude)"}
     
