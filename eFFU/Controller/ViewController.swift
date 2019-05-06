@@ -20,6 +20,7 @@ var nameImage: String = ""
 // Permet de tester si deja existant
 var departureOn: Bool = false
 var arrivalOn: Bool = false
+var loop: Bool = false
 
 // Creer points de depart et d'arrivee
 var departure = MGLPointAnnotation()
@@ -41,6 +42,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
     var iconesData = ["A", "B", "C", "D"]
     var dataTableView = [["A", "B"], ["D", "E"]]
     
+    var loopCoordinate = CLLocationCoordinate2D()
     
     
 //    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -934,7 +936,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         if let departures = annotation as? CustomPointAnnotation,
             let image = departures.image,
             let reuseIdentifier = departures.reuseIdentifier {
-            
             if let annotationImage = mapView.dequeueReusableAnnotationImage(withIdentifier: reuseIdentifier) {
                 return annotationImage
             } else {
@@ -954,6 +955,20 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
                 return MGLAnnotationImage(image: image, reuseIdentifier: reuseIdentifier)
             }
         }
+        
+        if let hippodrome = annotation as? CustomPointAnnotation,
+            let image = hippodrome.image,
+            let reuseIdentifier = hippodrome.reuseIdentifier {
+            
+            loopCoordinate = hippodrome.coordinate
+            
+            if let annotationImage = mapView.dequeueReusableAnnotationImage(withIdentifier: reuseIdentifier) {
+                return annotationImage
+            } else {
+                return MGLAnnotationImage(image: image, reuseIdentifier: reuseIdentifier)
+            }
+        }
+        
         /**
         if departureOn == false {
             var annotationImage = mapView.dequeueReusableAnnotationImage(withIdentifier: "departure")

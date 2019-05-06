@@ -1144,51 +1144,150 @@ extension ViewController: MGLMapViewDelegate {
     // Permet de creer le point de depart
     func displayPointDeparture(){
         // creer point de depart
-        mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 26, tagger: "Route")
         let latitude = flight_Plan.get_Departure_Airfield_Latitude()
         let longitude = flight_Plan.get_Departure_Airfield_Longitude()
-        let departures = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(latitude, longitude),
-                                          title:"departures", subtitle:"")
-        departures.image = UIImage(named: "departures_map")
-        departures.reuseIdentifier = "departures"
-        mapView.addAnnotation(departures)
-        departureOn = true
         
+        if !flight_Plan.arrival_Airfield_isEmpty() {
+            let latitudeArrivals = flight_Plan.get_Arrival_Airfield_Latitude()
+            let longitudeArrivals = flight_Plan.get_Arrival_Airfield_Longitude()
+            
+            if latitude == latitudeArrivals && longitude == longitudeArrivals {
+                suppPointArrival()
+                mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 28, tagger: "Route")
+                let hippodrome = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(latitude, longitude),
+                                                       title:"hippodrome", subtitle:"")
+                hippodrome.image = UIImage(named: "loop_map")
+                hippodrome.reuseIdentifier = "hippodrome"
+                mapView.addAnnotation(hippodrome)
+                suppPointArrival()
+                suppPointDeparture()
+                arrivalOn = false
+                departureOn = false
+            } else {
+                mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 26, tagger: "Route")
+                let departures = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(latitude, longitude),
+                                                       title:"departures", subtitle:"")
+                departures.image = UIImage(named: "departures_map")
+                departures.reuseIdentifier = "departures"
+                mapView.addAnnotation(departures)
+                departureOn = true
+                loop = false
+                suppPointLoop()
+            }
+        } else {
+            mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 26, tagger: "Route")
+            let departures = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(latitude, longitude),
+                                                   title:"departures", subtitle:"")
+            departures.image = UIImage(named: "departures_map")
+            departures.reuseIdentifier = "departures"
+            mapView.addAnnotation(departures)
+            departureOn = true
+            loop = false
+            suppPointLoop()
+        }
     }
     
     // Permet de creer le point d'arrivee
     func displayPointArrival(){
         // creer point d'arrivee
-        mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 27, tagger: "Route")
+        
         let latitude = flight_Plan.get_Arrival_Airfield_Latitude()
         let longitude = flight_Plan.get_Arrival_Airfield_Longitude()
-        let arrivals = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(latitude, longitude),
-                                               title:"arrivals", subtitle:"")
-        arrivals.image = UIImage(named: "arrivals_map")
-        arrivals.reuseIdentifier = "arrivals"
-        mapView.addAnnotation(arrivals)
-        arrivalOn = true
+        
+        if !flight_Plan.departure_Airfield_isEmpty() {
+            
+            let latitudeDepartures = flight_Plan.get_Departure_Airfield_Latitude()
+            let longitudeDepartures = flight_Plan.get_Departure_Airfield_Longitude()
+            
+            if latitude == latitudeDepartures && longitude == longitudeDepartures {
+                suppPointDeparture()
+                mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 28, tagger: "Route")
+                let hippodrome = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(latitude, longitude),
+                                                       title:"hippodrome", subtitle:"")
+                hippodrome.image = UIImage(named: "loop_map")
+                hippodrome.reuseIdentifier = "hippodrome"
+                mapView.addAnnotation(hippodrome)
+                suppPointArrival()
+                suppPointDeparture()
+                arrivalOn = false
+                departureOn = false
+            } else {
+                mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 27, tagger: "Route")
+                let arrivals = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(latitude, longitude),
+                                                     title:"arrivals", subtitle:"")
+                arrivals.image = UIImage(named: "arrivals_map")
+                arrivals.reuseIdentifier = "arrivals"
+                mapView.addAnnotation(arrivals)
+                arrivalOn = true
+                loop = false
+                suppPointLoop()
+            }
+        } else if flight_Plan.departure_Airfield_isEmpty() && loop {
+            
+            let latitudeDepartures = loopCoordinate.latitude
+            let longitudeDepartures = loopCoordinate.longitude
+            
+            mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 26, tagger: "Route")
+            let departures = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(latitudeDepartures, longitudeDepartures),
+                                                   title:"departures", subtitle:"")
+            departures.image = UIImage(named: "departures_map")
+            departures.reuseIdentifier = "departures"
+            mapView.addAnnotation(departures)
+            departureOn = true
+            
+            mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 27, tagger: "Route")
+            let arrivals = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(latitude, longitude),
+                                                 title:"arrivals", subtitle:"")
+            arrivals.image = UIImage(named: "arrivals_map")
+            arrivals.reuseIdentifier = "arrivals"
+            mapView.addAnnotation(arrivals)
+            arrivalOn = true
+            loop = false
+            suppPointLoop()
+            
+        } else {
+            
+            mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 27, tagger: "Route")
+            let arrivals = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(latitude, longitude),
+                                                 title:"arrivals", subtitle:"")
+            arrivals.image = UIImage(named: "arrivals_map")
+            arrivals.reuseIdentifier = "arrivals"
+            mapView.addAnnotation(arrivals)
+            arrivalOn = true
+            loop = false
+            suppPointLoop()
+            
+        }
+        
+        
     }
     
     // Permet de creer la route en fonction des points de depart et d'arrivee
     func displayRoutePlane(){
         // creer route
         if departureOn && arrivalOn {
-            mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 25, tagger: "Route")
             let departure_Airfield_Latitude = flight_Plan.get_Departure_Airfield_Latitude()
             let departure_Airfield_Longitude = flight_Plan.get_Departure_Airfield_Longitude()
             
             let arrival_Airfield_Latitude = flight_Plan.get_Arrival_Airfield_Latitude()
             let arrival_Airfield_Longitude = flight_Plan.get_Arrival_Airfield_Longitude()
             
-            var coordinatesEnroute = [
-                CLLocationCoordinate2D(latitude: departure_Airfield_Latitude, longitude: departure_Airfield_Longitude),
-                CLLocationCoordinate2D(latitude: arrival_Airfield_Latitude, longitude: arrival_Airfield_Longitude)
-            ];
-            
-            let shape2 = MGLPolyline(coordinates: &coordinatesEnroute, count: UInt(coordinatesEnroute.count))
-            shape2.subtitle = "enRoute"
-            mapView.add(shape2)
+            if departure_Airfield_Latitude != arrival_Airfield_Latitude && departure_Airfield_Longitude != arrival_Airfield_Longitude {
+                
+                mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 25, tagger: "Route")
+                var coordinatesEnroute = [
+                    CLLocationCoordinate2D(latitude: departure_Airfield_Latitude, longitude: departure_Airfield_Longitude),
+                    CLLocationCoordinate2D(latitude: arrival_Airfield_Latitude, longitude: arrival_Airfield_Longitude)
+                ];
+                
+                let shape2 = MGLPolyline(coordinates: &coordinatesEnroute, count: UInt(coordinatesEnroute.count))
+                shape2.subtitle = "enRoute"
+                mapView.add(shape2)
+                
+            } else {
+                print("")
+                loop = true
+            }
         } else {
             print("")
         }
@@ -1212,8 +1311,9 @@ extension ViewController: MGLMapViewDelegate {
         
         departureOn = false
         flight_Plan.unset_Departure_Airfield()
-        
     }
+    
+    
     // Permet de supprimer le point d'arrivee pour ensuite le modifier
     func suppPointArrival(){
         
@@ -1228,72 +1328,119 @@ extension ViewController: MGLMapViewDelegate {
         
     }
     
+    // Permet de supprimer le point "loop" hippodrome
+    func suppPointLoop(){
+        var viewWithTag28 = self.view.viewWithTag(28)
+        viewWithTag28?.removeFromSuperview()
+        viewWithTag28 = nil
+    }
+    
     // Permet d'afficher ou cacher les elements du plan de vol
     func drawRoutePlane() {
         
-        let viewWithTag25 = self.view.viewWithTag(25)
-        
-        let viewWithTag26 = self.view.viewWithTag(26)
-        //print("departure latitude : \(departure.coordinate.latitude) et longitude : \(departure.coordinate.longitude)")
-        
-        let viewWithTag27 = self.view.viewWithTag(27)
-        //print("arrival latitude : \(arrival.coordinate.latitude) et longitude : \(arrival.coordinate.longitude)")
-        
-        if applicationParametres.buttonOptionMapView[0]{
-            //////////////////////////////////////////////
-            // necessaire pour   /////////////////////////
-            // l'actualisation   /////////////////////////
-            // quand mouvement   /////////////////////////
-            //////////////////////////////////////////////
-            if !flight_Plan.departure_Airfield_isEmpty(){
-                departureOn = false
-                displayPointDeparture()
-            }
-            if !flight_Plan.arrival_Airfield_isEmpty(){
-                arrivalOn = false
-                displayPointArrival()
-            }
- 
-            if !flight_Plan.arrival_Airfield_isEmpty() && !flight_Plan.departure_Airfield_isEmpty() {
+        if !loop {
+            
+            let viewWithTag25 = self.view.viewWithTag(25)
+            
+            let viewWithTag26 = self.view.viewWithTag(26)
+            
+            let viewWithTag27 = self.view.viewWithTag(27)
+            
+            if applicationParametres.buttonOptionMapView[0]{
                 
+                if !flight_Plan.departure_Airfield_isEmpty(){
+                    departureOn = false
+                    displayPointDeparture()
+                }
+                if !flight_Plan.arrival_Airfield_isEmpty(){
+                    arrivalOn = false
+                    displayPointArrival()
+                }
                 
-                displayRoutePlane()
-                //////////////////////////////////////////
-                
-                // Permet d'afficher les view
-                viewWithTag25?.isHidden = false
-                
-                viewWithTag26?.isHidden = false
-                
-                viewWithTag27?.isHidden = false
+                if !flight_Plan.arrival_Airfield_isEmpty() && !flight_Plan.departure_Airfield_isEmpty() {
+                    
+                    displayRoutePlane()
+                    
+                    // Permet d'afficher les view
+                    viewWithTag25?.isHidden = false
+                    
+                    viewWithTag26?.isHidden = false
+                    
+                    viewWithTag27?.isHidden = false
+                    
+                } else {
+                    
+                    //applicationParametres.buttonOptionMapView[0] = false
+                    print("pas de depart ni d'arrivee")
+                    
+                }
                 
             } else {
                 
-                //applicationParametres.buttonOptionMapView[0] = false
-                print("pas de depart ni d'arrivee")
+                // Permet de cacher les view
+                viewWithTag25?.isHidden = true
+                
+                viewWithTag26?.isHidden = true
+                
+                viewWithTag27?.isHidden = true
+                
+                //Permet d'afficher le plan de vol au bout de 5 secondes
+                let deadlineTime = DispatchTime.now() + .seconds(5)
+                DispatchQueue.main.asyncAfter(deadline: deadlineTime, execute: {
+                    if applicationParametres.buttonOptionMapView[0] == false {
+                        applicationParametres.buttonOptionMapView[0] = true
+                        self.ReloadMapboxViewOption()
+                        self.drawRoutePlane()
+                    }
+                })
                 
             }
-            
         } else {
+            let viewWithTag28 = self.view.viewWithTag(28)
             
-            // Permet de cacher les view
-            viewWithTag25?.isHidden = true
-
-            viewWithTag26?.isHidden = true
-
-            viewWithTag27?.isHidden = true
-            
-            //Permet d'afficher le plan de vol au bout de 5 secondes
-            let deadlineTime = DispatchTime.now() + .seconds(5)
-            DispatchQueue.main.asyncAfter(deadline: deadlineTime, execute: {
-                if applicationParametres.buttonOptionMapView[0] == false {
-                    applicationParametres.buttonOptionMapView[0] = true
-                    self.ReloadMapboxViewOption()
-                    self.drawRoutePlane()
+            if applicationParametres.buttonOptionMapView[0]{
+                
+                if !flight_Plan.departure_Airfield_isEmpty(){
+                    departureOn = false
+                    displayPointDeparture()
                 }
-            })
- 
+                if !flight_Plan.arrival_Airfield_isEmpty(){
+                    arrivalOn = false
+                    displayPointArrival()
+                }
+                
+                if !flight_Plan.arrival_Airfield_isEmpty() && !flight_Plan.departure_Airfield_isEmpty() {
+                    
+                    displayRoutePlane()
+                    
+                    // Permet d'afficher les view
+                    viewWithTag28?.isHidden = false
+                    
+                } else {
+                    
+                    //applicationParametres.buttonOptionMapView[0] = false
+                    print("pas de depart ni d'arrivee")
+                    
+                }
+                
+            } else {
+                
+                // Permet de cacher les view
+                viewWithTag28?.isHidden = true
+                
+                //Permet d'afficher le plan de vol au bout de 5 secondes
+                let deadlineTime = DispatchTime.now() + .seconds(5)
+                DispatchQueue.main.asyncAfter(deadline: deadlineTime, execute: {
+                    if applicationParametres.buttonOptionMapView[0] == false {
+                        applicationParametres.buttonOptionMapView[0] = true
+                        self.ReloadMapboxViewOption()
+                        self.drawRoutePlane()
+                    }
+                })
+                
+            }
         }
+        
     }
     
     
