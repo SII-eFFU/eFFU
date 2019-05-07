@@ -1311,6 +1311,8 @@ extension ViewController: MGLMapViewDelegate {
         var viewWithTag28 = self.view.viewWithTag(28)
         viewWithTag28?.removeFromSuperview()
         viewWithTag28 = nil
+        
+        loop = false
     }
     
     // Permet d'afficher ou cacher les elements du plan de vol

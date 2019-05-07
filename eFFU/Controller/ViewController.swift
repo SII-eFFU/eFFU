@@ -508,6 +508,18 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
     }
     **/
     
+    func closePopUp() {
+        for layer: CALayer in self.view.layer.sublayers! {
+            if layer.name == "Touch Zone" {
+                layer.removeFromSuperlayer()
+            }
+            
+        }
+        
+        let viewWithTag221 = self.view.viewWithTag(221)
+        viewWithTag221?.removeFromSuperview()
+    }
+    
     @objc func departurePopup(_ sender:UIButton){
         // on on effectue le traitement que si airports
         print("C'est un/une \(dataTableView[sender.tag][0])")
@@ -535,6 +547,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             
             displayPointDeparture()
             displayRoutePlane()
+            
+            closePopUp()
             
         } else {
             alertPopupNotAirports()
@@ -567,6 +581,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             
             displayPointArrival()
             displayRoutePlane()
+            
+            closePopUp()
             
         } else if dataTableView[sender.tag][0] == "Airports" && departureOn == false {
             alertPopupNoAirportsDepartures()
