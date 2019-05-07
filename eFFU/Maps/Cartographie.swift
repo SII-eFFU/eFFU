@@ -1141,101 +1141,102 @@ extension ViewController: MGLMapViewDelegate {
         viewWithTag9 = nil
     }
   }
+    
+    func majLoop(){
+        mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 28, tagger: "Route")
+        let hippodrome = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(latitudeLoop, longitudeLoop),
+                                               title:"hippodrome", subtitle:"")
+        hippodrome.image = UIImage(named: "loop_map")
+        hippodrome.reuseIdentifier = "hippodrome"
+        mapView.addAnnotation(hippodrome)
+        loop = true
+    }
+    
+    func createDepartures(){
+        mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 26, tagger: "Route")
+        let departures = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(latitudeDepartures, longitudeDepartures),
+                                               title:"departures", subtitle:"")
+        departures.image = UIImage(named: "departures_map")
+        departures.reuseIdentifier = "departures"
+        mapView.addAnnotation(departures)
+        departureOn = true
+        loop = false
+        suppPointLoop()
+    }
+    
+    func createArrivals(){
+        mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 27, tagger: "Route")
+        let arrivals = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(latitudeArrivals, longitudeArrivals),
+                                             title:"arrivals", subtitle:"")
+        arrivals.image = UIImage(named: "arrivals_map")
+        arrivals.reuseIdentifier = "arrivals"
+        mapView.addAnnotation(arrivals)
+        arrivalOn = true
+        loop = false
+        suppPointLoop()
+    }
+    
     // Permet de creer le point de depart
     func displayPointDeparture(){
         // creer point de depart
-        let latitude = flight_Plan.get_Departure_Airfield_Latitude()
-        let longitude = flight_Plan.get_Departure_Airfield_Longitude()
+        latitudeDepartures = flight_Plan.get_Departure_Airfield_Latitude()
+        longitudeDepartures = flight_Plan.get_Departure_Airfield_Longitude()
         
         if !flight_Plan.arrival_Airfield_isEmpty() {
-            let latitudeArrivals = flight_Plan.get_Arrival_Airfield_Latitude()
-            let longitudeArrivals = flight_Plan.get_Arrival_Airfield_Longitude()
+            let latitudeArrival = flight_Plan.get_Arrival_Airfield_Latitude()
+            let longitudeArrival = flight_Plan.get_Arrival_Airfield_Longitude()
             
-            if latitude == latitudeArrivals && longitude == longitudeArrivals {
+            if latitudeDepartures == latitudeArrival && longitudeDepartures == longitudeArrival {
+                latitudeLoop = latitudeDepartures
+                longitudeLoop = longitudeDepartures
+                
                 suppPointArrival()
-                mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 28, tagger: "Route")
-                let hippodrome = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(latitude, longitude),
-                                                       title:"hippodrome", subtitle:"")
-                hippodrome.image = UIImage(named: "loop_map")
-                hippodrome.reuseIdentifier = "hippodrome"
-                mapView.addAnnotation(hippodrome)
+                
+                majLoop()
+                
                 suppPointArrival()
                 suppPointDeparture()
                 arrivalOn = false
                 departureOn = false
+                
             } else {
-                mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 26, tagger: "Route")
-                let departures = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(latitude, longitude),
-                                                       title:"departures", subtitle:"")
-                departures.image = UIImage(named: "departures_map")
-                departures.reuseIdentifier = "departures"
-                mapView.addAnnotation(departures)
-                departureOn = true
-                loop = false
-                suppPointLoop()
+                createDepartures()
             }
         } else {
-            mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 26, tagger: "Route")
-            let departures = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(latitude, longitude),
-                                                   title:"departures", subtitle:"")
-            departures.image = UIImage(named: "departures_map")
-            departures.reuseIdentifier = "departures"
-            mapView.addAnnotation(departures)
-            departureOn = true
-            loop = false
-            suppPointLoop()
+            createDepartures()
         }
     }
     
     // Permet de creer le point d'arrivee
     func displayPointArrival(){
         // creer point d'arrivee
-        
-        let latitude = flight_Plan.get_Arrival_Airfield_Latitude()
-        let longitude = flight_Plan.get_Arrival_Airfield_Longitude()
+        latitudeArrivals = flight_Plan.get_Arrival_Airfield_Latitude()
+        longitudeArrivals = flight_Plan.get_Arrival_Airfield_Longitude()
         
         if !flight_Plan.departure_Airfield_isEmpty() {
             
-            let latitudeDepartures = flight_Plan.get_Departure_Airfield_Latitude()
-            let longitudeDepartures = flight_Plan.get_Departure_Airfield_Longitude()
+            let latitudeDeparture = flight_Plan.get_Departure_Airfield_Latitude()
+            let longitudeDeparture = flight_Plan.get_Departure_Airfield_Longitude()
             
-            if latitude == latitudeDepartures && longitude == longitudeDepartures {
+            if latitudeArrivals == latitudeDeparture && longitudeArrivals == longitudeDeparture {
+                latitudeLoop = latitudeArrivals
+                longitudeLoop = longitudeArrivals
+                
                 suppPointDeparture()
-                mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 28, tagger: "Route")
-                let hippodrome = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(latitude, longitude),
-                                                       title:"hippodrome", subtitle:"")
-                hippodrome.image = UIImage(named: "loop_map")
-                hippodrome.reuseIdentifier = "hippodrome"
-                mapView.addAnnotation(hippodrome)
+                
+                majLoop()
+                
                 suppPointArrival()
                 suppPointDeparture()
                 arrivalOn = false
                 departureOn = false
+                
             } else {
-                mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 27, tagger: "Route")
-                let arrivals = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(latitude, longitude),
-                                                     title:"arrivals", subtitle:"")
-                arrivals.image = UIImage(named: "arrivals_map")
-                arrivals.reuseIdentifier = "arrivals"
-                mapView.addAnnotation(arrivals)
-                arrivalOn = true
-                loop = false
-                suppPointLoop()
+                createArrivals()
             }
         } else {
-            
-            mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 27, tagger: "Route")
-            let arrivals = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(latitude, longitude),
-                                                 title:"arrivals", subtitle:"")
-            arrivals.image = UIImage(named: "arrivals_map")
-            arrivals.reuseIdentifier = "arrivals"
-            mapView.addAnnotation(arrivals)
-            arrivalOn = true
-            loop = false
-            suppPointLoop()
+            createArrivals()
         }
-        
-        
     }
     
     // Permet de creer la route en fonction des points de depart et d'arrivee
@@ -1259,6 +1260,7 @@ extension ViewController: MGLMapViewDelegate {
                 let shape2 = MGLPolyline(coordinates: &coordinatesEnroute, count: UInt(coordinatesEnroute.count))
                 shape2.subtitle = "enRoute"
                 mapView.add(shape2)
+                loop = false
                 
             } else {
                 print("")
@@ -1376,26 +1378,16 @@ extension ViewController: MGLMapViewDelegate {
             
             if applicationParametres.buttonOptionMapView[0]{
                 
-                if !flight_Plan.departure_Airfield_isEmpty(){
-                    departureOn = false
-                    displayPointDeparture()
-                }
-                if !flight_Plan.arrival_Airfield_isEmpty(){
-                    arrivalOn = false
-                    displayPointArrival()
-                }
+                majLoop()
                 
-                if !flight_Plan.arrival_Airfield_isEmpty() && !flight_Plan.departure_Airfield_isEmpty() {
-                    
-                    displayRoutePlane()
+                if loop {
                     
                     // Permet d'afficher les view
                     viewWithTag28?.isHidden = false
                     
                 } else {
                     
-                    //applicationParametres.buttonOptionMapView[0] = false
-                    print("pas de depart ni d'arrivee")
+                    print("pas de loop")
                     
                 }
                 
@@ -1638,7 +1630,10 @@ extension ViewController: MGLMapViewDelegate {
         
         var nameArrivals: String = ""
         var aiIcaoArrivals: String = ""
-        
+        /**
+        var nameLoop: String = ""
+        var aiIcaoLoop: String = ""
+        **/
         //print("bool de departures : \(departureOn) et de arrivals : \(arrivalOn)")
         
         // Departures aerodrome
@@ -1680,8 +1675,27 @@ extension ViewController: MGLMapViewDelegate {
                 }
             }
         }
-        
-        
+        /**
+        // Hippodrome aerodrome
+        if loop {
+            let secondLocationLoop = CLLocation(latitude: flight_Plan.get_Arrival_Airfield_Latitude(), longitude: flight_Plan.get_Arrival_Airfield_Longitude())
+            let distanceLoop = getBearingBetweenTwoPoints1(point1: myLocation, point2: secondLocationLoop)
+            if distanceLoop < distanceMax {
+                if nameLoop != "hippodrome" {
+                    print ("hippodrome airports : \(flight_Plan.get_Arrival_Airfield_aiIcao()) \(flight_Plan.get_Arrival_Airfield_Name()) -> \(distanceLoop)")
+                    headerTitles.append("hippodrome")
+                    nameLoop = "hippodrome"
+                    affichagePopupList = true
+                }
+                if aiIcaoLoop != flight_Plan.get_Arrival_Airfield_aiIcao() {
+                    data.append(["\(flight_Plan.get_Arrival_Airfield_aiIcao()) (\(flight_Plan.get_Arrival_Airfield_Name()))"])
+                    iconesData.append("loop_map")
+                    dataTableView.append(["hippodrome"])
+                    aiIcaoLoop = flight_Plan.get
+                }
+            }
+        }
+        **/
         //Aeroports
         if applicationParametres.buttonOptionMapView[1] {
         for i in 0...airportsDatabase.count-1 {

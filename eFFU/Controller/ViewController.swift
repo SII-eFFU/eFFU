@@ -28,6 +28,15 @@ var arrival = MGLPointAnnotation()
 
 var flight_Plan = FlightPlan()
 
+var latitudeDepartures: Double = 0.0
+var longitudeDepartures: Double = 0.0
+
+var latitudeArrivals: Double = 0.0
+var longitudeArrivals: Double = 0.0
+
+var latitudeLoop: Double = 0.0
+var longitudeLoop: Double = 0.0
+
 class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDelegate, CLLocationManagerDelegate, UITableViewDelegate, UITableViewDataSource {
     
     var tableView = UITableView()
@@ -244,7 +253,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         buttonPopup2.frame = CGRect(x: 61, y: 8, width: 45, height: 45)
         buttonPopup2.tag = indexPath.section
         buttonPopup2.addTarget(self, action: #selector(departurePopup(_:)), for: .touchUpInside)
-        //buttonPopup2.tag = 2102
         buttonPopup2.alpha = 1.0
         popup2.addSubview(buttonPopup2)
 
@@ -253,7 +261,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         buttonPopup3.frame = CGRect(x: 109, y: 8, width: 45, height: 45)
         buttonPopup3.tag = indexPath.section
         buttonPopup3.addTarget(self, action: #selector(arrivalPopup(_:)), for: .touchUpInside)
-        //buttonPopup3.tag = 2103
         buttonPopup3.alpha = 1.0
         popup2.addSubview(buttonPopup3)
 
@@ -386,7 +393,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             zoomLevelMap = 14.5
             directionMap = 0
             affichageFondCartesMapbox()
-            
         }
         
         if dataTableView[sender.tag][0] == "Departures" {
@@ -397,13 +403,14 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             
         }
         
-        if dataTableView[sender.tag][0] == "Arrivals" {
+        if dataTableView[sender.tag][0] == "Arrivals" || dataTableView[sender.tag][0] == "hippodrome" {
             localisationCenterMap = CLLocationCoordinate2D(latitude: flight_Plan.get_Arrival_Airfield_Latitude(), longitude: flight_Plan.get_Arrival_Airfield_Longitude())
             zoomLevelMap = 14.5
             directionMap = 0
             affichageFondCartesMapbox()
             
         }
+        
 
         if dataTableView[sender.tag][0] == "Ville" {
             localisationCenterMap = CLLocationCoordinate2D(latitude: villesDatabase[Int(dataTableView[sender.tag][1])!]!.swLatitude, longitude: villesDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude)
