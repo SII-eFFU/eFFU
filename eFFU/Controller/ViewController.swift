@@ -545,8 +545,15 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             
             print(flight_Plan.airport_Departure)
             
-            displayPointDeparture()
-            displayRoutePlane()
+            displayPointDepartures()
+            
+            if latitudeDepartures == latitudeArrivals && longitudeDepartures == longitudeArrivals {
+                displayPointLoop()
+            }
+            
+            if latitudeArrivals != 0.0 && longitudeArrivals != 0.0 {
+                displayRoutePlane()
+            }
             
             closePopUp()
             
@@ -579,8 +586,15 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             
             print(flight_Plan.airport_Arrival)
             
-            displayPointArrival()
-            displayRoutePlane()
+            displayPointArrivals()
+            
+            if latitudeDepartures == latitudeArrivals && longitudeDepartures == longitudeArrivals {
+                displayPointLoop()
+            }
+            
+            if latitudeDepartures != 0.0 && longitudeDepartures != 0.0 {
+                displayRoutePlane()
+            }
             
             closePopUp()
             
