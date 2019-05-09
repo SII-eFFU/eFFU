@@ -1391,6 +1391,10 @@ extension ViewController: MGLMapViewDelegate {
                 
             } else {
                 
+                viewWithTag26?.isHidden = true
+                
+                viewWithTag27?.isHidden = true
+                
                 // Permet de cacher la view
                 viewWithTag28?.isHidden = true
                 
