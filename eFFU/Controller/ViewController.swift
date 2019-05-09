@@ -250,7 +250,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         buttonPopup1.alpha = 1.0
         popup2.addSubview(buttonPopup1)
         
-        //if dataTableView[indexPath.section][indexPath.row] == "Airports" {
+        if dataTableView[indexPath.section][indexPath.row] == "Airports" {
             
             let buttonPopup2  = UIButton(type: .custom)
             buttonPopup2.setImage(UIImage(named: "Departure_45x45"), for: .normal)
@@ -268,9 +268,9 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             buttonPopup3.alpha = 1.0
             popup2.addSubview(buttonPopup3)
             
-        //}
+        }
 
-        
+        /**
          
         let buttonPopup4  = UIButton(type: .custom)
         buttonPopup4.setImage(UIImage(named: "Alternate_45x45"), for: .normal)
@@ -336,7 +336,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         buttonPopup11.alpha = 1.0
         popup2.addSubview(buttonPopup11)
         
-        
+        **/
         
         // Premier if -> On test si il y a qu'un seul element dans la liste
         if indexPath.section == 0 && data.count == 1 {
