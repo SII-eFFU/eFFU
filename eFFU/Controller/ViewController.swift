@@ -240,6 +240,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         popup3.addSubview(popup5)
  
 
+        //print("dataTable est \(dataTableView[indexPath.section][indexPath.row])")
+        
         let buttonPopup1  = UIButton(type: .custom)
         buttonPopup1.setImage(UIImage(named: "Zoom_45x45"), for: .normal)
         buttonPopup1.frame = CGRect(x: 13, y: 8, width: 45, height: 45)
@@ -247,23 +249,29 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         buttonPopup1.addTarget(self, action: #selector(zoomPopup(_:)), for: .touchUpInside)
         buttonPopup1.alpha = 1.0
         popup2.addSubview(buttonPopup1)
+        
+        //if dataTableView[indexPath.section][indexPath.row] == "Airports" {
+            
+            let buttonPopup2  = UIButton(type: .custom)
+            buttonPopup2.setImage(UIImage(named: "Departure_45x45"), for: .normal)
+            buttonPopup2.frame = CGRect(x: 61, y: 8, width: 45, height: 45)
+            buttonPopup2.tag = indexPath.section
+            buttonPopup2.addTarget(self, action: #selector(departurePopup(_:)), for: .touchUpInside)
+            buttonPopup2.alpha = 1.0
+            popup2.addSubview(buttonPopup2)
+            
+            let buttonPopup3  = UIButton(type: .custom)
+            buttonPopup3.setImage(UIImage(named: "Arrival_45x45"), for: .normal)
+            buttonPopup3.frame = CGRect(x: 109, y: 8, width: 45, height: 45)
+            buttonPopup3.tag = indexPath.section
+            buttonPopup3.addTarget(self, action: #selector(arrivalPopup(_:)), for: .touchUpInside)
+            buttonPopup3.alpha = 1.0
+            popup2.addSubview(buttonPopup3)
+            
+        //}
 
-        let buttonPopup2  = UIButton(type: .custom)
-        buttonPopup2.setImage(UIImage(named: "Departure_45x45"), for: .normal)
-        buttonPopup2.frame = CGRect(x: 61, y: 8, width: 45, height: 45)
-        buttonPopup2.tag = indexPath.section
-        buttonPopup2.addTarget(self, action: #selector(departurePopup(_:)), for: .touchUpInside)
-        buttonPopup2.alpha = 1.0
-        popup2.addSubview(buttonPopup2)
-
-        let buttonPopup3  = UIButton(type: .custom)
-        buttonPopup3.setImage(UIImage(named: "Arrival_45x45"), for: .normal)
-        buttonPopup3.frame = CGRect(x: 109, y: 8, width: 45, height: 45)
-        buttonPopup3.tag = indexPath.section
-        buttonPopup3.addTarget(self, action: #selector(arrivalPopup(_:)), for: .touchUpInside)
-        buttonPopup3.alpha = 1.0
-        popup2.addSubview(buttonPopup3)
-
+        
+         
         let buttonPopup4  = UIButton(type: .custom)
         buttonPopup4.setImage(UIImage(named: "Alternate_45x45"), for: .normal)
         buttonPopup4.frame = CGRect(x: 157, y: 8, width: 45, height: 45)
@@ -303,7 +311,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         buttonPopup8.tag = 2108
         buttonPopup8.alpha = 1.0
         popup2.addSubview(buttonPopup8)
-
+        
         let buttonPopup9  = UIButton(type: .custom)
         buttonPopup9.setImage(UIImage(named: "Zoom_45x45"), for: .normal)
         buttonPopup9.frame = CGRect(x: 397, y: 8, width: 45, height: 45)
@@ -327,6 +335,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         buttonPopup11.tag = 2109
         buttonPopup11.alpha = 1.0
         popup2.addSubview(buttonPopup11)
+        
+        
         
         // Premier if -> On test si il y a qu'un seul element dans la liste
         if indexPath.section == 0 && data.count == 1 {
