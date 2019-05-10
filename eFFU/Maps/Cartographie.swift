@@ -1179,6 +1179,18 @@ extension ViewController: MGLMapViewDelegate {
         suppPointLoop()
     }
     
+    // Permet d'afficher la view avec le tag en parametre
+    func displayView(number: Int){
+        let viewWithTag = self.view.viewWithTag(number)
+        viewWithTag?.isHidden = false
+    }
+    
+    // Permet de cacher la view avec le tag en parametre
+    func unDisplayView(number: Int){
+        let viewWithTag = self.view.viewWithTag(number)
+        viewWithTag?.isHidden = true
+    }
+    
     
     // Permet d'afficher le point de depart
     func displayPointDepartures(){
@@ -1225,10 +1237,9 @@ extension ViewController: MGLMapViewDelegate {
     
     // Permet de creer la route en fonction du point de depart et d'arrivee
     func displayRoutePlane(){
-        // creer route
+        
+        // Creation de la route si point departures et point arrivals existent et si pas loop
         if departureOn && arrivalOn && !loop {
-            
-            suppPointLoop()
             
             mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 25, tagger: "Route")
             var coordinatesEnroute = [
@@ -1240,6 +1251,10 @@ extension ViewController: MGLMapViewDelegate {
             shape2.subtitle = "enRoute"
             mapView.add(shape2)
             
+            // on affiche les view si une des deux ete cachee pas loop precedement
+            displayView(number: 26)
+            displayView(number: 27)
+            
             // ici on a :
             // loop = false
             // departureOn = true
@@ -1249,6 +1264,9 @@ extension ViewController: MGLMapViewDelegate {
             print("Loop present = pas de route")
             suppRoutePlane()
             
+            unDisplayView(number: 26)
+            unDisplayView(number: 27)
+
             // ici on a :
             // loop = true
             // departureOn = true
@@ -1304,14 +1322,7 @@ extension ViewController: MGLMapViewDelegate {
     // Permet d'afficher ou cacher les elements du plan de vol
     func drawRoutePlane() {
         
-        let viewWithTag25 = self.view.viewWithTag(25)
-        
-        let viewWithTag26 = self.view.viewWithTag(26)
-        
-        let viewWithTag27 = self.view.viewWithTag(27)
-        
         if !loop {
-
             
             if applicationParametres.buttonOptionMapView[0]{
                 
@@ -1329,11 +1340,9 @@ extension ViewController: MGLMapViewDelegate {
                     displayRoutePlane()
                     
                     // Permet d'afficher les view
-                    viewWithTag25?.isHidden = false
-                    
-                    viewWithTag26?.isHidden = false
-                    
-                    viewWithTag27?.isHidden = false
+                    displayView(number: 25)
+                    displayView(number: 26)
+                    displayView(number: 27)
                     
                 } else {
                     
@@ -1345,11 +1354,9 @@ extension ViewController: MGLMapViewDelegate {
             } else {
                 
                 // Permet de cacher les view
-                viewWithTag25?.isHidden = true
-                
-                viewWithTag26?.isHidden = true
-                
-                viewWithTag27?.isHidden = true
+                unDisplayView(number: 25)
+                unDisplayView(number: 26)
+                unDisplayView(number: 27)
                 
                 //Permet d'afficher le plan de vol au bout de 5 secondes
                 let deadlineTime = DispatchTime.now() + .seconds(5)
@@ -1364,39 +1371,23 @@ extension ViewController: MGLMapViewDelegate {
             }
         } else {
             
-            let viewWithTag28 = self.view.viewWithTag(28)
-            
             if applicationParametres.buttonOptionMapView[0]{
                 
-                //majLoop()
                 displayPointDepartures()
                 displayPointArrivals()
                 displayPointLoop()
-                
-                if loop {
                     
-                    // On veut seulement la view du loop
-                    viewWithTag26?.isHidden = true
+                displayRoutePlane()
                     
-                    viewWithTag27?.isHidden = true
-                    
-                    // Permet d'afficher la view
-                    viewWithTag28?.isHidden = false
-                    
-                } else {
-                    
-                    print("pas de loop")
-                    
-                }
+                // Permet d'afficher la view
+                displayView(number: 28)
                 
             } else {
                 
-                viewWithTag26?.isHidden = true
-                
-                viewWithTag27?.isHidden = true
-                
+                unDisplayView(number: 26)
+                unDisplayView(number: 27)
                 // Permet de cacher la view
-                viewWithTag28?.isHidden = true
+                unDisplayView(number: 28)
                 
                 //Permet d'afficher le plan de vol au bout de 5 secondes
                 let deadlineTime = DispatchTime.now() + .seconds(5)
