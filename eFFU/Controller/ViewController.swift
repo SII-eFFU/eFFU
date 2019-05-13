@@ -37,6 +37,9 @@ var longitudeArrivals: Double = 0.0
 var latitudeLoop: Double = 0.0
 var longitudeLoop: Double = 0.0
 
+var wayPointListAny = [[String:Any]]()
+
+
 class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDelegate, CLLocationManagerDelegate, UITableViewDelegate, UITableViewDataSource {
     
     var tableView = UITableView()
@@ -641,12 +644,70 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         
     }
     
+    // Button Pop-up afin de creer le wayPoint
     @objc func wayPointPopup(_ sender:UIButton){
         
         print("C'est un/une \(dataTableView[sender.tag][0])")
         
-        if !departureOn && !arrivalOn && !loop {
+        if !departureOn && !arrivalOn {
             print("Aucun aerodrome de départ et d'arrivee")
+        } else {
+            
+            if !flight_Plan.wayPoint_isEmpty() {
+                flight_Plan.unset_WayPoint()
+            }
+
+            var icon: String = ""
+            var latitude: Double = 0.0
+            var longitude: Double = 0.0
+            var name: String = ""
+            
+            switch dataTableView[sender.tag][0] {
+            case "Airports":
+                
+                icon = airportsDatabase[Int(dataTableView[sender.tag][1])!]!.iconesAirports
+                latitude = airportsDatabase[Int(dataTableView[sender.tag][1])!]!.swLatitude
+                longitude = airportsDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude
+                name = airportsDatabase[Int(dataTableView[sender.tag][1])!]!.aiName
+                
+            case "Ville":
+                
+                icon = villesDatabase[Int(dataTableView[sender.tag][1])!]!.iconesCity
+                latitude = villesDatabase[Int(dataTableView[sender.tag][1])!]!.swLatitude
+                longitude = villesDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude
+                name = villesDatabase[Int(dataTableView[sender.tag][1])!]!.nomComm
+                
+            case "Repéres Visuels", "Lac", "Forêt", "Montagne", "Volcan":
+                
+                icon = reperesVisuelsDatabase[Int(dataTableView[sender.tag][1])!]!.iconeReperesVisuel
+                latitude = reperesVisuelsDatabase[Int(dataTableView[sender.tag][1])!]!.swLatitude
+                longitude = reperesVisuelsDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude
+                name = reperesVisuelsDatabase[Int(dataTableView[sender.tag][1])!]!.swShortName
+                
+            case "Warning Terminal":
+                
+                icon = navWarningDatabase[Int(dataTableView[sender.tag][1])!]!.iconeNavwarning
+                latitude = navWarningDatabase[Int(dataTableView[sender.tag][1])!]!.swLatitude
+                longitude = navWarningDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude
+                name = navWarningDatabase[Int(dataTableView[sender.tag][1])!]!.aiLongName
+                
+            case "Navaids Terminal", "Navaids En Route":
+                
+                icon = navaidsDatabase[Int(dataTableView[sender.tag][1])!]!.iconesNavaids
+                latitude = navaidsDatabase[Int(dataTableView[sender.tag][1])!]!.swLatitude
+                longitude = navaidsDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude
+                name = navaidsDatabase[Int(dataTableView[sender.tag][1])!]!.aiType
+                
+            default:
+                print("error")
+            }
+            
+            flight_Plan.set_WayPoint(icon: icon, latitude: latitude, longitude: longitude, name: name)
+            
+            //print(flight_Plan.wayPoint_String)
+            
+            add_WayPoint_List()
+            
         }
         
     }

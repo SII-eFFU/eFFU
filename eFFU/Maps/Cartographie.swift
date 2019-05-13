@@ -1235,6 +1235,71 @@ extension ViewController: MGLMapViewDelegate {
         // arrivalOn = true
     }
     
+    /////////////////////////////////////////////////////////////////////////////////////////
+    ///// Display des wayPoint //////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+    // Permet de comparer les positions des wayPoint dans le dictionnaire
+    func compare(_ first: [String:Any], second: [String:Any]) -> Bool {
+        if let a = first["number"] as? Int {
+            if let b = second["number"] as? Int {
+                return a > b
+            }
+        }
+        return false
+    }
+    **/
+    
+    // Permet d'ajouter un wayPoint à la liste
+    func add_WayPoint_List(){
+        var row = [String:Any]()
+        
+        row["icon"] = flight_Plan.get_WayPoint_icon()
+        row["latitude"] = flight_Plan.get_WayPoint_Latitude()
+        row["longitude"] = flight_Plan.get_WayPoint_Longitude()
+        row["name"] = flight_Plan.get_WayPoint_Name()
+        
+        wayPointListAny.append(row)
+        
+        displayWayPoint()
+        
+    }
+    
+    // Permet de creer le wayPoint sur la map
+    func displayWayPoint(){
+        
+        print("nombre d'element dans la liste :", wayPointListAny.count)
+        
+        suppWayPoint()
+        
+        mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 29, tagger: "Route")
+        
+        for (index, point) in wayPointListAny.enumerated() {
+            if let icon = point["icon"] as? String {
+                if let latitude = point["latitude"] as? Double {
+                    if let longitude = point["longitude"] as? Double {
+                        if let name = point["name"] as? String {
+                            
+                            print ("\(index + 1). \(name) a pour latitude \(latitude) et longitude \(longitude). Son icône est : \(icon)")
+                            
+                            
+                            let point = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(latitude, longitude),
+                                                                 title:name, subtitle:"")
+                            point.image = UIImage(named: icon)
+                            point.reuseIdentifier = name
+                            mapView.addAnnotation(point)
+                        }
+                    }
+                }
+            }
+        }
+        
+        displayRoutePlane()
+    }
+    
+    /////////////////////////////////////////////////////////////////////////////////////////
+    
     // Permet de creer la route en fonction du point de depart et d'arrivee
     func displayRoutePlane(){
         
@@ -1242,10 +1307,23 @@ extension ViewController: MGLMapViewDelegate {
         if departureOn && arrivalOn && !loop {
             
             mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 25, tagger: "Route")
-            var coordinatesEnroute = [
-                CLLocationCoordinate2D(latitude: latitudeDepartures, longitude: longitudeDepartures),
-                CLLocationCoordinate2D(latitude: latitudeArrivals, longitude: longitudeArrivals)
-            ];
+            
+            var coordinatesEnroute = [CLLocationCoordinate2D(latitude: latitudeDepartures, longitude: longitudeDepartures)]
+            
+            if flight_Plan.wayPoint_isEmpty() {
+                coordinatesEnroute.append(CLLocationCoordinate2D(latitude: latitudeArrivals, longitude: longitudeArrivals))
+            } else {
+                for (index, point) in wayPointListAny.enumerated() {
+                    if let latitude = point["latitude"] as? Double {
+                        if let longitude = point["longitude"] as? Double {
+                            print("Nombre de wayPoint :", index + 1)
+                            coordinatesEnroute.append(CLLocationCoordinate2D(latitude: latitude, longitude: longitude))
+                        }
+                    }
+                }
+                coordinatesEnroute.append(CLLocationCoordinate2D(latitude: latitudeArrivals, longitude: longitudeArrivals))
+            }
+            
             
             let shape2 = MGLPolyline(coordinates: &coordinatesEnroute, count: UInt(coordinatesEnroute.count))
             shape2.subtitle = "enRoute"
@@ -1319,6 +1397,12 @@ extension ViewController: MGLMapViewDelegate {
         loop = false
     }
     
+    func suppWayPoint(){
+        var viewWithTag29 = self.view.viewWithTag(29)
+        viewWithTag29?.removeFromSuperview()
+        viewWithTag29 = nil
+    }
+    
     // Permet d'afficher ou cacher les elements du plan de vol
     func drawRoutePlane() {
         
@@ -1335,6 +1419,13 @@ extension ViewController: MGLMapViewDelegate {
                     displayPointArrivals()
                 }
                 
+                print("wayPoint est ", flight_Plan.wayPoint_isEmpty())
+                
+                if !flight_Plan.wayPoint_isEmpty(){
+                    
+                    displayWayPoint()
+                }
+                
                 if !flight_Plan.arrival_Airfield_isEmpty() && !flight_Plan.departure_Airfield_isEmpty() {
                     
                     displayRoutePlane()
@@ -1343,6 +1434,7 @@ extension ViewController: MGLMapViewDelegate {
                     displayView(number: 25)
                     displayView(number: 26)
                     displayView(number: 27)
+                    displayView(number: 29)
                     
                 } else {
                     
@@ -1357,6 +1449,7 @@ extension ViewController: MGLMapViewDelegate {
                 unDisplayView(number: 25)
                 unDisplayView(number: 26)
                 unDisplayView(number: 27)
+                unDisplayView(number: 29)
                 
                 //Permet d'afficher le plan de vol au bout de 5 secondes
                 let deadlineTime = DispatchTime.now() + .seconds(5)
@@ -1373,6 +1466,11 @@ extension ViewController: MGLMapViewDelegate {
             
             if applicationParametres.buttonOptionMapView[0]{
                 
+                if !flight_Plan.departure_Airfield_isEmpty(){
+                    
+                    displayWayPoint()
+                }
+                
                 displayPointDepartures()
                 displayPointArrivals()
                 displayPointLoop()
@@ -1381,6 +1479,7 @@ extension ViewController: MGLMapViewDelegate {
                     
                 // Permet d'afficher la view
                 displayView(number: 28)
+                displayView(number: 29)
                 
             } else {
                 
@@ -1388,6 +1487,7 @@ extension ViewController: MGLMapViewDelegate {
                 unDisplayView(number: 27)
                 // Permet de cacher la view
                 unDisplayView(number: 28)
+                unDisplayView(number: 29)
                 
                 //Permet d'afficher le plan de vol au bout de 5 secondes
                 let deadlineTime = DispatchTime.now() + .seconds(5)
