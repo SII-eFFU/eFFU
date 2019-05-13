@@ -10,6 +10,9 @@ import Foundation
 
 class FlightPlan {
     
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////// Departures & Arrivals /////////////////////////////////////////////////////////////////////////////////////////////
+    
     // Creation des variables permettant de configurer l'aerodrome de depart et d'arrivee
     
      var departure_Airfield = [[(name: String, aiIcao: String, latitude: Double, longitude: Double)]]()
@@ -84,4 +87,67 @@ class FlightPlan {
     
     public var airport_Arrival: String {return "Aerodrome d'arrivee = nom : \(self.arrival_Airfield[0][0].name), aiIcao : \(self.arrival_Airfield[0][0].aiIcao), latitude : \(self.arrival_Airfield[0][0].latitude) et longitude : \(self.arrival_Airfield[0][0].longitude)"}
     //                      //
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////// WayPoint //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    // Creer une liste de point
+    
+    var wayPoint = [[(icon: String, latitude: Double, longitude: Double, name: String)]]()
+    
+    
+    func set_WayPoint(icon: String, latitude: Double, longitude: Double, name: String){
+        self.wayPoint.append([(icon: icon, latitude: latitude, longitude: longitude, name: name)])
+    }
+    
+    func wayPoint_isEmpty() -> Bool {
+        return self.wayPoint.isEmpty
+    }
+    
+    func unset_WayPoint(){
+        // supprimer seulement si pas vide
+        if (!wayPoint_isEmpty()){
+            self.wayPoint.removeAll()
+        }
+    }
+    
+    func get_WayPoint_icon() -> String {
+        return self.wayPoint[0][0].icon
+    }
+    
+    func get_WayPoint_Latitude() -> Double {
+        return self.wayPoint[0][0].latitude
+    }
+    
+    func get_WayPoint_Longitude() -> Double {
+        return self.wayPoint[0][0].longitude
+    }
+    
+    func get_WayPoint_Name() -> String {
+        return self.wayPoint[0][0].name
+    }
+    
+    public var wayPoint_String: String {return "WayPoint =  nom : \(self.wayPoint[0][0].name), icon : \(self.wayPoint[0][0].icon), latitude : \(self.wayPoint[0][0].latitude) et longitude : \(self.wayPoint[0][0].longitude)"}
+    
 }
+
+/**
+struct wayPoint {
+    
+    var icon: String
+    var latitude: Double
+    var longitude: Double
+    var name: String
+    
+    init(icon: String, latitude: Double, longitude: Double, name: String) {
+        self.icon = icon
+        self.latitude = latitude
+        self.longitude = longitude
+        self.name = name
+    }
+    
+}
+**/

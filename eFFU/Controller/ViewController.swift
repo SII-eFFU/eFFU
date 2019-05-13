@@ -37,6 +37,9 @@ var longitudeArrivals: Double = 0.0
 var latitudeLoop: Double = 0.0
 var longitudeLoop: Double = 0.0
 
+var wayPointListAny = [[String:Any]]()
+
+
 class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDelegate, CLLocationManagerDelegate, UITableViewDelegate, UITableViewDataSource {
     
     var tableView = UITableView()
@@ -240,7 +243,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         popup3.addSubview(popup5)
  
 
-        //print("dataTable est \(dataTableView[indexPath.section][indexPath.row])")
+        print("dataTable est \(dataTableView[indexPath.section][indexPath.row])")
         
         let buttonPopup1  = UIButton(type: .custom)
         buttonPopup1.setImage(UIImage(named: "Zoom_45x45"), for: .normal)
@@ -267,6 +270,29 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             buttonPopup3.addTarget(self, action: #selector(arrivalPopup(_:)), for: .touchUpInside)
             buttonPopup3.alpha = 1.0
             popup2.addSubview(buttonPopup3)
+            
+        }
+        
+        // Affichage du bouton fonction "Waypoint"
+        if dataTableView[indexPath.section][indexPath.row] != "Departures" && dataTableView[indexPath.section][indexPath.row] != "Arrivals" {
+            
+            let buttonPopup5  = UIButton(type: .custom)
+            buttonPopup5.setImage(UIImage(named: "Waypoint_45x45"), for: .normal)
+            
+            // Positionnement selon le type
+            if dataTableView[indexPath.section][indexPath.row] == "Airports" {
+                
+                buttonPopup5.frame = CGRect(x: 157, y: 8, width: 45, height: 45)
+                
+            } else {
+                
+                buttonPopup5.frame = CGRect(x: 61, y: 8, width: 45, height: 45)
+                
+            }
+            buttonPopup5.tag = indexPath.section
+            buttonPopup5.addTarget(self, action: #selector(wayPointPopup(_:)), for: .touchUpInside)
+            buttonPopup5.alpha = 1.0
+            popup2.addSubview(buttonPopup5)
             
         }
 
@@ -538,6 +564,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             if !flight_Plan.departure_Airfield_isEmpty() == true {
                 flight_Plan.unset_Departure_Airfield()
             }
+            // Recup de l'icône
+            //let iconAirport = airportsDatabase[Int(dataTableView[sender.tag][1])!]!.iconesAirports
             
             let aiIcaoAirport = airportsDatabase[Int(dataTableView[sender.tag][1])!]!.aiIcao
             print ("L'Icao est \(aiIcaoAirport)")
@@ -616,6 +644,73 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         
     }
     
+    // Button Pop-up afin de creer le wayPoint
+    @objc func wayPointPopup(_ sender:UIButton){
+        
+        print("C'est un/une \(dataTableView[sender.tag][0])")
+        
+        if !departureOn && !arrivalOn {
+            print("Aucun aerodrome de départ et d'arrivee")
+        } else {
+            
+            if !flight_Plan.wayPoint_isEmpty() {
+                flight_Plan.unset_WayPoint()
+            }
+
+            var icon: String = ""
+            var latitude: Double = 0.0
+            var longitude: Double = 0.0
+            var name: String = ""
+            
+            switch dataTableView[sender.tag][0] {
+            case "Airports":
+                
+                icon = airportsDatabase[Int(dataTableView[sender.tag][1])!]!.iconesAirports
+                latitude = airportsDatabase[Int(dataTableView[sender.tag][1])!]!.swLatitude
+                longitude = airportsDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude
+                name = airportsDatabase[Int(dataTableView[sender.tag][1])!]!.aiName
+                
+            case "Ville":
+                
+                icon = villesDatabase[Int(dataTableView[sender.tag][1])!]!.iconesCity
+                latitude = villesDatabase[Int(dataTableView[sender.tag][1])!]!.swLatitude
+                longitude = villesDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude
+                name = villesDatabase[Int(dataTableView[sender.tag][1])!]!.nomComm
+                
+            case "Repéres Visuels", "Lac", "Forêt", "Montagne", "Volcan":
+                
+                icon = reperesVisuelsDatabase[Int(dataTableView[sender.tag][1])!]!.iconeReperesVisuel
+                latitude = reperesVisuelsDatabase[Int(dataTableView[sender.tag][1])!]!.swLatitude
+                longitude = reperesVisuelsDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude
+                name = reperesVisuelsDatabase[Int(dataTableView[sender.tag][1])!]!.swShortName
+                
+            case "Warning Terminal":
+                
+                icon = navWarningDatabase[Int(dataTableView[sender.tag][1])!]!.iconeNavwarning
+                latitude = navWarningDatabase[Int(dataTableView[sender.tag][1])!]!.swLatitude
+                longitude = navWarningDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude
+                name = navWarningDatabase[Int(dataTableView[sender.tag][1])!]!.aiLongName
+                
+            case "Navaids Terminal", "Navaids En Route":
+                
+                icon = navaidsDatabase[Int(dataTableView[sender.tag][1])!]!.iconesNavaids
+                latitude = navaidsDatabase[Int(dataTableView[sender.tag][1])!]!.swLatitude
+                longitude = navaidsDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude
+                name = navaidsDatabase[Int(dataTableView[sender.tag][1])!]!.aiType
+                
+            default:
+                print("error")
+            }
+            
+            flight_Plan.set_WayPoint(icon: icon, latitude: latitude, longitude: longitude, name: name)
+            
+            //print(flight_Plan.wayPoint_String)
+            
+            add_WayPoint_List()
+            
+        }
+        
+    }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section < headerTitles.count {
