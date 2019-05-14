@@ -21,6 +21,7 @@ var nameImage: String = ""
 var departureOn: Bool = false
 var arrivalOn: Bool = false
 var loop: Bool = false
+var wayPointOn: Bool = false
 
 // Creer points de depart et d'arrivee
 var departure = MGLPointAnnotation()
@@ -276,23 +277,28 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         // Affichage du bouton fonction "Waypoint"
         if dataTableView[indexPath.section][indexPath.row] != "Departures" && dataTableView[indexPath.section][indexPath.row] != "Arrivals" {
             
-            let buttonPopup5  = UIButton(type: .custom)
-            buttonPopup5.setImage(UIImage(named: "Waypoint_45x45"), for: .normal)
-            
-            // Positionnement selon le type
-            if dataTableView[indexPath.section][indexPath.row] == "Airports" {
+            // On affiche seulement si on a un point de départ et d'arrivée
+            if departureOn && arrivalOn {
                 
-                buttonPopup5.frame = CGRect(x: 157, y: 8, width: 45, height: 45)
+                let buttonPopup5  = UIButton(type: .custom)
+                buttonPopup5.setImage(UIImage(named: "Waypoint_45x45"), for: .normal)
                 
-            } else {
-                
-                buttonPopup5.frame = CGRect(x: 61, y: 8, width: 45, height: 45)
+                // Positionnement selon le type
+                if dataTableView[indexPath.section][indexPath.row] == "Airports" {
+                    
+                    buttonPopup5.frame = CGRect(x: 157, y: 8, width: 45, height: 45)
+                    
+                } else {
+                    
+                    buttonPopup5.frame = CGRect(x: 61, y: 8, width: 45, height: 45)
+                    
+                }
+                buttonPopup5.tag = indexPath.section
+                buttonPopup5.addTarget(self, action: #selector(wayPointPopup(_:)), for: .touchUpInside)
+                buttonPopup5.alpha = 1.0
+                popup2.addSubview(buttonPopup5)
                 
             }
-            buttonPopup5.tag = indexPath.section
-            buttonPopup5.addTarget(self, action: #selector(wayPointPopup(_:)), for: .touchUpInside)
-            buttonPopup5.alpha = 1.0
-            popup2.addSubview(buttonPopup5)
             
         }
 
@@ -445,6 +451,21 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             directionMap = 0
             affichageFondCartesMapbox()
             
+        }
+        
+        if dataTableView[sender.tag][0] == "wayPoint" {
+            for (_, point) in wayPointListAny.enumerated() {
+                if let latitude = point["latitude"] as? Double {
+                    if let longitude = point["longitude"] as? Double {
+                        
+                        localisationCenterMap = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+                        zoomLevelMap = 14.5
+                        directionMap = 0
+                        affichageFondCartesMapbox()
+                            
+                    }
+                }
+            }
         }
         
 
@@ -668,7 +689,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
                 icon = airportsDatabase[Int(dataTableView[sender.tag][1])!]!.iconesAirports
                 latitude = airportsDatabase[Int(dataTableView[sender.tag][1])!]!.swLatitude
                 longitude = airportsDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude
-                name = airportsDatabase[Int(dataTableView[sender.tag][1])!]!.aiName
+                name = airportsDatabase[Int(dataTableView[sender.tag][1])!]!.aiIcao
+                name = name + (" (\(airportsDatabase[Int(dataTableView[sender.tag][1])!]!.aiName))")
                 
             case "Ville":
                 
@@ -708,6 +730,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             
             add_WayPoint_List()
             
+            closePopUp()
         }
         
     }
@@ -1080,6 +1103,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             let image = point.image,
             let reuseIdentifier = point.reuseIdentifier {
 
+            print("C'est un ", reuseIdentifier)
+            
             if let annotationImage = mapView.dequeueReusableAnnotationImage(withIdentifier: reuseIdentifier) {
                 // The annotatation image has already been cached, just reuse it.
                 return annotationImage
