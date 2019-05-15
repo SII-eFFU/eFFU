@@ -1238,20 +1238,9 @@ extension ViewController: MGLMapViewDelegate {
     /////////////////////////////////////////////////////////////////////////////////////////
     ///// Display des wayPoint //////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-    // Permet de comparer les positions des wayPoint dans le dictionnaire
-    func compare(_ first: [String:Any], second: [String:Any]) -> Bool {
-        if let a = first["number"] as? Int {
-            if let b = second["number"] as? Int {
-                return a > b
-            }
-        }
-        return false
-    }
-    **/
     
     // Permet d'ajouter un wayPoint à la liste
+    /**
     func add_WayPoint_List(){
         var row = [String:Any]()
         
@@ -1267,7 +1256,9 @@ extension ViewController: MGLMapViewDelegate {
         displayWayPoint()
         
     }
+    **/
     
+    /**
     // Permet de creer le wayPoint sur la map
     func displayWayPoint(){
         
@@ -1312,10 +1303,40 @@ extension ViewController: MGLMapViewDelegate {
         
         displayRoutePlane()
     }
+    **/
+    func displayWayPoint(){
+        print("nombre d'element dans la liste :", wayPointData.count)
+        suppWayPoint()
+        mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 29, tagger: "Route")
+        for i in 0...keyWayPoint-1 {
+            // il faut comparer avec la key la plus grand dans le for et non pas le count
+            if wayPointData[i] != nil {
+                let point = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(wayPointData[i]!.swLatitude, wayPointData[i]!.swLongitude),
+                                                  title:wayPointData[i]!.aiName, subtitle:"")
+                switch wayPointData[i]!.icon {
+                case "commune":
+                    point.image = UIImage(named: "CO-VILLE-GENERIQUE")
+                case "Triangle_32":
+                    point.image = UIImage(named: "MAP-INF-MONT")
+                case "Tree_32":
+                    point.image = UIImage(named: "MAP-INF-FORT")
+                case "Lac_32":
+                    point.image = UIImage(named: "MAP-INF-LAC_")
+                default:
+                    point.image = UIImage(named: wayPointData[i]!.icon)
+                }
+                point.reuseIdentifier = wayPointData[i]!.aiName
+                mapView.addAnnotation(point)
+            }
+        }
+        wayPointOn = true
+        //displayRoutePlane()
+    }
     
     /////////////////////////////////////////////////////////////////////////////////////////
     
     // Permet de creer la route en fonction du point de depart et d'arrivee
+    /**
     func displayRoutePlane(){
         mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 25, tagger: "Route")
             
@@ -1349,7 +1370,30 @@ extension ViewController: MGLMapViewDelegate {
         // departureOn = true
         // arrivalOn = true
     }
-    
+    **/
+    func displayRoutePlane(){
+        mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 25, tagger: "Route")
+        var coordinatesEnroute = [CLLocationCoordinate2D(latitude: latitudeDepartures, longitude: longitudeDepartures)]
+        
+        if !wayPointOn {
+            coordinatesEnroute.append(CLLocationCoordinate2D(latitude: latitudeArrivals, longitude: longitudeArrivals))
+        } else {
+            for i in 0...keyWayPoint-1 {
+                if wayPointData[i] != nil {
+                    coordinatesEnroute.append(CLLocationCoordinate2D(latitude: wayPointData[i]!.swLatitude, longitude: wayPointData[i]!.swLongitude))
+                }
+            }
+            coordinatesEnroute.append(CLLocationCoordinate2D(latitude: latitudeArrivals, longitude: longitudeArrivals))
+        }
+        
+        let shape2 = MGLPolyline(coordinates: &coordinatesEnroute, count: UInt(coordinatesEnroute.count))
+        shape2.subtitle = "enRoute"
+        mapView.add(shape2)
+        
+        // on affiche les view si une des deux ete cachee pas loop precedement
+        displayView(number: 26)
+        displayView(number: 27)
+    }
     
     // Permet de supprimer la route
     func suppRoutePlane(){
@@ -1417,11 +1461,10 @@ extension ViewController: MGLMapViewDelegate {
                     displayPointArrivals()
                 }
                 
-                print("wayPoint est ", flight_Plan.wayPoint_isEmpty())
-                
-                if !flight_Plan.wayPoint_isEmpty(){
+                if wayPointData.count != 0{
                     
                     displayWayPoint()
+                    displayRoutePlane()
                 }
                 
                 if !flight_Plan.arrival_Airfield_isEmpty() && !flight_Plan.departure_Airfield_isEmpty() {
@@ -1464,7 +1507,7 @@ extension ViewController: MGLMapViewDelegate {
             
             if applicationParametres.buttonOptionMapView[0]{
                 
-                if !flight_Plan.departure_Airfield_isEmpty(){
+                if wayPointData.count != 0{
                     
                     displayWayPoint()
                 }
@@ -1722,8 +1765,8 @@ extension ViewController: MGLMapViewDelegate {
         var nameArrivals: String = ""
         var aiIcaoArrivals: String = ""
         
-        var nameWayPoint: String = ""
-        var nameWayPoint2: String = ""
+        //var nameWayPoint: String = ""
+        //var nameWayPoint2: String = ""
         
         /**
         var nameLoop: String = ""
@@ -1770,10 +1813,10 @@ extension ViewController: MGLMapViewDelegate {
                 }
             }
         }
-        
+        /**
         if wayPointOn {
             
-            for (_, point) in wayPointListAny.enumerated() {
+            for (index, point) in wayPointListAny.enumerated() {
                 if let latitude = point["latitude"] as? Double {
                     if let longitude = point["longitude"] as? Double {
                         if let name = point["name"] as? String {
@@ -1808,9 +1851,10 @@ extension ViewController: MGLMapViewDelegate {
                                         default:
                                             iconesData.append(icon)
                                         }
-                                        dataTableView.append(["wayPoint"])
+                                        dataTableView.append(["wayPoint", "\(index)"])
                                         nameWayPoint2 = name
                                     }
+                                    nomWaypointRam = name
                                 }
                             }
                         }
@@ -1819,7 +1863,42 @@ extension ViewController: MGLMapViewDelegate {
             }
             
         }
-        
+        **/
+        if wayPointOn {
+            for i in 0...keyWayPoint-1 {
+                if wayPointData[i] != nil {
+                    let secondLocation = CLLocation(latitude: wayPointData[i]!.swLatitude, longitude: wayPointData[i]!.swLongitude)
+                    let distance = getBearingBetweenTwoPoints1(point1 : myLocation, point2 : secondLocation)
+                    if distance < distanceMax {
+                        if ancienName != wayPointData[i]!.aiName {
+                            print ("Airports Possibility : \(wayPointData[i]!.aiName) -> \(distance)")
+                            headerTitles.append("wayPoint")
+                            ancienName = wayPointData[i]!.aiName
+                            affichagePopupList = true
+                        }
+                        if ancienName1 != wayPointData[i]!.aiName {
+                            
+                            data.append(["\(wayPointData[i]!.aiName)"])
+                            switch wayPointData[i]!.icon {
+                            case "commune":
+                                iconesData.append("CO-VILLE-GENERIQUE")
+                            case "Triangle_32":
+                                iconesData.append("MAP-INF-MONT")
+                            case "Tree_32":
+                                iconesData.append("MAP-INF-FORT")
+                            case "Lac_32":
+                                iconesData.append("MAP-INF-LAC_")
+                            default:
+                                iconesData.append(wayPointData[i]!.icon)
+                            }
+                            dataTableView.append(["wayPoint", "\(i)"])
+                            ancienName1 = airportsDatabase[i]!.aiIcao
+                        }
+                        nomWaypointRam = wayPointData[i]!.aiName
+                    }
+                }
+            }
+        }
         /**
         // Hippodrome aerodrome
         if loop {

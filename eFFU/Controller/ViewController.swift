@@ -38,6 +38,9 @@ var longitudeArrivals: Double = 0.0
 var latitudeLoop: Double = 0.0
 var longitudeLoop: Double = 0.0
 
+var nomWaypointRam: String = ""
+
+// array of dictionary
 var wayPointListAny = [[String:Any]]()
 
 
@@ -275,7 +278,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         }
         
         // Affichage du bouton fonction "Waypoint"
-        if dataTableView[indexPath.section][indexPath.row] != "Departures" && dataTableView[indexPath.section][indexPath.row] != "Arrivals" {
+        if dataTableView[indexPath.section][indexPath.row] != "Departures" && dataTableView[indexPath.section][indexPath.row] != "Arrivals" && dataTableView[indexPath.section][indexPath.row] != "wayPoint" {
             
             // On affiche seulement si on a un point de départ et d'arrivée
             if departureOn && arrivalOn {
@@ -299,6 +302,34 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
                 popup2.addSubview(buttonPopup5)
                 
             }
+            
+        }
+        
+        if dataTableView[indexPath.section][indexPath.row] == "wayPoint" {
+            
+            let buttonPopup4  = UIButton(type: .custom)
+            buttonPopup4.setImage(UIImage(named: "Delete_45x45"), for: .normal)
+            buttonPopup4.frame = CGRect(x: 61, y: 8, width: 45, height: 45)
+            buttonPopup4.tag = indexPath.section
+            buttonPopup4.addTarget(self, action: #selector(suppWayPointData(_:)), for: .touchUpInside)
+            buttonPopup4.alpha = 1.0
+            popup2.addSubview(buttonPopup4)
+            
+            let buttonPopup6  = UIButton(type: .custom)
+            buttonPopup6.setImage(UIImage(named: "Backward_45x45"), for: .normal)
+            buttonPopup6.frame = CGRect(x: 109, y: 8, width: 45, height: 45)
+            buttonPopup6.tag = indexPath.section
+            buttonPopup6.addTarget(self, action: #selector(alertPopup), for: .touchUpInside)
+            buttonPopup6.alpha = 1.0
+            popup2.addSubview(buttonPopup6)
+            
+            let buttonPopup7  = UIButton(type: .custom)
+            buttonPopup7.setImage(UIImage(named: "Forward_45x45"), for: .normal)
+            buttonPopup7.frame = CGRect(x: 157, y: 8, width: 45, height: 45)
+            buttonPopup7.tag = indexPath.section
+            buttonPopup7.addTarget(self, action: #selector(alertPopup), for: .touchUpInside)
+            buttonPopup7.alpha = 1.0
+            popup2.addSubview(buttonPopup7)
             
         }
 
@@ -427,7 +458,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
     }
     
     @objc func zoomPopup(_ sender:UIButton) {
-        //print(dataTableView[sender.tag][0])
+        print(dataTableView[sender.tag][1])
         // Permet de tester quel type d'element on a pour la selection dans la base de donnees
         print("C'est un/une \(dataTableView[sender.tag][0])")
         if dataTableView[sender.tag][0] == "Airports" {
@@ -452,23 +483,35 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             affichageFondCartesMapbox()
             
         }
-        
+        /**
         if dataTableView[sender.tag][0] == "wayPoint" {
             for (_, point) in wayPointListAny.enumerated() {
                 if let latitude = point["latitude"] as? Double {
                     if let longitude = point["longitude"] as? Double {
-                        
-                        localisationCenterMap = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-                        zoomLevelMap = 14.5
-                        directionMap = 0
-                        affichageFondCartesMapbox()
+                        if let name = point["name"] as? String {
                             
+                            // Pour l'instant necessite qu'il n'y est pas plusieurs wayPoint dans le cercle de detection
+                            if nomWaypointRam == name {
+                                
+                                localisationCenterMap = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+                                zoomLevelMap = 14.5
+                                directionMap = 0
+                                affichageFondCartesMapbox()
+                            }
+                        }
                     }
                 }
             }
         }
+        **/
         
-
+        if dataTableView[sender.tag][0] == "wayPoint" {
+            localisationCenterMap = CLLocationCoordinate2D(latitude: wayPointData[Int(dataTableView[sender.tag][1])!]!.swLatitude, longitude: wayPointData[Int(dataTableView[sender.tag][1])!]!.swLongitude)
+            zoomLevelMap = 14.5
+            directionMap = 0
+            affichageFondCartesMapbox()
+        }
+ 
         if dataTableView[sender.tag][0] == "Ville" {
             localisationCenterMap = CLLocationCoordinate2D(latitude: villesDatabase[Int(dataTableView[sender.tag][1])!]!.swLatitude, longitude: villesDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude)
             zoomLevelMap = 14.5
@@ -673,11 +716,11 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         if !departureOn && !arrivalOn {
             print("Aucun aerodrome de départ et d'arrivee")
         } else {
-            
+            /**
             if !flight_Plan.wayPoint_isEmpty() {
                 flight_Plan.unset_WayPoint()
             }
-
+            **/
             var icon: String = ""
             var latitude: Double = 0.0
             var longitude: Double = 0.0
@@ -724,15 +767,64 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
                 print("error")
             }
             
-            flight_Plan.set_WayPoint(icon: icon, latitude: latitude, longitude: longitude, name: name)
+            //flight_Plan.set_WayPoint(icon: icon, latitude: latitude, longitude: longitude, name: name)
             
-            //print(flight_Plan.wayPoint_String)
+            while keyWayPoint == Int(dataTableView[sender.tag][1])! {
+                keyWayPoint = keyWayPoint + 1
+            }
             
-            add_WayPoint_List()
+            wayPointData[keyWayPoint] = wayPoint (swLatitude: latitude, swLongitude: longitude, aiName: name, icon: icon)
+            keyWayPoint = keyWayPoint + 1
+            
+            displayWayPoint()
+            displayRoutePlane()
             
             closePopUp()
         }
         
+    }
+    /**
+    @objc func suppWayPoint(_ sender:UIButton) {
+        
+        for (index, point) in wayPointListAny.enumerated() {
+            if let latitude = point["latitude"] as? Double {
+                if let longitude = point["longitude"] as? Double {
+                    if let name = point["name"] as? String {
+                        if let icon = point["icon"] as? String {
+                            
+                            print("\(index). On est sur \(name) avec comme latitude \(latitude) et longitude \(longitude) pour icon \(icon)")
+                            
+                             // Pour l'instant necessite qu'il n'y est pas plusieurs wayPoint dans le cercle de detection
+                            if name == nomWaypointRam {
+                                wayPointListAny.remove(at: index)
+                                displayWayPoint()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        wayPointData.removeValue(forKey: Int(dataTableView[sender.tag][1])!)
+        
+        closePopUp()
+    }
+    **/
+    
+    @objc func suppWayPointData(_ sender:UIButton) {
+        if dataTableView[sender.tag][0] == "wayPoint" {
+            
+            wayPointData.removeValue(forKey: Int(dataTableView[sender.tag][1])!)
+    
+            displayWayPoint()
+            
+            if wayPointData.count == 0 {
+                wayPointOn = false
+                keyWayPoint = 0
+            }
+            
+            displayRoutePlane()
+            closePopUp()
+        }
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -761,6 +853,11 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
     var reperesVisuelsDatabase = [ Int: reperesVisuels ]()
     var navaidsDatabase = [ Int: navaids ]()
     var navWarningDatabase = [ Int: navwarning ]()
+    
+    // Permet de creer une database de wayPoint
+    var wayPointData = [ Int: wayPoint ]()
+    // Permet de savoir la key max a attribuer
+    var keyWayPoint: Int = 0
     
     var db: OpaquePointer?
 
@@ -1102,9 +1199,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         if let point = annotation as? CustomPointAnnotation,
             let image = point.image,
             let reuseIdentifier = point.reuseIdentifier {
-
-            print("C'est un ", reuseIdentifier)
-            
             if let annotationImage = mapView.dequeueReusableAnnotationImage(withIdentifier: reuseIdentifier) {
                 // The annotatation image has already been cached, just reuse it.
                 return annotationImage
@@ -1147,32 +1241,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
                 return MGLAnnotationImage(image: image, reuseIdentifier: reuseIdentifier)
             }
         }
-        
-        /**
-        if departureOn == false {
-            var annotationImage = mapView.dequeueReusableAnnotationImage(withIdentifier: "departure")
-            
-            if annotationImage == nil {
-                var image = UIImage(named: "departures_map")
-                image = image?.withAlignmentRectInsets(UIEdgeInsets(top: 0, left: 0, bottom: image!.size.height/2, right: 0))
-                annotationImage = MGLAnnotationImage(image: image!, reuseIdentifier: "departure")
-            }
-            departureOn = true
-            return annotationImage
-        }
-        
-        if arrivalOn == false {
-            var annotationImage = mapView.dequeueReusableAnnotationImage(withIdentifier: "arrival")
-            
-            if annotationImage == nil {
-                var image = UIImage(named: "arrivals_map")
-                image = image?.withAlignmentRectInsets(UIEdgeInsets(top: 0, left: 0, bottom: image!.size.height/2, right: 0))
-                annotationImage = MGLAnnotationImage(image: image!, reuseIdentifier: "arrival")
-            }
-            arrivalOn = true
-            return annotationImage
-        }
-        **/
         
         // Fallback to the default marker image.
         return nil
