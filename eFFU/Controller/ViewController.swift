@@ -198,53 +198,122 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         //print("indexPath section est a \(indexPath.section)")
         
         // On ajoute l'icone de l'element de la liste
-        let IconeName = iconesData[indexPath.section]
-        let iconeElement = UIImage(named: IconeName)
-        let imageView = UIImageView(image: iconeElement!)
-        imageView.frame = CGRect(x: 20, y: 2, width: 30, height: 30)
         
-        popup3.addSubview(imageView)
-        
-        // parametrer nom de l'element dans la liste
-        let titrePopup = UIButton(type: .custom)
-        titrePopup.frame = CGRect(x:65, y:2, width:420, height:30)
-        titrePopup.setTitleColor(UIColor.black, for: .normal)
-        titrePopup.titleLabel?.font = titrePopup.titleLabel?.font.withSize(20)
-        titrePopup.contentHorizontalAlignment = .left
-        
-        //creer nom de l'element dans la liste
-        titrePopup.setTitle("\(data[indexPath.section][indexPath.row])", for: .normal)
-        
-        // Afficher le nom de l'element de la liste
-        popup3.addSubview(titrePopup)
-        
-        // Creer icone de l'element de la liste quand clic
-        let imageNameClic = iconesData[indexPath.section]
-        let iconeElementClic = UIImage(named: imageNameClic)
-        let imageViewClic = UIImageView(image: iconeElementClic!)
-        imageViewClic.frame = CGRect(x: 20, y: 2, width: 30, height: 30)
-        popup1.addSubview(imageViewClic)
-        
-        // parametrer nom de l'element dans la liste quand clic
-        let titrepopupClic = UIButton(type: .custom)
-        titrepopupClic.frame = CGRect(x: 65, y: 2, width: 420 , height: 30)
-        titrepopupClic.setTitleColor(UIColor.black, for: .normal)
-        titrepopupClic.titleLabel?.font = titrepopupClic.titleLabel?.font.withSize(20)
-        titrepopupClic.contentHorizontalAlignment = .left
-        
-        //creer nom de l'element dans la liste quand clic
-        titrepopupClic.setTitle("\(data[indexPath.section][indexPath.row])", for: .normal)
-        
-        // Afficher le nom de l'element de la liste quand clic
-        popup1.addSubview(titrepopupClic)
-        
-        popup1.addSubview(popup4)
-        
-        
-        let popup5 = UIView()
-        popup5.frame = CGRect(x: 0, y: 0, width: 503, height: 35)
-        popup5.backgroundColor = UIColor.clear
-        popup3.addSubview(popup5)
+        if dataTableView[indexPath.section][indexPath.row] != "wayPoint" {
+         
+            let IconeName = iconesData[indexPath.section]
+            let iconeElement = UIImage(named: IconeName)
+            let imageView = UIImageView(image: iconeElement!)
+            imageView.frame = CGRect(x: 20, y: 2, width: 30, height: 30)
+            
+            popup3.addSubview(imageView)
+            
+            // parametrer nom de l'element dans la liste
+            let titrePopup = UIButton(type: .custom)
+            titrePopup.frame = CGRect(x:65, y:2, width:420, height:30)
+            titrePopup.setTitleColor(UIColor.black, for: .normal)
+            titrePopup.titleLabel?.font = titrePopup.titleLabel?.font.withSize(20)
+            titrePopup.contentHorizontalAlignment = .left
+            
+            //creer nom de l'element dans la liste
+            titrePopup.setTitle("\(data[indexPath.section][indexPath.row])", for: .normal)
+            
+            // Afficher le nom de l'element de la liste
+            popup3.addSubview(titrePopup)
+            
+            // Creer icone de l'element de la liste quand clic
+            let imageNameClic = iconesData[indexPath.section]
+            let iconeElementClic = UIImage(named: imageNameClic)
+            let imageViewClic = UIImageView(image: iconeElementClic!)
+            imageViewClic.frame = CGRect(x: 20, y: 2, width: 30, height: 30)
+            popup1.addSubview(imageViewClic)
+            
+            // parametrer nom de l'element dans la liste quand clic
+            let titrepopupClic = UIButton(type: .custom)
+            titrepopupClic.frame = CGRect(x: 65, y: 2, width: 420 , height: 30)
+            titrepopupClic.setTitleColor(UIColor.black, for: .normal)
+            titrepopupClic.titleLabel?.font = titrepopupClic.titleLabel?.font.withSize(20)
+            titrepopupClic.contentHorizontalAlignment = .left
+            
+            //creer nom de l'element dans la liste quand clic
+            titrepopupClic.setTitle("\(data[indexPath.section][indexPath.row])", for: .normal)
+            
+            // Afficher le nom de l'element de la liste quand clic
+            popup1.addSubview(titrepopupClic)
+            
+            popup1.addSubview(popup4)
+            
+            
+            let popup5 = UIView()
+            popup5.frame = CGRect(x: 0, y: 0, width: 503, height: 35)
+            popup5.backgroundColor = UIColor.clear
+            popup3.addSubview(popup5)
+            
+        } else {
+            
+            //let IconeFlightPlan = iconesData[indexPath.section]
+            let iconeElementFlightPlan = UIImage(named: "Waypoint_45x45")
+            let imageViewFlightPlan = UIImageView(image: iconeElementFlightPlan!)
+            imageViewFlightPlan.frame = CGRect(x: 20, y: 2, width: 30, height: 30)
+            
+            popup3.addSubview(imageViewFlightPlan)
+            
+            let IconeName = iconesData[indexPath.section]
+            let iconeElement = UIImage(named: IconeName)
+            let imageView = UIImageView(image: iconeElement!)
+            imageView.frame = CGRect(x: 65, y: 2, width: 30, height: 30)
+            
+            popup3.addSubview(imageView)
+            
+            // parametrer nom de l'element dans la liste
+            let titrePopup = UIButton(type: .custom)
+            titrePopup.frame = CGRect(x: 110, y:2, width:420, height:30)
+            titrePopup.setTitleColor(UIColor.black, for: .normal)
+            titrePopup.titleLabel?.font = titrePopup.titleLabel?.font.withSize(20)
+            titrePopup.contentHorizontalAlignment = .left
+            
+            //creer nom de l'element dans la liste
+            titrePopup.setTitle("\(data[indexPath.section][indexPath.row])", for: .normal)
+            
+            // Afficher le nom de l'element de la liste
+            popup3.addSubview(titrePopup)
+            
+            //let imageNameFlightPlanClic = iconesData[indexPath.section]
+            let iconeElementFlightPlanClic = UIImage(named: "Waypoint_45x45")
+            let imageViewFlightPlanClic = UIImageView(image: iconeElementFlightPlanClic!)
+            imageViewFlightPlanClic.frame = CGRect(x: 20, y: 2, width: 30, height: 30)
+            
+            popup1.addSubview(imageViewFlightPlanClic)
+            
+            // Creer icone de l'element de la liste quand clic
+            let imageNameClic = iconesData[indexPath.section]
+            let iconeElementClic = UIImage(named: imageNameClic)
+            let imageViewClic = UIImageView(image: iconeElementClic!)
+            imageViewClic.frame = CGRect(x: 65, y: 2, width: 30, height: 30)
+            
+            popup1.addSubview(imageViewClic)
+            
+            // parametrer nom de l'element dans la liste quand clic
+            let titrepopupClic = UIButton(type: .custom)
+            titrepopupClic.frame = CGRect(x: 110, y: 2, width: 420 , height: 30)
+            titrepopupClic.setTitleColor(UIColor.black, for: .normal)
+            titrepopupClic.titleLabel?.font = titrepopupClic.titleLabel?.font.withSize(20)
+            titrepopupClic.contentHorizontalAlignment = .left
+            
+            //creer nom de l'element dans la liste quand clic
+            titrepopupClic.setTitle("\(data[indexPath.section][indexPath.row])", for: .normal)
+            
+            // Afficher le nom de l'element de la liste quand clic
+            popup1.addSubview(titrepopupClic)
+            
+            popup1.addSubview(popup4)
+            
+            
+            let popup5 = UIView()
+            popup5.frame = CGRect(x: 0, y: 0, width: 503, height: 35)
+            popup5.backgroundColor = UIColor.clear
+            popup3.addSubview(popup5)
+        }
  
 
         print("dataTable est \(dataTableView[indexPath.section][indexPath.row])")
