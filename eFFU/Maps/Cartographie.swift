@@ -1313,19 +1313,26 @@ extension ViewController: MGLMapViewDelegate {
             if wayPointData[i] != nil {
                 let point = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(wayPointData[i]!.swLatitude, wayPointData[i]!.swLongitude),
                                                   title:wayPointData[i]!.aiName, subtitle:"")
+                /**
                 switch wayPointData[i]!.icon {
                 case "commune":
-                    point.image = UIImage(named: "CO-VILLE-GENERIQUE")
+                    wayPointData[i]!.icon = "CO-VILLE-GENERIQUE"
                 case "Triangle_32":
-                    point.image = UIImage(named: "MAP-INF-MONT")
+                    wayPointData[i]!.icon = "MAP-INF-MONT"
                 case "Tree_32":
-                    point.image = UIImage(named: "MAP-INF-FORT")
+                    wayPointData[i]!.icon = "MAP-INF-FORT"
                 case "Lac_32":
-                    point.image = UIImage(named: "MAP-INF-LAC_")
+                    wayPointData[i]!.icon = "MAP-INF-LAC_"
                 default:
-                    point.image = UIImage(named: wayPointData[i]!.icon)
+                    print("")
                 }
-                point.reuseIdentifier = wayPointData[i]!.aiName
+                **/
+                
+                let nomImage = wayPointData[i]!.icon
+                let id = wayPointData[i]!.aiName
+                
+                point.image = UIImage(named: nomImage)
+                point.reuseIdentifier = id
                 mapView.addAnnotation(point)
             }
         }
@@ -1879,18 +1886,22 @@ extension ViewController: MGLMapViewDelegate {
                         if ancienName1 != wayPointData[i]!.aiName {
                             
                             data.append(["\(wayPointData[i]!.aiName)"])
+                            /**
                             switch wayPointData[i]!.icon {
                             case "commune":
-                                iconesData.append("CO-VILLE-GENERIQUE")
+                                wayPointData[i]!.icon = "CO-VILLE-GENERIQUE"
                             case "Triangle_32":
-                                iconesData.append("MAP-INF-MONT")
+                                wayPointData[i]!.icon = "MAP-INF-MONT"
                             case "Tree_32":
-                                iconesData.append("MAP-INF-FORT")
+                                wayPointData[i]!.icon = "MAP-INF-FORT"
                             case "Lac_32":
-                                iconesData.append("MAP-INF-LAC_")
+                                wayPointData[i]!.icon = "MAP-INF-LAC_"
                             default:
-                                iconesData.append(wayPointData[i]!.icon)
+                                print("")
                             }
+                            **/
+                            
+                            iconesData.append(wayPointData[i]!.icon)
                             dataTableView.append(["wayPoint", "\(i)"])
                             ancienName1 = airportsDatabase[i]!.aiIcao
                         }

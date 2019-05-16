@@ -319,7 +319,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             buttonPopup6.setImage(UIImage(named: "Backward_45x45"), for: .normal)
             buttonPopup6.frame = CGRect(x: 109, y: 8, width: 45, height: 45)
             buttonPopup6.tag = indexPath.section
-            buttonPopup6.addTarget(self, action: #selector(alertPopup), for: .touchUpInside)
+            buttonPopup6.addTarget(self, action: #selector(backwardWayPointData(_:)), for: .touchUpInside)
             buttonPopup6.alpha = 1.0
             popup2.addSubview(buttonPopup6)
             
@@ -327,7 +327,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             buttonPopup7.setImage(UIImage(named: "Forward_45x45"), for: .normal)
             buttonPopup7.frame = CGRect(x: 157, y: 8, width: 45, height: 45)
             buttonPopup7.tag = indexPath.section
-            buttonPopup7.addTarget(self, action: #selector(alertPopup), for: .touchUpInside)
+            buttonPopup7.addTarget(self, action: #selector(forwardWayPointData(_:)), for: .touchUpInside)
             buttonPopup7.alpha = 1.0
             popup2.addSubview(buttonPopup7)
             
@@ -742,12 +742,27 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
                 longitude = villesDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude
                 name = villesDatabase[Int(dataTableView[sender.tag][1])!]!.nomComm
                 
+                if icon == "commune" {
+                    icon = "00-VILLE-GENERIQUE"
+                }
+                
             case "Repéres Visuels", "Lac", "Forêt", "Montagne", "Volcan":
                 
                 icon = reperesVisuelsDatabase[Int(dataTableView[sender.tag][1])!]!.iconeReperesVisuel
                 latitude = reperesVisuelsDatabase[Int(dataTableView[sender.tag][1])!]!.swLatitude
                 longitude = reperesVisuelsDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude
                 name = reperesVisuelsDatabase[Int(dataTableView[sender.tag][1])!]!.swShortName
+                
+                switch icon {
+                case "Triangle_32":
+                    icon = "MAP-INF-MONT"
+                case "Tree_32":
+                    icon = "MAP-INF-FORT"
+                case "Lac_32":
+                    icon = "MAP-INF-LAC_"
+                default:
+                    print("")
+                }
                 
             case "Warning Terminal":
                 
@@ -825,6 +840,88 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             displayRoutePlane()
             closePopUp()
         }
+    }
+    
+     @objc func backwardWayPointData(_ sender:UIButton) {
+        
+        print("on est sur : ", dataTableView[sender.tag][1])
+        //print("soit : ", wayPointData[Int(dataTableView[sender.tag][1])! - 1]!)
+        
+        if Int(dataTableView[sender.tag][1])! == 0 {
+            print("Pas de wayPoint precedent")
+        } else {
+            //Data du point à bouger
+            let latitude = wayPointData[Int(dataTableView[sender.tag][1])!]!.swLatitude
+            let longitude = wayPointData[Int(dataTableView[sender.tag][1])!]!.swLongitude
+            let name = wayPointData[Int(dataTableView[sender.tag][1])!]!.aiName
+            let icon = wayPointData[Int(dataTableView[sender.tag][1])!]!.icon
+            
+            var v: Int = Int(dataTableView[sender.tag][1])! - 1
+            
+            while (wayPointData[v] == nil) {
+                v = v - 1
+            }
+            // Data du precedent à echanger
+            let latitudePre = wayPointData[v]!.swLatitude
+            let longitudePre = wayPointData[v]!.swLongitude
+            let namePre = wayPointData[v]!.aiName
+            let iconPre = wayPointData[v]!.icon
+            
+            wayPointData[Int(dataTableView[sender.tag][1])!]!.swLatitude = latitudePre
+            wayPointData[Int(dataTableView[sender.tag][1])!]!.swLongitude = longitudePre
+            wayPointData[Int(dataTableView[sender.tag][1])!]!.aiName = namePre
+            wayPointData[Int(dataTableView[sender.tag][1])!]!.icon = iconPre
+            
+            wayPointData[v]!.swLatitude = latitude
+            wayPointData[v]!.swLongitude = longitude
+            wayPointData[v]!.aiName = name
+            wayPointData[v]!.icon = icon
+            
+            displayWayPoint()
+            displayRoutePlane()
+            closePopUp()
+        }
+    }
+    
+    @objc func forwardWayPointData(_ sender:UIButton) {
+        
+        print("on est sur : ", dataTableView[sender.tag][1])
+        //print("soit : ", wayPointData[Int(dataTableView[sender.tag][1])! - 1]!)
+        print ("keyWayPoint est à : ", keyWayPoint)
+        if Int(dataTableView[sender.tag][1])! == keyWayPoint - 1 {
+            print("Pas de wayPoint suivant")
+        } else {
+            //Data du point à bouger
+            let latitude = wayPointData[Int(dataTableView[sender.tag][1])!]!.swLatitude
+            let longitude = wayPointData[Int(dataTableView[sender.tag][1])!]!.swLongitude
+            let name = wayPointData[Int(dataTableView[sender.tag][1])!]!.aiName
+            let icon = wayPointData[Int(dataTableView[sender.tag][1])!]!.icon
+            
+            var v: Int = Int(dataTableView[sender.tag][1])! + 1
+            
+            while (wayPointData[v] == nil) {
+                v = v + 1
+            }
+            // Data du precedent à echanger
+            let latitudeSui = wayPointData[v]!.swLatitude
+            let longitudeSui = wayPointData[v]!.swLongitude
+            let nameSui = wayPointData[v]!.aiName
+            let iconSui = wayPointData[v]!.icon
+            
+            wayPointData[Int(dataTableView[sender.tag][1])!]!.swLatitude = latitudeSui
+            wayPointData[Int(dataTableView[sender.tag][1])!]!.swLongitude = longitudeSui
+            wayPointData[Int(dataTableView[sender.tag][1])!]!.aiName = nameSui
+            wayPointData[Int(dataTableView[sender.tag][1])!]!.icon = iconSui
+            
+            wayPointData[v]!.swLatitude = latitude
+            wayPointData[v]!.swLongitude = longitude
+            wayPointData[v]!.aiName = name
+            wayPointData[v]!.icon = icon
+            
+            displayWayPoint()
+            displayRoutePlane()
+        }
+        closePopUp()
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
