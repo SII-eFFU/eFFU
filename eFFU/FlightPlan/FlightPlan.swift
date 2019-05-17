@@ -95,7 +95,7 @@ class FlightPlan {
     /////////// WayPoint //////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     // Creer une liste de point
-    
+    /**
     var wayPoint = [[(icon: String, latitude: Double, longitude: Double, name: String)]]()
     
     
@@ -131,23 +131,14 @@ class FlightPlan {
     }
     
     public var wayPoint_String: String {return "WayPoint =  nom : \(self.wayPoint[0][0].name), icon : \(self.wayPoint[0][0].icon), latitude : \(self.wayPoint[0][0].latitude) et longitude : \(self.wayPoint[0][0].longitude)"}
-    
+    **/
 }
 
-/**
 struct wayPoint {
+    var swLatitude: Double
+    var swLongitude: Double
+    var aiName: String
     
     var icon: String
-    var latitude: Double
-    var longitude: Double
-    var name: String
-    
-    init(icon: String, latitude: Double, longitude: Double, name: String) {
-        self.icon = icon
-        self.latitude = latitude
-        self.longitude = longitude
-        self.name = name
-    }
-    
 }
-**/
+

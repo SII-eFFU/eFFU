@@ -38,6 +38,9 @@ var longitudeArrivals: Double = 0.0
 var latitudeLoop: Double = 0.0
 var longitudeLoop: Double = 0.0
 
+var nomWaypointRam: String = ""
+
+// array of dictionary
 var wayPointListAny = [[String:Any]]()
 
 
@@ -195,53 +198,122 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         //print("indexPath section est a \(indexPath.section)")
         
         // On ajoute l'icone de l'element de la liste
-        let IconeName = iconesData[indexPath.section]
-        let iconeElement = UIImage(named: IconeName)
-        let imageView = UIImageView(image: iconeElement!)
-        imageView.frame = CGRect(x: 20, y: 2, width: 30, height: 30)
         
-        popup3.addSubview(imageView)
-        
-        // parametrer nom de l'element dans la liste
-        let titrePopup = UIButton(type: .custom)
-        titrePopup.frame = CGRect(x:65, y:2, width:420, height:30)
-        titrePopup.setTitleColor(UIColor.black, for: .normal)
-        titrePopup.titleLabel?.font = titrePopup.titleLabel?.font.withSize(20)
-        titrePopup.contentHorizontalAlignment = .left
-        
-        //creer nom de l'element dans la liste
-        titrePopup.setTitle("\(data[indexPath.section][indexPath.row])", for: .normal)
-        
-        // Afficher le nom de l'element de la liste
-        popup3.addSubview(titrePopup)
-        
-        // Creer icone de l'element de la liste quand clic
-        let imageNameClic = iconesData[indexPath.section]
-        let iconeElementClic = UIImage(named: imageNameClic)
-        let imageViewClic = UIImageView(image: iconeElementClic!)
-        imageViewClic.frame = CGRect(x: 20, y: 2, width: 30, height: 30)
-        popup1.addSubview(imageViewClic)
-        
-        // parametrer nom de l'element dans la liste quand clic
-        let titrepopupClic = UIButton(type: .custom)
-        titrepopupClic.frame = CGRect(x: 65, y: 2, width: 420 , height: 30)
-        titrepopupClic.setTitleColor(UIColor.black, for: .normal)
-        titrepopupClic.titleLabel?.font = titrepopupClic.titleLabel?.font.withSize(20)
-        titrepopupClic.contentHorizontalAlignment = .left
-        
-        //creer nom de l'element dans la liste quand clic
-        titrepopupClic.setTitle("\(data[indexPath.section][indexPath.row])", for: .normal)
-        
-        // Afficher le nom de l'element de la liste quand clic
-        popup1.addSubview(titrepopupClic)
-        
-        popup1.addSubview(popup4)
-        
-        
-        let popup5 = UIView()
-        popup5.frame = CGRect(x: 0, y: 0, width: 503, height: 35)
-        popup5.backgroundColor = UIColor.clear
-        popup3.addSubview(popup5)
+        if dataTableView[indexPath.section][indexPath.row] != "wayPoint" {
+         
+            let IconeName = iconesData[indexPath.section]
+            let iconeElement = UIImage(named: IconeName)
+            let imageView = UIImageView(image: iconeElement!)
+            imageView.frame = CGRect(x: 20, y: 2, width: 30, height: 30)
+            
+            popup3.addSubview(imageView)
+            
+            // parametrer nom de l'element dans la liste
+            let titrePopup = UIButton(type: .custom)
+            titrePopup.frame = CGRect(x:65, y:2, width:420, height:30)
+            titrePopup.setTitleColor(UIColor.black, for: .normal)
+            titrePopup.titleLabel?.font = titrePopup.titleLabel?.font.withSize(20)
+            titrePopup.contentHorizontalAlignment = .left
+            
+            //creer nom de l'element dans la liste
+            titrePopup.setTitle("\(data[indexPath.section][indexPath.row])", for: .normal)
+            
+            // Afficher le nom de l'element de la liste
+            popup3.addSubview(titrePopup)
+            
+            // Creer icone de l'element de la liste quand clic
+            let imageNameClic = iconesData[indexPath.section]
+            let iconeElementClic = UIImage(named: imageNameClic)
+            let imageViewClic = UIImageView(image: iconeElementClic!)
+            imageViewClic.frame = CGRect(x: 20, y: 2, width: 30, height: 30)
+            popup1.addSubview(imageViewClic)
+            
+            // parametrer nom de l'element dans la liste quand clic
+            let titrepopupClic = UIButton(type: .custom)
+            titrepopupClic.frame = CGRect(x: 65, y: 2, width: 420 , height: 30)
+            titrepopupClic.setTitleColor(UIColor.black, for: .normal)
+            titrepopupClic.titleLabel?.font = titrepopupClic.titleLabel?.font.withSize(20)
+            titrepopupClic.contentHorizontalAlignment = .left
+            
+            //creer nom de l'element dans la liste quand clic
+            titrepopupClic.setTitle("\(data[indexPath.section][indexPath.row])", for: .normal)
+            
+            // Afficher le nom de l'element de la liste quand clic
+            popup1.addSubview(titrepopupClic)
+            
+            popup1.addSubview(popup4)
+            
+            
+            let popup5 = UIView()
+            popup5.frame = CGRect(x: 0, y: 0, width: 503, height: 35)
+            popup5.backgroundColor = UIColor.clear
+            popup3.addSubview(popup5)
+            
+        } else {
+            
+            //let IconeFlightPlan = iconesData[indexPath.section]
+            let iconeElementFlightPlan = UIImage(named: "Waypoint_45x45")
+            let imageViewFlightPlan = UIImageView(image: iconeElementFlightPlan!)
+            imageViewFlightPlan.frame = CGRect(x: 20, y: 2, width: 30, height: 30)
+            
+            popup3.addSubview(imageViewFlightPlan)
+            
+            let IconeName = iconesData[indexPath.section]
+            let iconeElement = UIImage(named: IconeName)
+            let imageView = UIImageView(image: iconeElement!)
+            imageView.frame = CGRect(x: 65, y: 2, width: 30, height: 30)
+            
+            popup3.addSubview(imageView)
+            
+            // parametrer nom de l'element dans la liste
+            let titrePopup = UIButton(type: .custom)
+            titrePopup.frame = CGRect(x: 110, y:2, width:420, height:30)
+            titrePopup.setTitleColor(UIColor.black, for: .normal)
+            titrePopup.titleLabel?.font = titrePopup.titleLabel?.font.withSize(20)
+            titrePopup.contentHorizontalAlignment = .left
+            
+            //creer nom de l'element dans la liste
+            titrePopup.setTitle("\(data[indexPath.section][indexPath.row])", for: .normal)
+            
+            // Afficher le nom de l'element de la liste
+            popup3.addSubview(titrePopup)
+            
+            //let imageNameFlightPlanClic = iconesData[indexPath.section]
+            let iconeElementFlightPlanClic = UIImage(named: "Waypoint_45x45")
+            let imageViewFlightPlanClic = UIImageView(image: iconeElementFlightPlanClic!)
+            imageViewFlightPlanClic.frame = CGRect(x: 20, y: 2, width: 30, height: 30)
+            
+            popup1.addSubview(imageViewFlightPlanClic)
+            
+            // Creer icone de l'element de la liste quand clic
+            let imageNameClic = iconesData[indexPath.section]
+            let iconeElementClic = UIImage(named: imageNameClic)
+            let imageViewClic = UIImageView(image: iconeElementClic!)
+            imageViewClic.frame = CGRect(x: 65, y: 2, width: 30, height: 30)
+            
+            popup1.addSubview(imageViewClic)
+            
+            // parametrer nom de l'element dans la liste quand clic
+            let titrepopupClic = UIButton(type: .custom)
+            titrepopupClic.frame = CGRect(x: 110, y: 2, width: 420 , height: 30)
+            titrepopupClic.setTitleColor(UIColor.black, for: .normal)
+            titrepopupClic.titleLabel?.font = titrepopupClic.titleLabel?.font.withSize(20)
+            titrepopupClic.contentHorizontalAlignment = .left
+            
+            //creer nom de l'element dans la liste quand clic
+            titrepopupClic.setTitle("\(data[indexPath.section][indexPath.row])", for: .normal)
+            
+            // Afficher le nom de l'element de la liste quand clic
+            popup1.addSubview(titrepopupClic)
+            
+            popup1.addSubview(popup4)
+            
+            
+            let popup5 = UIView()
+            popup5.frame = CGRect(x: 0, y: 0, width: 503, height: 35)
+            popup5.backgroundColor = UIColor.clear
+            popup3.addSubview(popup5)
+        }
  
 
         print("dataTable est \(dataTableView[indexPath.section][indexPath.row])")
@@ -275,7 +347,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         }
         
         // Affichage du bouton fonction "Waypoint"
-        if dataTableView[indexPath.section][indexPath.row] != "Departures" && dataTableView[indexPath.section][indexPath.row] != "Arrivals" {
+        if dataTableView[indexPath.section][indexPath.row] != "Departures" && dataTableView[indexPath.section][indexPath.row] != "Arrivals" && dataTableView[indexPath.section][indexPath.row] != "wayPoint" {
             
             // On affiche seulement si on a un point de départ et d'arrivée
             if departureOn && arrivalOn {
@@ -299,6 +371,34 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
                 popup2.addSubview(buttonPopup5)
                 
             }
+            
+        }
+        
+        if dataTableView[indexPath.section][indexPath.row] == "wayPoint" {
+            
+            let buttonPopup4  = UIButton(type: .custom)
+            buttonPopup4.setImage(UIImage(named: "Delete_45x45"), for: .normal)
+            buttonPopup4.frame = CGRect(x: 61, y: 8, width: 45, height: 45)
+            buttonPopup4.tag = indexPath.section
+            buttonPopup4.addTarget(self, action: #selector(suppWayPointData(_:)), for: .touchUpInside)
+            buttonPopup4.alpha = 1.0
+            popup2.addSubview(buttonPopup4)
+            
+            let buttonPopup6  = UIButton(type: .custom)
+            buttonPopup6.setImage(UIImage(named: "Backward_45x45"), for: .normal)
+            buttonPopup6.frame = CGRect(x: 109, y: 8, width: 45, height: 45)
+            buttonPopup6.tag = indexPath.section
+            buttonPopup6.addTarget(self, action: #selector(backwardWayPointData(_:)), for: .touchUpInside)
+            buttonPopup6.alpha = 1.0
+            popup2.addSubview(buttonPopup6)
+            
+            let buttonPopup7  = UIButton(type: .custom)
+            buttonPopup7.setImage(UIImage(named: "Forward_45x45"), for: .normal)
+            buttonPopup7.frame = CGRect(x: 157, y: 8, width: 45, height: 45)
+            buttonPopup7.tag = indexPath.section
+            buttonPopup7.addTarget(self, action: #selector(forwardWayPointData(_:)), for: .touchUpInside)
+            buttonPopup7.alpha = 1.0
+            popup2.addSubview(buttonPopup7)
             
         }
 
@@ -427,7 +527,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
     }
     
     @objc func zoomPopup(_ sender:UIButton) {
-        //print(dataTableView[sender.tag][0])
+        //print(dataTableView[sender.tag][1])
         // Permet de tester quel type d'element on a pour la selection dans la base de donnees
         print("C'est un/une \(dataTableView[sender.tag][0])")
         if dataTableView[sender.tag][0] == "Airports" {
@@ -454,21 +554,12 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         }
         
         if dataTableView[sender.tag][0] == "wayPoint" {
-            for (_, point) in wayPointListAny.enumerated() {
-                if let latitude = point["latitude"] as? Double {
-                    if let longitude = point["longitude"] as? Double {
-                        
-                        localisationCenterMap = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-                        zoomLevelMap = 14.5
-                        directionMap = 0
-                        affichageFondCartesMapbox()
-                            
-                    }
-                }
-            }
+            localisationCenterMap = CLLocationCoordinate2D(latitude: wayPointData[Int(dataTableView[sender.tag][1])!]!.swLatitude, longitude: wayPointData[Int(dataTableView[sender.tag][1])!]!.swLongitude)
+            zoomLevelMap = 14.5
+            directionMap = 0
+            affichageFondCartesMapbox()
         }
-        
-
+ 
         if dataTableView[sender.tag][0] == "Ville" {
             localisationCenterMap = CLLocationCoordinate2D(latitude: villesDatabase[Int(dataTableView[sender.tag][1])!]!.swLatitude, longitude: villesDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude)
             zoomLevelMap = 14.5
@@ -524,21 +615,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         
         self.present(alert, animated: true, completion: nil)
     }
-    
-    @objc func alertPopupSuppPointArrival() {
-        let alert = UIAlertController(title: "Alert", message: "Voulez-vous supprimer le point d'arrivee ?", preferredStyle: UIAlertController.Style.alert)
-        alert.addAction(UIAlertAction(title: "Oui", style: UIAlertAction.Style.default, handler: { action in self.suppPointArrival() } ))
-        alert.addAction(UIAlertAction(title: "Non", style: UIAlertAction.Style.default, handler: nil))
-        
-        self.present(alert, animated: true, completion: nil)
-    }
-
-    @objc func alertnoAirportsAssigned(){
-        let alert = UIAlertController(title: "Alert", message: "Aucun aerodrome", preferredStyle: UIAlertController.Style.alert)
-        alert.addAction(UIAlertAction(title: "Click", style: UIAlertAction.Style.default, handler: nil))
-        
-        self.present(alert, animated: true, completion: nil)
-    }
     **/
     @objc func alertPopupNoAirportsDepartures() {
         let alert = UIAlertController(title: "Alert", message: "L'aerodrome de depart n'est pas configure", preferredStyle: UIAlertController.Style.alert)
@@ -546,24 +622,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         
         self.present(alert, animated: true, completion: nil)
     }
-    
-    
-    /**
-    // Permet de supprimer les annotations de la view
-    func suppMarkers(){
-        
-        //let allAnnotations = self.mapView.annotations
-        //self.mapView.removeAnnotations(allAnnotations!)
-        
-        suppRoutePlane()
-        
-        departureOn = false
-        arrivalOn = false
-        
-        flight_Plan.unset_Departure_Airfield()
-        flight_Plan.unset_Arrival_Airfield()
-    }
-    **/
     
     func closePopUp() {
         for layer: CALayer in self.view.layer.sublayers! {
@@ -668,16 +726,16 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
     // Button Pop-up afin de creer le wayPoint
     @objc func wayPointPopup(_ sender:UIButton){
         
-        print("C'est un/une \(dataTableView[sender.tag][0])")
+        //print("C'est un/une \(dataTableView[sender.tag][0])")
         
         if !departureOn && !arrivalOn {
             print("Aucun aerodrome de départ et d'arrivee")
         } else {
-            
+            /**
             if !flight_Plan.wayPoint_isEmpty() {
                 flight_Plan.unset_WayPoint()
             }
-
+            **/
             var icon: String = ""
             var latitude: Double = 0.0
             var longitude: Double = 0.0
@@ -699,12 +757,27 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
                 longitude = villesDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude
                 name = villesDatabase[Int(dataTableView[sender.tag][1])!]!.nomComm
                 
+                if icon == "commune" {
+                    icon = "00-VILLE-GENERIQUE"
+                }
+                
             case "Repéres Visuels", "Lac", "Forêt", "Montagne", "Volcan":
                 
                 icon = reperesVisuelsDatabase[Int(dataTableView[sender.tag][1])!]!.iconeReperesVisuel
                 latitude = reperesVisuelsDatabase[Int(dataTableView[sender.tag][1])!]!.swLatitude
                 longitude = reperesVisuelsDatabase[Int(dataTableView[sender.tag][1])!]!.swLongitude
                 name = reperesVisuelsDatabase[Int(dataTableView[sender.tag][1])!]!.swShortName
+                
+                switch icon {
+                case "Triangle_32":
+                    icon = "MAP-INF-MONT"
+                case "Tree_32":
+                    icon = "MAP-INF-FORT"
+                case "Lac_32":
+                    icon = "MAP-INF-LAC_"
+                default:
+                    print("")
+                }
                 
             case "Warning Terminal":
                 
@@ -724,15 +797,146 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
                 print("error")
             }
             
-            flight_Plan.set_WayPoint(icon: icon, latitude: latitude, longitude: longitude, name: name)
+            while keyWayPoint == Int(dataTableView[sender.tag][1])! {
+                keyWayPoint = keyWayPoint + 1
+            }
             
-            //print(flight_Plan.wayPoint_String)
+            wayPointData[keyWayPoint] = wayPoint (swLatitude: latitude, swLongitude: longitude, aiName: name, icon: icon)
+            keyWayPoint = keyWayPoint + 1
             
-            add_WayPoint_List()
+            displayWayPoint()
+            displayRoutePlane()
             
             closePopUp()
         }
         
+    }
+    
+    @objc func suppWayPointData(_ sender:UIButton) {
+        if dataTableView[sender.tag][0] == "wayPoint" {
+            
+            wayPointData.removeValue(forKey: Int(dataTableView[sender.tag][1])!)
+    
+            displayWayPoint()
+            
+            if wayPointData.count == 0 {
+                wayPointOn = false
+                keyWayPoint = 0
+            }
+            
+            displayRoutePlane()
+            closePopUp()
+        }
+    }
+    
+    // function permettant de calculer la position d'un wayPoint dans la liste
+    // avec en entree ca key correspondant
+    //
+    func listPositionWayPoint(key: Int) -> (Int, Int){
+        var indicePrecedent = 1
+        var nbNoNilPre = 0
+
+        // Calcul du nombre de wayPoint précédent notre key
+        while  key - indicePrecedent != -1 {
+            if wayPointData[key - indicePrecedent] != nil {
+                nbNoNilPre = nbNoNilPre + 1
+            }
+            indicePrecedent = indicePrecedent + 1
+        }
+        
+        let nbWayPoint = wayPointData.count
+        
+        let positionWayPoint = nbNoNilPre + 1
+        
+        return (positionWayPoint, nbWayPoint)
+    }
+    
+    
+    
+     @objc func backwardWayPointData(_ sender:UIButton) {
+        
+        let key: Int = Int(dataTableView[sender.tag][1])!
+        let position = listPositionWayPoint(key: key)
+        print("Le wayPoint est à la position \(position.0) pour \(position.1) wayPoint")
+        
+        if position.0 == 1 {
+            print("Pas de wayPoint precedent")
+        } else {
+            //Data du point à bouger
+            let latitude = wayPointData[Int(dataTableView[sender.tag][1])!]!.swLatitude
+            let longitude = wayPointData[Int(dataTableView[sender.tag][1])!]!.swLongitude
+            let name = wayPointData[Int(dataTableView[sender.tag][1])!]!.aiName
+            let icon = wayPointData[Int(dataTableView[sender.tag][1])!]!.icon
+            
+            var indice: Int = Int(dataTableView[sender.tag][1])! - 1
+            
+            while (wayPointData[indice] == nil) {
+                indice = indice - 1
+            }
+            // Data du precedent à echanger
+            let latitudePre = wayPointData[indice]!.swLatitude
+            let longitudePre = wayPointData[indice]!.swLongitude
+            let namePre = wayPointData[indice]!.aiName
+            let iconPre = wayPointData[indice]!.icon
+            
+            wayPointData[Int(dataTableView[sender.tag][1])!]!.swLatitude = latitudePre
+            wayPointData[Int(dataTableView[sender.tag][1])!]!.swLongitude = longitudePre
+            wayPointData[Int(dataTableView[sender.tag][1])!]!.aiName = namePre
+            wayPointData[Int(dataTableView[sender.tag][1])!]!.icon = iconPre
+            
+            wayPointData[indice]!.swLatitude = latitude
+            wayPointData[indice]!.swLongitude = longitude
+            wayPointData[indice]!.aiName = name
+            wayPointData[indice]!.icon = icon
+            
+            displayWayPoint()
+            displayRoutePlane()
+            
+        }
+        closePopUp()
+    }
+    
+    @objc func forwardWayPointData(_ sender:UIButton) {
+        
+        let key: Int = Int(dataTableView[sender.tag][1])!
+        let position = listPositionWayPoint(key: key)
+        print("Le wayPoint est à la position \(position.0) pour \(position.1) wayPoint")
+        
+
+        if position.0 == position.1 {
+            print("Pas de wayPoint suivant")
+        } else {
+            //Data du point à bouger
+            let latitude = wayPointData[Int(dataTableView[sender.tag][1])!]!.swLatitude
+            let longitude = wayPointData[Int(dataTableView[sender.tag][1])!]!.swLongitude
+            let name = wayPointData[Int(dataTableView[sender.tag][1])!]!.aiName
+            let icon = wayPointData[Int(dataTableView[sender.tag][1])!]!.icon
+            
+            var indice: Int = Int(dataTableView[sender.tag][1])! + 1
+            
+            while (wayPointData[indice] == nil) {
+                indice = indice + 1
+            }
+            // Data du precedent à echanger
+            let latitudeSui = wayPointData[indice]!.swLatitude
+            let longitudeSui = wayPointData[indice]!.swLongitude
+            let nameSui = wayPointData[indice]!.aiName
+            let iconSui = wayPointData[indice]!.icon
+            
+            wayPointData[Int(dataTableView[sender.tag][1])!]!.swLatitude = latitudeSui
+            wayPointData[Int(dataTableView[sender.tag][1])!]!.swLongitude = longitudeSui
+            wayPointData[Int(dataTableView[sender.tag][1])!]!.aiName = nameSui
+            wayPointData[Int(dataTableView[sender.tag][1])!]!.icon = iconSui
+            
+            wayPointData[indice]!.swLatitude = latitude
+            wayPointData[indice]!.swLongitude = longitude
+            wayPointData[indice]!.aiName = name
+            wayPointData[indice]!.icon = icon
+            
+            displayWayPoint()
+            displayRoutePlane()
+        }
+        closePopUp()
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -761,6 +965,11 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
     var reperesVisuelsDatabase = [ Int: reperesVisuels ]()
     var navaidsDatabase = [ Int: navaids ]()
     var navWarningDatabase = [ Int: navwarning ]()
+    
+    // Permet de creer une database de wayPoint
+    var wayPointData = [ Int: wayPoint ]()
+    // Permet de savoir la key max a attribuer
+    var keyWayPoint: Int = 0
     
     var db: OpaquePointer?
 
@@ -1102,9 +1311,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         if let point = annotation as? CustomPointAnnotation,
             let image = point.image,
             let reuseIdentifier = point.reuseIdentifier {
-
-            print("C'est un ", reuseIdentifier)
-            
             if let annotationImage = mapView.dequeueReusableAnnotationImage(withIdentifier: reuseIdentifier) {
                 // The annotatation image has already been cached, just reuse it.
                 return annotationImage
@@ -1147,32 +1353,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
                 return MGLAnnotationImage(image: image, reuseIdentifier: reuseIdentifier)
             }
         }
-        
-        /**
-        if departureOn == false {
-            var annotationImage = mapView.dequeueReusableAnnotationImage(withIdentifier: "departure")
-            
-            if annotationImage == nil {
-                var image = UIImage(named: "departures_map")
-                image = image?.withAlignmentRectInsets(UIEdgeInsets(top: 0, left: 0, bottom: image!.size.height/2, right: 0))
-                annotationImage = MGLAnnotationImage(image: image!, reuseIdentifier: "departure")
-            }
-            departureOn = true
-            return annotationImage
-        }
-        
-        if arrivalOn == false {
-            var annotationImage = mapView.dequeueReusableAnnotationImage(withIdentifier: "arrival")
-            
-            if annotationImage == nil {
-                var image = UIImage(named: "arrivals_map")
-                image = image?.withAlignmentRectInsets(UIEdgeInsets(top: 0, left: 0, bottom: image!.size.height/2, right: 0))
-                annotationImage = MGLAnnotationImage(image: image!, reuseIdentifier: "arrival")
-            }
-            arrivalOn = true
-            return annotationImage
-        }
-        **/
         
         // Fallback to the default marker image.
         return nil
