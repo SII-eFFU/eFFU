@@ -1240,70 +1240,7 @@ extension ViewController: MGLMapViewDelegate {
     /////////////////////////////////////////////////////////////////////////////////////////
     
     // Permet d'ajouter un wayPoint à la liste
-    /**
-    func add_WayPoint_List(){
-        var row = [String:Any]()
-        
-        row["icon"] = flight_Plan.get_WayPoint_icon()
-        row["latitude"] = flight_Plan.get_WayPoint_Latitude()
-        row["longitude"] = flight_Plan.get_WayPoint_Longitude()
-        row["name"] = flight_Plan.get_WayPoint_Name()
-        
-        wayPointListAny.append(row)
-        
-        wayPointOn = true
-        
-        displayWayPoint()
-        
-    }
-    **/
     
-    /**
-    // Permet de creer le wayPoint sur la map
-    func displayWayPoint(){
-        
-        print("nombre d'element dans la liste :", wayPointListAny.count)
-        
-        suppWayPoint()
-
-        mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 29, tagger: "Route")
-        
-        for (_, point) in wayPointListAny.enumerated() {
-            if let icon = point["icon"] as? String {
-                if let latitude = point["latitude"] as? Double {
-                    if let longitude = point["longitude"] as? Double {
-                        if let name = point["name"] as? String {
-                            
-                            //print ("\(index + 1). \(name) a pour latitude \(latitude) et longitude \(longitude). Son icône est : \(icon)")
-                            
-                            
-                            let point = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(latitude, longitude),
-                                                                 title:name, subtitle:"")
-                            
-                            switch icon {
-                            case "commune":
-                                point.image = UIImage(named: "CO-VILLE-GENERIQUE")
-                            case "Triangle_32":
-                                point.image = UIImage(named: "MAP-INF-MONT")
-                            case "Tree_32":
-                                point.image = UIImage(named: "MAP-INF-FORT")
-                            case "Lac_32":
-                                point.image = UIImage(named: "MAP-INF-LAC_")
-                            default:
-                                point.image = UIImage(named: icon)
-                            }
-                            
-                            point.reuseIdentifier = name
-                            mapView.addAnnotation(point)
-                        }
-                    }
-                }
-            }
-        }
-        
-        displayRoutePlane()
-    }
-    **/
     func displayWayPoint(){
         print("nombre d'element dans la liste :", wayPointData.count)
         suppWayPoint()
@@ -1343,41 +1280,7 @@ extension ViewController: MGLMapViewDelegate {
     /////////////////////////////////////////////////////////////////////////////////////////
     
     // Permet de creer la route en fonction du point de depart et d'arrivee
-    /**
-    func displayRoutePlane(){
-        mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 25, tagger: "Route")
-            
-        var coordinatesEnroute = [CLLocationCoordinate2D(latitude: latitudeDepartures, longitude: longitudeDepartures)]
-            
-        if flight_Plan.wayPoint_isEmpty() {
-                coordinatesEnroute.append(CLLocationCoordinate2D(latitude: latitudeArrivals, longitude: longitudeArrivals))
-        } else {
-            for (_, point) in wayPointListAny.enumerated() {
-                if let latitude = point["latitude"] as? Double {
-                    if let longitude = point["longitude"] as? Double {
-                        //print("Nombre de wayPoint :", index + 1)
-                        coordinatesEnroute.append(CLLocationCoordinate2D(latitude: latitude, longitude: longitude))
-                    }
-                }
-            }
-            coordinatesEnroute.append(CLLocationCoordinate2D(latitude: latitudeArrivals, longitude: longitudeArrivals))
-        }
-        
-        
-        let shape2 = MGLPolyline(coordinates: &coordinatesEnroute, count: UInt(coordinatesEnroute.count))
-        shape2.subtitle = "enRoute"
-        mapView.add(shape2)
-            
-        // on affiche les view si une des deux ete cachee pas loop precedement
-        displayView(number: 26)
-        displayView(number: 27)
-            
-        // ici on a :
-        // loop = false
-        // departureOn = true
-        // arrivalOn = true
-    }
-    **/
+   
     func displayRoutePlane(){
         mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 25, tagger: "Route")
         var coordinatesEnroute = [CLLocationCoordinate2D(latitude: latitudeDepartures, longitude: longitudeDepartures)]
@@ -1820,57 +1723,7 @@ extension ViewController: MGLMapViewDelegate {
                 }
             }
         }
-        /**
-        if wayPointOn {
-            
-            for (index, point) in wayPointListAny.enumerated() {
-                if let latitude = point["latitude"] as? Double {
-                    if let longitude = point["longitude"] as? Double {
-                        if let name = point["name"] as? String {
-                            if let icon = point["icon"] as? String {
-                                //print("Nombre de wayPoint :", i + 1)
-                                let secondLocation = CLLocation(latitude: latitude, longitude: longitude)
-                                
-                                //print ("\(i + 1). \(name) a pour latitude \(latitude) et longitude \(longitude). Son icône est : \(icon)")
-                                
-                                let distance = getBearingBetweenTwoPoints1(point1: myLocation, point2: secondLocation)
-                                
-                                //print("on a distance : \(distance) et distanceMax : \(distanceMax)")
-                                
-                                if distance < distanceMax {
-                                    if nameWayPoint != name {
-                                        print("WayPoint : \(name) -> \(distance)")
-                                        headerTitles.append("wayPoint")
-                                        nameWayPoint = name
-                                        affichagePopupList = true
-                                    }
-                                    if nameWayPoint2 != name {
-                                        data.append(["\(name)"])
-                                        switch icon {
-                                        case "commune":
-                                            iconesData.append("CO-VILLE-GENERIQUE")
-                                        case "Triangle_32":
-                                            iconesData.append("MAP-INF-MONT")
-                                        case "Tree_32":
-                                            iconesData.append("MAP-INF-FORT")
-                                        case "Lac_32":
-                                            iconesData.append("MAP-INF-LAC_")
-                                        default:
-                                            iconesData.append(icon)
-                                        }
-                                        dataTableView.append(["wayPoint", "\(index)"])
-                                        nameWayPoint2 = name
-                                    }
-                                    nomWaypointRam = name
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            
-        }
-        **/
+        
         if wayPointOn {
             for i in 0...keyWayPoint-1 {
                 if wayPointData[i] != nil {
@@ -1886,20 +1739,6 @@ extension ViewController: MGLMapViewDelegate {
                         if ancienName1 != wayPointData[i]!.aiName {
                             
                             data.append(["\(wayPointData[i]!.aiName)"])
-                            /**
-                            switch wayPointData[i]!.icon {
-                            case "commune":
-                                wayPointData[i]!.icon = "CO-VILLE-GENERIQUE"
-                            case "Triangle_32":
-                                wayPointData[i]!.icon = "MAP-INF-MONT"
-                            case "Tree_32":
-                                wayPointData[i]!.icon = "MAP-INF-FORT"
-                            case "Lac_32":
-                                wayPointData[i]!.icon = "MAP-INF-LAC_"
-                            default:
-                                print("")
-                            }
-                            **/
                             
                             iconesData.append(wayPointData[i]!.icon)
                             dataTableView.append(["wayPoint", "\(i)"])

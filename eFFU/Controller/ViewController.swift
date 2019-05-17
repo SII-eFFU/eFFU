@@ -527,7 +527,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
     }
     
     @objc func zoomPopup(_ sender:UIButton) {
-        print(dataTableView[sender.tag][1])
+        //print(dataTableView[sender.tag][1])
         // Permet de tester quel type d'element on a pour la selection dans la base de donnees
         print("C'est un/une \(dataTableView[sender.tag][0])")
         if dataTableView[sender.tag][0] == "Airports" {
@@ -552,27 +552,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             affichageFondCartesMapbox()
             
         }
-        /**
-        if dataTableView[sender.tag][0] == "wayPoint" {
-            for (_, point) in wayPointListAny.enumerated() {
-                if let latitude = point["latitude"] as? Double {
-                    if let longitude = point["longitude"] as? Double {
-                        if let name = point["name"] as? String {
-                            
-                            // Pour l'instant necessite qu'il n'y est pas plusieurs wayPoint dans le cercle de detection
-                            if nomWaypointRam == name {
-                                
-                                localisationCenterMap = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-                                zoomLevelMap = 14.5
-                                directionMap = 0
-                                affichageFondCartesMapbox()
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        **/
         
         if dataTableView[sender.tag][0] == "wayPoint" {
             localisationCenterMap = CLLocationCoordinate2D(latitude: wayPointData[Int(dataTableView[sender.tag][1])!]!.swLatitude, longitude: wayPointData[Int(dataTableView[sender.tag][1])!]!.swLongitude)
@@ -636,21 +615,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         
         self.present(alert, animated: true, completion: nil)
     }
-    
-    @objc func alertPopupSuppPointArrival() {
-        let alert = UIAlertController(title: "Alert", message: "Voulez-vous supprimer le point d'arrivee ?", preferredStyle: UIAlertController.Style.alert)
-        alert.addAction(UIAlertAction(title: "Oui", style: UIAlertAction.Style.default, handler: { action in self.suppPointArrival() } ))
-        alert.addAction(UIAlertAction(title: "Non", style: UIAlertAction.Style.default, handler: nil))
-        
-        self.present(alert, animated: true, completion: nil)
-    }
-
-    @objc func alertnoAirportsAssigned(){
-        let alert = UIAlertController(title: "Alert", message: "Aucun aerodrome", preferredStyle: UIAlertController.Style.alert)
-        alert.addAction(UIAlertAction(title: "Click", style: UIAlertAction.Style.default, handler: nil))
-        
-        self.present(alert, animated: true, completion: nil)
-    }
     **/
     @objc func alertPopupNoAirportsDepartures() {
         let alert = UIAlertController(title: "Alert", message: "L'aerodrome de depart n'est pas configure", preferredStyle: UIAlertController.Style.alert)
@@ -658,24 +622,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         
         self.present(alert, animated: true, completion: nil)
     }
-    
-    
-    /**
-    // Permet de supprimer les annotations de la view
-    func suppMarkers(){
-        
-        //let allAnnotations = self.mapView.annotations
-        //self.mapView.removeAnnotations(allAnnotations!)
-        
-        suppRoutePlane()
-        
-        departureOn = false
-        arrivalOn = false
-        
-        flight_Plan.unset_Departure_Airfield()
-        flight_Plan.unset_Arrival_Airfield()
-    }
-    **/
     
     func closePopUp() {
         for layer: CALayer in self.view.layer.sublayers! {
@@ -780,7 +726,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
     // Button Pop-up afin de creer le wayPoint
     @objc func wayPointPopup(_ sender:UIButton){
         
-        print("C'est un/une \(dataTableView[sender.tag][0])")
+        //print("C'est un/une \(dataTableView[sender.tag][0])")
         
         if !departureOn && !arrivalOn {
             print("Aucun aerodrome de départ et d'arrivee")
@@ -851,8 +797,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
                 print("error")
             }
             
-            //flight_Plan.set_WayPoint(icon: icon, latitude: latitude, longitude: longitude, name: name)
-            
             while keyWayPoint == Int(dataTableView[sender.tag][1])! {
                 keyWayPoint = keyWayPoint + 1
             }
@@ -867,32 +811,6 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         }
         
     }
-    /**
-    @objc func suppWayPoint(_ sender:UIButton) {
-        
-        for (index, point) in wayPointListAny.enumerated() {
-            if let latitude = point["latitude"] as? Double {
-                if let longitude = point["longitude"] as? Double {
-                    if let name = point["name"] as? String {
-                        if let icon = point["icon"] as? String {
-                            
-                            print("\(index). On est sur \(name) avec comme latitude \(latitude) et longitude \(longitude) pour icon \(icon)")
-                            
-                             // Pour l'instant necessite qu'il n'y est pas plusieurs wayPoint dans le cercle de detection
-                            if name == nomWaypointRam {
-                                wayPointListAny.remove(at: index)
-                                displayWayPoint()
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        wayPointData.removeValue(forKey: Int(dataTableView[sender.tag][1])!)
-        
-        closePopUp()
-    }
-    **/
     
     @objc func suppWayPointData(_ sender:UIButton) {
         if dataTableView[sender.tag][0] == "wayPoint" {
@@ -911,12 +829,37 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         }
     }
     
+    // function permettant de calculer la position d'un wayPoint dans la liste
+    // avec en entree ca key correspondant
+    //
+    func listPositionWayPoint(key: Int) -> (Int, Int){
+        var indicePrecedent = 1
+        var nbNoNilPre = 0
+
+        // Calcul du nombre de wayPoint précédent notre key
+        while  key - indicePrecedent != -1 {
+            if wayPointData[key - indicePrecedent] != nil {
+                nbNoNilPre = nbNoNilPre + 1
+            }
+            indicePrecedent = indicePrecedent + 1
+        }
+        
+        let nbWayPoint = wayPointData.count
+        
+        let positionWayPoint = nbNoNilPre + 1
+        
+        return (positionWayPoint, nbWayPoint)
+    }
+    
+    
+    
      @objc func backwardWayPointData(_ sender:UIButton) {
         
-        print("on est sur : ", dataTableView[sender.tag][1])
-        //print("soit : ", wayPointData[Int(dataTableView[sender.tag][1])! - 1]!)
+        let key: Int = Int(dataTableView[sender.tag][1])!
+        let position = listPositionWayPoint(key: key)
+        print("Le wayPoint est à la position \(position.0) pour \(position.1) wayPoint")
         
-        if Int(dataTableView[sender.tag][1])! == 0 {
+        if position.0 == 1 {
             print("Pas de wayPoint precedent")
         } else {
             //Data du point à bouger
@@ -925,39 +868,42 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             let name = wayPointData[Int(dataTableView[sender.tag][1])!]!.aiName
             let icon = wayPointData[Int(dataTableView[sender.tag][1])!]!.icon
             
-            var v: Int = Int(dataTableView[sender.tag][1])! - 1
+            var indice: Int = Int(dataTableView[sender.tag][1])! - 1
             
-            while (wayPointData[v] == nil) {
-                v = v - 1
+            while (wayPointData[indice] == nil) {
+                indice = indice - 1
             }
             // Data du precedent à echanger
-            let latitudePre = wayPointData[v]!.swLatitude
-            let longitudePre = wayPointData[v]!.swLongitude
-            let namePre = wayPointData[v]!.aiName
-            let iconPre = wayPointData[v]!.icon
+            let latitudePre = wayPointData[indice]!.swLatitude
+            let longitudePre = wayPointData[indice]!.swLongitude
+            let namePre = wayPointData[indice]!.aiName
+            let iconPre = wayPointData[indice]!.icon
             
             wayPointData[Int(dataTableView[sender.tag][1])!]!.swLatitude = latitudePre
             wayPointData[Int(dataTableView[sender.tag][1])!]!.swLongitude = longitudePre
             wayPointData[Int(dataTableView[sender.tag][1])!]!.aiName = namePre
             wayPointData[Int(dataTableView[sender.tag][1])!]!.icon = iconPre
             
-            wayPointData[v]!.swLatitude = latitude
-            wayPointData[v]!.swLongitude = longitude
-            wayPointData[v]!.aiName = name
-            wayPointData[v]!.icon = icon
+            wayPointData[indice]!.swLatitude = latitude
+            wayPointData[indice]!.swLongitude = longitude
+            wayPointData[indice]!.aiName = name
+            wayPointData[indice]!.icon = icon
             
             displayWayPoint()
             displayRoutePlane()
-            closePopUp()
+            
         }
+        closePopUp()
     }
     
     @objc func forwardWayPointData(_ sender:UIButton) {
         
-        print("on est sur : ", dataTableView[sender.tag][1])
-        //print("soit : ", wayPointData[Int(dataTableView[sender.tag][1])! - 1]!)
-        print ("keyWayPoint est à : ", keyWayPoint)
-        if Int(dataTableView[sender.tag][1])! == keyWayPoint - 1 {
+        let key: Int = Int(dataTableView[sender.tag][1])!
+        let position = listPositionWayPoint(key: key)
+        print("Le wayPoint est à la position \(position.0) pour \(position.1) wayPoint")
+        
+
+        if position.0 == position.1 {
             print("Pas de wayPoint suivant")
         } else {
             //Data du point à bouger
@@ -966,26 +912,26 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             let name = wayPointData[Int(dataTableView[sender.tag][1])!]!.aiName
             let icon = wayPointData[Int(dataTableView[sender.tag][1])!]!.icon
             
-            var v: Int = Int(dataTableView[sender.tag][1])! + 1
+            var indice: Int = Int(dataTableView[sender.tag][1])! + 1
             
-            while (wayPointData[v] == nil) {
-                v = v + 1
+            while (wayPointData[indice] == nil) {
+                indice = indice + 1
             }
             // Data du precedent à echanger
-            let latitudeSui = wayPointData[v]!.swLatitude
-            let longitudeSui = wayPointData[v]!.swLongitude
-            let nameSui = wayPointData[v]!.aiName
-            let iconSui = wayPointData[v]!.icon
+            let latitudeSui = wayPointData[indice]!.swLatitude
+            let longitudeSui = wayPointData[indice]!.swLongitude
+            let nameSui = wayPointData[indice]!.aiName
+            let iconSui = wayPointData[indice]!.icon
             
             wayPointData[Int(dataTableView[sender.tag][1])!]!.swLatitude = latitudeSui
             wayPointData[Int(dataTableView[sender.tag][1])!]!.swLongitude = longitudeSui
             wayPointData[Int(dataTableView[sender.tag][1])!]!.aiName = nameSui
             wayPointData[Int(dataTableView[sender.tag][1])!]!.icon = iconSui
             
-            wayPointData[v]!.swLatitude = latitude
-            wayPointData[v]!.swLongitude = longitude
-            wayPointData[v]!.aiName = name
-            wayPointData[v]!.icon = icon
+            wayPointData[indice]!.swLatitude = latitude
+            wayPointData[indice]!.swLongitude = longitude
+            wayPointData[indice]!.aiName = name
+            wayPointData[indice]!.icon = icon
             
             displayWayPoint()
             displayRoutePlane()
