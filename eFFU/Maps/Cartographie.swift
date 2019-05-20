@@ -1250,20 +1250,6 @@ extension ViewController: MGLMapViewDelegate {
             if wayPointData[i] != nil {
                 let point = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(wayPointData[i]!.swLatitude, wayPointData[i]!.swLongitude),
                                                   title:wayPointData[i]!.aiName, subtitle:"")
-                /**
-                switch wayPointData[i]!.icon {
-                case "commune":
-                    wayPointData[i]!.icon = "CO-VILLE-GENERIQUE"
-                case "Triangle_32":
-                    wayPointData[i]!.icon = "MAP-INF-MONT"
-                case "Tree_32":
-                    wayPointData[i]!.icon = "MAP-INF-FORT"
-                case "Lac_32":
-                    wayPointData[i]!.icon = "MAP-INF-LAC_"
-                default:
-                    print("")
-                }
-                **/
                 
                 let nomImage = wayPointData[i]!.icon
                 let id = wayPointData[i]!.aiName
@@ -1283,22 +1269,93 @@ extension ViewController: MGLMapViewDelegate {
    
     func displayRoutePlane(){
         mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 25, tagger: "Route")
-        var coordinatesEnroute = [CLLocationCoordinate2D(latitude: latitudeDepartures, longitude: longitudeDepartures)]
         
-        if !wayPointOn {
-            coordinatesEnroute.append(CLLocationCoordinate2D(latitude: latitudeArrivals, longitude: longitudeArrivals))
-        } else {
-            for i in 0...keyWayPoint-1 {
-                if wayPointData[i] != nil {
-                    coordinatesEnroute.append(CLLocationCoordinate2D(latitude: wayPointData[i]!.swLatitude, longitude: wayPointData[i]!.swLongitude))
+        if wayStartLFCL && wayEndLFCH {
+            
+            var coordinatesDepartureProc = [
+                CLLocationCoordinate2D(latitude: 43.59114444444444, longitude: 1.49645),
+                CLLocationCoordinate2D(latitude: 43.629048, longitude: 1.481489),
+                CLLocationCoordinate2D(latitude: 43.63428, longitude: 1.481398),
+                CLLocationCoordinate2D(latitude: 43.638592, longitude: 1.484876),
+                CLLocationCoordinate2D(latitude: 43.65416666666667, longitude: 1.52472222222222)
+            ];
+            
+            var coordinatesEnroute = [CLLocationCoordinate2D(latitude: 43.65416666666667, longitude: 1.52472222222222)]
+
+            if !wayPointOn {
+                coordinatesEnroute.append(CLLocationCoordinate2D(latitude: 44.64361111111111, longitude: -1.04833333333333))
+            } else {
+                for i in 0...keyWayPoint-1 {
+                    if wayPointData[i] != nil {
+                        coordinatesEnroute.append(CLLocationCoordinate2D(latitude: wayPointData[i]!.swLatitude, longitude: wayPointData[i]!.swLongitude))
+                    }
                 }
+                coordinatesEnroute.append(CLLocationCoordinate2D(latitude: 44.64361111111111, longitude: -1.04833333333333))
             }
-            coordinatesEnroute.append(CLLocationCoordinate2D(latitude: latitudeArrivals, longitude: longitudeArrivals))
+            
+            var coordinatesArrivalProc = [
+                CLLocationCoordinate2D(latitude: 44.64361111111111, longitude: -1.04833333333333),
+                CLLocationCoordinate2D(latitude: 44.615483, longitude: -1.051423),
+                CLLocationCoordinate2D(latitude: 44.604922, longitude: -1.127804),
+                CLLocationCoordinate2D(latitude: 44.580868, longitude: -1.117855),
+                CLLocationCoordinate2D(latitude: 44.578758, longitude: -1.126971),
+                CLLocationCoordinate2D(latitude: 44.591484, longitude: -1.13332),
+                CLLocationCoordinate2D(latitude: 44.59473055555556, longitude: -1.11918888888889)
+            ];
+            
+            let shape1 = MGLPolyline(coordinates: &coordinatesDepartureProc, count: UInt(coordinatesDepartureProc.count))
+            shape1.subtitle = "Departure"
+            mapView.add(shape1)
+            
+            let shape2 = MGLPolyline(coordinates: &coordinatesEnroute, count: UInt(coordinatesEnroute.count))
+            shape2.subtitle = "enRoute"
+            mapView.add(shape2)
+            
+            let shape3 = MGLPolyline(coordinates: &coordinatesArrivalProc, count: UInt(coordinatesArrivalProc.count))
+            shape3.subtitle = "Arrival"
+            mapView.add(shape3)
+            
+            if wayStartLFCL {
+                let point = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(43.6541667, 1.524722222222222), title:"EndOfDeparture", subtitle:"")
+                
+                let nomImage = "EndOfDeparture"
+                let id = "EndOfDeparture"
+                
+                point.image = UIImage(named: nomImage)
+                point.reuseIdentifier = id
+                mapView.addAnnotation(point)
+            }
+            if wayEndLFCH {
+                let point = CustomPointAnnotation(coordinate: CLLocationCoordinate2DMake(44.6436111, -1.0483333333333333), title:"BeginningOfArrival", subtitle:"")
+                
+                let nomImage = "BeginningOfArrival"
+                let id = "BeginningOfArrival"
+                
+                point.image = UIImage(named: nomImage)
+                point.reuseIdentifier = id
+                mapView.addAnnotation(point)
+            }
+            
+        } else {
+         
+            var coordinatesEnroute = [CLLocationCoordinate2D(latitude: latitudeDepartures, longitude: longitudeDepartures)]
+            
+            if !wayPointOn {
+                coordinatesEnroute.append(CLLocationCoordinate2D(latitude: latitudeArrivals, longitude: longitudeArrivals))
+            } else {
+                for i in 0...keyWayPoint-1 {
+                    if wayPointData[i] != nil {
+                        coordinatesEnroute.append(CLLocationCoordinate2D(latitude: wayPointData[i]!.swLatitude, longitude: wayPointData[i]!.swLongitude))
+                    }
+                }
+                coordinatesEnroute.append(CLLocationCoordinate2D(latitude: latitudeArrivals, longitude: longitudeArrivals))
+            }
+            
+            let shape2 = MGLPolyline(coordinates: &coordinatesEnroute, count: UInt(coordinatesEnroute.count))
+            shape2.subtitle = "enRoute"
+            mapView.add(shape2)
+            
         }
-        
-        let shape2 = MGLPolyline(coordinates: &coordinatesEnroute, count: UInt(coordinatesEnroute.count))
-        shape2.subtitle = "enRoute"
-        mapView.add(shape2)
         
         // on affiche les view si une des deux ete cachee pas loop precedement
         displayView(number: 26)
@@ -1698,7 +1755,7 @@ extension ViewController: MGLMapViewDelegate {
                 if aiIcaoDepartures != flight_Plan.get_Departure_Airfield_aiIcao() {
                     data.append(["\(flight_Plan.get_Departure_Airfield_aiIcao()) (\(flight_Plan.get_Departure_Airfield_Name()))"])
                     iconesData.append("departures_map")
-                    dataTableView.append(["Departures"])
+                    dataTableView.append(["Departures", "\(flight_Plan.get_Departure_Airfield_aiIcao())"])
                     aiIcaoDepartures = flight_Plan.get_Departure_Airfield_aiIcao()
                 }
             }
@@ -1718,7 +1775,7 @@ extension ViewController: MGLMapViewDelegate {
                 if aiIcaoArrivals != flight_Plan.get_Arrival_Airfield_aiIcao() {
                     data.append(["\(flight_Plan.get_Arrival_Airfield_aiIcao()) (\(flight_Plan.get_Arrival_Airfield_Name()))"])
                     iconesData.append("arrivals_map")
-                    dataTableView.append(["Arrivals"])
+                    dataTableView.append(["Arrivals", "\(flight_Plan.get_Arrival_Airfield_aiIcao())"])
                     aiIcaoArrivals = flight_Plan.get_Arrival_Airfield_aiIcao()
                 }
             }

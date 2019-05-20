@@ -23,6 +23,10 @@ var arrivalOn: Bool = false
 var loop: Bool = false
 var wayPointOn: Bool = false
 
+// Afficher les routes
+var wayStartLFCL: Bool = false
+var wayEndLFCH: Bool = false
+
 // Creer points de depart et d'arrivee
 var departure = MGLPointAnnotation()
 var arrival = MGLPointAnnotation()
@@ -316,7 +320,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         }
  
 
-        print("dataTable est \(dataTableView[indexPath.section][indexPath.row])")
+        //print("dataTable est \(dataTableView[indexPath.section][indexPath.row])")
         
         let buttonPopup1  = UIButton(type: .custom)
         buttonPopup1.setImage(UIImage(named: "Zoom_45x45"), for: .normal)
@@ -325,6 +329,16 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         buttonPopup1.addTarget(self, action: #selector(zoomPopup(_:)), for: .touchUpInside)
         buttonPopup1.alpha = 1.0
         popup2.addSubview(buttonPopup1)
+        
+        if dataTableView[indexPath.section][indexPath.row] == "Departures" || dataTableView[indexPath.section][indexPath.row] == "Arrivals" {
+            let buttonPopup8  = UIButton(type: .custom)
+            buttonPopup8.setImage(UIImage(named: "Information_45x45"), for: .normal)
+            buttonPopup8.frame = CGRect(x: 61, y: 8, width: 45, height: 45)
+            buttonPopup8.tag = indexPath.section
+            buttonPopup8.addTarget(self, action: #selector(popupPist(_:)), for: .touchUpInside)
+            buttonPopup8.alpha = 1.0
+            popup2.addSubview(buttonPopup8)
+        }
         
         if dataTableView[indexPath.section][indexPath.row] == "Airports" {
             
@@ -607,15 +621,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         
         self.present(alert, animated: true, completion: nil)
     }
-    /**
-    @objc func alertPopupSuppPointDeparture() {
-        let alert = UIAlertController(title: "Alert", message: "Voulez-vous supprimer le point de depart ?", preferredStyle: UIAlertController.Style.alert)
-        alert.addAction(UIAlertAction(title: "Oui", style: UIAlertAction.Style.default, handler: { action in self.suppPointDeparture() } ))
-        alert.addAction(UIAlertAction(title: "Non", style: UIAlertAction.Style.default, handler: nil))
-        
-        self.present(alert, animated: true, completion: nil)
-    }
-    **/
+    
     @objc func alertPopupNoAirportsDepartures() {
         let alert = UIAlertController(title: "Alert", message: "L'aerodrome de depart n'est pas configure", preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "Click", style: UIAlertAction.Style.default, handler: nil))
@@ -639,6 +645,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         // on on effectue le traitement que si airports
         print("C'est un/une \(dataTableView[sender.tag][0])")
         if dataTableView[sender.tag][0] == "Airports" {
+            
+            wayStartLFCL = false
             
             if !flight_Plan.departure_Airfield_isEmpty() == true {
                 flight_Plan.unset_Departure_Airfield()
@@ -684,6 +692,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         // on on effectue le traitement que si airports
         print("C'est un/une \(dataTableView[sender.tag][0])")
         if dataTableView[sender.tag][0] == "Airports" && departureOn == true {
+            
+            wayEndLFCH = false
             
             if !flight_Plan.arrival_Airfield_isEmpty() {
                 flight_Plan.unset_Arrival_Airfield()
@@ -812,11 +822,12 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         
     }
     
+    // Permet de supprimer un wayPoint du dictionnaire "wayPointData"
     @objc func suppWayPointData(_ sender:UIButton) {
         if dataTableView[sender.tag][0] == "wayPoint" {
             
             wayPointData.removeValue(forKey: Int(dataTableView[sender.tag][1])!)
-    
+            
             displayWayPoint()
             
             if wayPointData.count == 0 {
@@ -852,7 +863,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
     }
     
     
-    
+    // Permet de faire reculer un wayPoint dans la liste
+    // Ne fait rien si premier de la liste
      @objc func backwardWayPointData(_ sender:UIButton) {
         
         let key: Int = Int(dataTableView[sender.tag][1])!
@@ -896,6 +908,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         closePopUp()
     }
     
+    // Permet de faire avancer un wayPoint dans la liste
+    // Ne fait rien si dernier de la liste
     @objc func forwardWayPointData(_ sender:UIButton) {
         
         let key: Int = Int(dataTableView[sender.tag][1])!
@@ -937,6 +951,42 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             displayRoutePlane()
         }
         closePopUp()
+    }
+    
+    @objc func popupPist(_ sender:UIButton) {
+        
+        closePopUp()
+    
+        if flight_Plan.departure_Airfield[0][0].aiIcao == "LFCL" && flight_Plan.arrival_Airfield[0][0].aiIcao == "LFCH" {
+            
+            let selPist = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertController.Style.alert)
+            
+            if dataTableView[sender.tag][1] == "LFCL" {
+                selPist.message = "Sélection Départ"
+                selPist.addAction(UIAlertAction(title: "LFCL Départ Nord", style: UIAlertAction.Style.default, handler: { action in
+                    wayStartLFCL = true
+                    if wayStartLFCL && wayEndLFCH {
+                        self.displayRoutePlane()
+                    } } ))
+                selPist.addAction(UIAlertAction(title: "LFCL Départ Sud", style: UIAlertAction.Style.default, handler: nil))
+            }else if dataTableView[sender.tag][1] == "LFCH" {
+                selPist.message = "Sélection Arrivée"
+                selPist.addAction(UIAlertAction(title: "LFCH Arrivée Nord-Est", style: UIAlertAction.Style.default, handler: { action in
+                    wayEndLFCH = true
+                    if wayStartLFCL && wayEndLFCH {
+                        self.displayRoutePlane()
+                    } } ))
+                selPist.addAction(UIAlertAction(title: "LFCH Arrivée Ouest", style: UIAlertAction.Style.default, handler: nil))
+            }
+            
+            self.present(selPist, animated: true, completion: nil)
+            
+        } else {
+            let alert = UIAlertController(title: nil, message: "Action non implémentée", preferredStyle: UIAlertController.Style.alert)
+            alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+        }
+        
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
