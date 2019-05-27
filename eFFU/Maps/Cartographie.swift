@@ -1163,7 +1163,7 @@ extension ViewController: MGLMapViewDelegate {
         mapView.addAnnotation(departures)
         departureOn = true
         loop = false
-        suppPointLoop()
+        suppView(number: 28)
     }
     
     // Permet de creer le point arrivals
@@ -1176,7 +1176,7 @@ extension ViewController: MGLMapViewDelegate {
         mapView.addAnnotation(arrivals)
         arrivalOn = true
         loop = false
-        suppPointLoop()
+        suppView(number: 28)
     }
     
     // Permet d'afficher la view avec le tag en parametre
@@ -1191,6 +1191,20 @@ extension ViewController: MGLMapViewDelegate {
         viewWithTag?.isHidden = true
     }
     
+    // Permet de supprimer la view avec le tag en parametre
+    func suppView(number: Int){
+        var viewWithTag = self.view.viewWithTag(number)
+        viewWithTag?.removeFromSuperview()
+        viewWithTag = nil
+    }
+    
+    func suppMoreView(numberMin: Int, numberMax: Int){
+        for i in numberMin...numberMax {
+            var viewWithTag = self.view.viewWithTag(i)
+            viewWithTag?.removeFromSuperview()
+            viewWithTag = nil
+        }
+    }
     
     // Permet d'afficher le point de depart
     func displayPointDepartures(){
@@ -1243,7 +1257,7 @@ extension ViewController: MGLMapViewDelegate {
     
     func displayWayPoint(){
         print("nombre d'element dans la liste :", wayPointData.count)
-        suppWayPoint()
+        suppView(number: 29)
         mapBox(styleMapboxView: "mapbox://styles/effumaps/cjpx6n3z101lc2smpdn9zrzvf", layerMapbox: 29, tagger: "Route")
         for i in 0...keyWayPoint-1 {
             // il faut comparer avec la key la plus grand dans le for et non pas le count
@@ -1361,7 +1375,7 @@ extension ViewController: MGLMapViewDelegate {
         displayView(number: 26)
         displayView(number: 27)
     }
-    
+    /**
     // Permet de supprimer la route
     func suppRoutePlane(){
         var viewWithTag25 = self.view.viewWithTag(25)
@@ -1411,7 +1425,7 @@ extension ViewController: MGLMapViewDelegate {
         viewWithTag29?.removeFromSuperview()
         viewWithTag29 = nil
     }
-    
+    **/
     // Permet d'afficher ou cacher les elements du plan de vol
     func drawRoutePlane() {
         
@@ -1717,7 +1731,6 @@ extension ViewController: MGLMapViewDelegate {
         self.view.layer.addSublayer(shapeLayer)
         
         //Calcul distance
-        //tableData = []
         headerTitles = []
         data = []
         iconesData = []
@@ -2123,29 +2136,29 @@ extension ViewController: MGLMapViewDelegate {
             popup.layer.cornerRadius = 10
             popup.tag = 221
                         
-            tableView.reloadData()
-            tableView = UITableView(frame: self.view.bounds, style: UITableView.Style.plain)
-            tableView.dataSource = self
-            tableView.delegate = self
-            tableView.backgroundColor = UIColor.white
-            tableView.rowHeight = UITableView.automaticDimension
-            tableView.estimatedRowHeight = 85
+            tableViewPopUp.reloadData()
+            tableViewPopUp = UITableView(frame: self.view.bounds, style: UITableView.Style.plain)
+            tableViewPopUp.dataSource = self
+            tableViewPopUp.delegate = self
+            tableViewPopUp.backgroundColor = UIColor.white
+            tableViewPopUp.rowHeight = UITableView.automaticDimension
+            tableViewPopUp.estimatedRowHeight = 85
             
-            tableView.register(UITableViewCell.self, forCellReuseIdentifier: "my")
+            tableViewPopUp.register(UITableViewCell.self, forCellReuseIdentifier: "my")
             
-            tableView.contentInset.top = 5
-            tableView.frame = CGRect(x: 10, y: 10, width: taillePopupWidth - 20, height: 335)
-            tableView.backgroundColor = UIColor.white
-            let contentSize = self.tableView.contentSize
-            let footer = UIView(frame: CGRect(x: self.tableView.frame.origin.x,
-                                              y: self.tableView.frame.origin.y + contentSize.height,
-                                              width: self.tableView.frame.size.width,
-                                              height: self.tableView.frame.height - self.tableView.contentSize.height))
+            tableViewPopUp.contentInset.top = 5
+            tableViewPopUp.frame = CGRect(x: 10, y: 10, width: taillePopupWidth - 20, height: 335)
+            tableViewPopUp.backgroundColor = UIColor.white
+            let contentSize = self.tableViewPopUp.contentSize
+            let footer = UIView(frame: CGRect(x: self.tableViewPopUp.frame.origin.x,
+                                              y: self.tableViewPopUp.frame.origin.y + contentSize.height,
+                                              width: self.tableViewPopUp.frame.size.width,
+                                              height: self.tableViewPopUp.frame.height - self.tableViewPopUp.contentSize.height))
             
-            self.tableView.tableFooterView = footer
+            self.tableViewPopUp.tableFooterView = footer
             
             
-            popup.addSubview(tableView)
+            popup.addSubview(tableViewPopUp)
             self.view.addSubview(popup)
             
         } else {

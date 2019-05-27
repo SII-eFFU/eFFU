@@ -535,87 +535,134 @@ extension ViewController {
         
     }
     
-    /* End Of Function ******************************************************/
-    
     /* Begin Of Function ******************************************************
      *    Clipboard Panel Plan de vol               *
      ************************************************/
     
     func clipBoardPanel(visible: Bool) {
         
-    print("Panel Clipboard \(visible) ")
+        print("Panel Clipboard \(visible) ")
         
-    let viewLayer = 150
+        let viewLayer = 150
         
-    let viewWithTag = self.view.viewWithTag(viewLayer)
-    viewWithTag?.removeFromSuperview()
-    
-    let screenWidth = UIScreen.main.bounds.size.width
-    let screenHeight = UIScreen.main.bounds.size.height
-    let menuLandscapeWidth: Int
-    if (screenWidth > screenHeight) {
+        let viewWithTag = self.view.viewWithTag(viewLayer)
+        viewWithTag?.removeFromSuperview()
         
-        menuLandscapeWidth = Int(screenWidth) - 768
-    
-    } else {
+        let screenWidth = UIScreen.main.bounds.size.width
+        let screenHeight = UIScreen.main.bounds.size.height
+        let menuLandscapeWidth: Int
+        if (screenWidth > screenHeight) {
+            
+            menuLandscapeWidth = Int(screenWidth) - 768
+            
+        } else {
+            
+            menuLandscapeWidth = applicationParametres.paddingBorder
+            
+        }
+        //print (" Largeur menu \(menuLandscapeWidth) ")
         
-        menuLandscapeWidth = applicationParametres.paddingBorder
-    
-    }
-    //print (" Largeur menu \(menuLandscapeWidth) ")
-
-    let positionmenuLandscapeWidth = Int(screenWidth)
-    if (!visible) {
-    let positionmenuLandscapeWidth = Int(screenWidth) - menuLandscapeWidth
-
-    }
-        
-    print (" \(positionmenuLandscapeWidth) ")
-        
-    let panelContainer = UIView()
-        panelContainer.frame = CGRect(x: Int(positionmenuLandscapeWidth) + applicationParametres.paddingBorder, y: 64 + applicationParametres.paddingBorder, width: 760, height: 1040)
-    panelContainer.layer.cornerRadius = CGFloat(applicationParametres.borderCornerRadius)
-    panelContainer.backgroundColor = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 1.0)
-    panelContainer.tag = viewLayer
-    
-    panelContainer.isUserInteractionEnabled = true
-    
-    if visible {
-        
-        // Insertion Texte
-        let titre = UIButton(type: .custom)
-        titre.frame = CGRect(x: 0, y: 0, width: 760, height: 60)
-        titre.backgroundColor = UIColor(red: 240/255, green: 240/255, blue: 240/255, alpha: 0.8)
-        titre.layer.cornerRadius = CGFloat(applicationParametres.borderCornerRadius)
-        titre.setTitleColor(UIColor.black, for: .normal)
-        titre.titleLabel?.font = UIFont(name: "SF UI Display Ultralight", size: 30)
-        titre.titleLabel?.font = titre.titleLabel?.font.withSize(24)
-        titre.contentHorizontalAlignment = .center
-        titre.setTitle("Plan de Vol", for: .normal)
-        
-        panelContainer.addSubview(titre)
-        
-        //Ligne separator
-        let lineViewUp = UIView(frame: CGRect(x: 0, y: 60, width: 760, height: Int(1.0)))
-        lineViewUp.layer.borderWidth = 1.0
-        lineViewUp.layer.borderColor = UIColor.black.cgColor
-        panelContainer.addSubview(lineViewUp)
-        
-        let imageMaquette  = UIButton(type: .custom)
-        imageMaquette.setImage(UIImage(named: "plandevol"), for: .normal)
-        imageMaquette.frame = CGRect(x: ( Int(screenWidth) - Int(menuLandscapeWidth) - 748 )  / 2, y: 74, width: 748, height: 951)
-        
-        panelContainer.addSubview(imageMaquette)
-        
-        
-        
-        self.view.insertSubview(panelContainer, at: viewLayer)
-        
-        UIView.animate(withDuration: 0.5) {
-            panelContainer.frame = CGRect(x: menuLandscapeWidth, y: 64 + applicationParametres.paddingBorder, width: 760, height: 1040)
+        let positionmenuLandscapeWidth = Int(screenWidth)
+        if (!visible) {
+            let positionmenuLandscapeWidth = Int(screenWidth) - menuLandscapeWidth
+            
         }
         
-    }
+        print (" \(positionmenuLandscapeWidth) ")
+        
+        let panelContainer = UIView()
+        panelContainer.frame = CGRect(x: Int(positionmenuLandscapeWidth) + applicationParametres.paddingBorder, y: 64 + applicationParametres.paddingBorder, width: 760, height: 1040)
+        panelContainer.layer.cornerRadius = CGFloat(applicationParametres.borderCornerRadius)
+        panelContainer.backgroundColor = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 1.0)
+        panelContainer.tag = viewLayer
+        
+        panelContainer.isUserInteractionEnabled = true
+        
+        if visible {
+            // Liste pour afficher les données
+            dataListFlightPlan = []
+            iconesDataFlightPlan = []
+            
+            if departureOn {
+                dataListFlightPlan.append(["\(flight_Plan.get_Departure_Airfield_aiIcao()) (\(flight_Plan.get_Departure_Airfield_Name()))"])
+                iconesDataFlightPlan.append("departures_map")
+            }
+            if wayPointOn {
+                var keyNoNil: Int = 0
+                for _ in 1...wayPointData.count {
+                    while wayPointData[keyNoNil] == nil {
+                        keyNoNil = keyNoNil + 1
+                    }
+                    dataListFlightPlan.append(["\(wayPointData[keyNoNil]!.aiName)"])
+                    iconesDataFlightPlan.append("\(wayPointData[keyNoNil]!.icon)")
+                    keyNoNil = keyNoNil + 1
+                }
+            }
+            if arrivalOn {
+                dataListFlightPlan.append(["\(flight_Plan.get_Arrival_Airfield_aiIcao()) (\(flight_Plan.get_Arrival_Airfield_Name()))"])
+                iconesDataFlightPlan.append("arrivals_map")
+            }
+            
+            // Insertion Texte
+            let titre = UIButton(type: .custom)
+            titre.frame = CGRect(x: 0, y: 0, width: 760, height: 60)
+            titre.backgroundColor = UIColor(red: 240/255, green: 240/255, blue: 240/255, alpha: 0.8)
+            titre.layer.cornerRadius = CGFloat(applicationParametres.borderCornerRadius)
+            titre.setTitleColor(UIColor.black, for: .normal)
+            titre.titleLabel?.font = UIFont(name: "SF UI Display Ultralight", size: 30)
+            titre.titleLabel?.font = titre.titleLabel?.font.withSize(24)
+            titre.contentHorizontalAlignment = .center
+            titre.setTitle("Plan de Vol", for: .normal)
+            
+            panelContainer.addSubview(titre)
+            
+            //Ligne separator
+            let lineViewUp = UIView(frame: CGRect(x: 0, y: 60, width: 760, height: Int(1.0)))
+            lineViewUp.layer.borderWidth = 1.0
+            lineViewUp.layer.borderColor = UIColor.black.cgColor
+            panelContainer.addSubview(lineViewUp)
+            
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            
+            tableViewFlightPlan.reloadData()
+            tableViewFlightPlan = UITableView(frame: panelContainer.frame, style: UITableView.Style.plain)
+            tableViewFlightPlan.dataSource = self
+            tableViewFlightPlan.delegate = self
+            tableViewFlightPlan.backgroundColor = UIColor.white
+            tableViewFlightPlan.rowHeight = UITableView.automaticDimension
+            tableViewFlightPlan.estimatedRowHeight = 150
+            
+            tableViewFlightPlan.register(UITableViewCell.self, forCellReuseIdentifier: "my")
+            
+            //tableViewFlightPlan.contentInset.top = 5
+            
+            tableViewFlightPlan.frame = CGRect(x: 0, y: 61, width: 760, height: 980)
+            
+            tableViewFlightPlan.backgroundColor = UIColor.white
+            let contentSize = self.tableViewFlightPlan.contentSize
+            let footer = UIView(frame: CGRect(x: self.tableViewFlightPlan.frame.origin.x,
+                                              y: self.tableViewFlightPlan.frame.origin.y + contentSize.height,
+                                              width: self.tableViewFlightPlan.frame.size.width,
+                                              height: self.tableViewFlightPlan.frame.height - self.tableViewFlightPlan.contentSize.height))
+            
+            self.tableViewFlightPlan.tableFooterView = footer
+            
+            
+            panelContainer.addSubview(tableViewFlightPlan)
+            
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            
+            self.view.insertSubview(panelContainer, at: viewLayer)
+            
+            UIView.animate(withDuration: 0.5) {
+                panelContainer.frame = CGRect(x: menuLandscapeWidth, y: 64 + applicationParametres.paddingBorder, width: 760, height: 1040)
+            }
+            
+        }
         
     }
     

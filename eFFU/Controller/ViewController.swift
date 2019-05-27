@@ -47,21 +47,28 @@ var nomWaypointRam: String = ""
 // array of dictionary
 var wayPointListAny = [[String:Any]]()
 
-
 class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDelegate, CLLocationManagerDelegate, UITableViewDelegate, UITableViewDataSource {
     
-    var tableView = UITableView()
+    var tableViewPopUp = UITableView()
+    var tableViewFlightPlan = UITableView()
+    
     var selectedSectionIndex = -1
     var selectedRowIndex = -1
   
-    var tableData = ["A", "B", "C", "D"]
     // Permet de stocker un element de la liste
     var data = [["0,0", "0,1", "0,2"], ["1,0", "1,1", "1,2"]]
+    
+    // Permet de stocker les données du flightPlan pour afficher la liste dans le menu
+    var dataListFlightPlan = [["0,0", "0,1", "0,2"], ["1,0", "1,1", "1,2"]]
+    
     var headerTitles = ["A", "B"]
     // Permet de stocker l'icone d'un element de la liste
     var iconesData = ["A", "B", "C", "D"]
-    var dataTableView = [["A", "B"], ["D", "E"]]
     
+    // Permet de stocker les icônes des éléments du flightPlan pour les afficher dans le menu
+    var iconesDataFlightPlan = ["A", "B", "C", "D"]
+    
+    var dataTableView = [["A", "B"], ["D", "E"]]
     
 //    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 //
@@ -92,31 +99,66 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
     //*** Multi Choice
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        //return tableData.count
-        return data[section].count
+        
+        if tableView == tableViewPopUp {
+            //print("1il y a ", data[section].count)
+            //return data[section].count
+            return 1
+        }
+        
+        if tableView == tableViewFlightPlan {
+            //return wayPointData.count
+            return 1
+        }
+        return 0
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        
+        if tableView == tableViewPopUp {
+            return 0
+        }
+        if tableView == tableViewFlightPlan {
+            return 0
+        }
+        
         return 0
     }
    
     func numberOfSections(in tableView: UITableView) -> Int {
         //print ("data count est à \(data.count)")
-        return data.count
+        
+        if tableView == tableViewPopUp {
+            return data.count
+        }
+        if tableView == tableViewFlightPlan {
+            //return wayPointData.count
+            return dataListFlightPlan.count
+        }
+        
+        return 1
     }
     
     // Agrandir la ligne pour afficher les fonctions
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-
-        // On test si il y a qu'un seul element dans la liste
-        if indexPath.section == 0 && selectedSectionIndex == -1 && data.count == 1 {
-            return 130
+        
+        if tableView == tableViewPopUp{
+            // On test si il y a qu'un seul element dans la liste
+            if indexPath.section == 0 && selectedSectionIndex == -1 && data.count == 1 {
+                return 130
+            }
+            
+            if indexPath.section == selectedSectionIndex{
+                return 130 //Expanded
+            }
+            return 65 //Not expanded
         }
-
-        if indexPath.section == selectedSectionIndex{
-            return 130 //Expanded
+        
+        if tableView == tableViewFlightPlan {
+            return 100
         }
-        return 65 //Not expanded
+        
+        return 0
         
     }
     
@@ -124,45 +166,45 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         //print("selectedSectionIndex est a \(selectedSectionIndex)")
-        
-        if selectedSectionIndex == indexPath.section {
+        if tableView == tableViewPopUp || tableView == tableViewFlightPlan {
             
-            let indexPath = IndexPath(item: selectedRowIndex, section: selectedSectionIndex)
-            selectedSectionIndex = -1
-            selectedRowIndex = -1
-            tableView.reloadRows(at: [indexPath], with: .automatic)
-            
-        
-        } else {
-            
-            //print("selectedRowIndex est a \(selectedRowIndex)")
-            
-            
-            
-            if selectedRowIndex != -1{
+            if selectedSectionIndex == indexPath.section {
                 
                 let indexPath = IndexPath(item: selectedRowIndex, section: selectedSectionIndex)
-                
                 selectedSectionIndex = -1
                 selectedRowIndex = -1
-                
                 tableView.reloadRows(at: [indexPath], with: .automatic)
-            
-
                 
-
+                
+            } else {
+                
+                //print("selectedRowIndex est a \(selectedRowIndex)")
+                
+                
+                
+                if selectedRowIndex != -1{
+                    
+                    let indexPath = IndexPath(item: selectedRowIndex, section: selectedSectionIndex)
+                    
+                    selectedSectionIndex = -1
+                    selectedRowIndex = -1
+                    
+                    tableView.reloadRows(at: [indexPath], with: .automatic)
+                    
+                    
+                    
+                    
+                }
+                
+                // Afficher la ligne qu'on selectionne
+                selectedSectionIndex = indexPath.section
+                selectedRowIndex = indexPath.row
+                tableView.reloadRows(at: [indexPath], with: .automatic)
+                
+                
             }
             
-            // Afficher la ligne qu'on selectionne
-            selectedSectionIndex = indexPath.section
-            selectedRowIndex = indexPath.row
-            tableView.reloadRows(at: [indexPath], with: .automatic)
-            
-            
         }
-        
-
-
     }
 //    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 //        tableView.deselectRow(at: indexPath, animated: true)
@@ -173,370 +215,376 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
 
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         let cell = UITableViewCell()
-        //let cell = UITableViewCell(style: .default, reuseIdentifier: imageLigne)
-        //print (iconesData[indexPath.section])
-        let popup1 = UIView()
-        popup1.frame = CGRect(x: 0, y: 0, width: 503, height: 105)
-        popup1.backgroundColor = UIColor(red: 186/255, green: 212/255, blue: 235/255, alpha: 1.0)
         
-        
-        let popup2 = UIView()
-        popup2.frame = CGRect(x: 0, y: 32, width: 503, height: 60)
-        popup2.backgroundColor = UIColor(red: 186/255, green: 212/255, blue: 235/255, alpha: 1.0)
-        popup1.addSubview(popup2)
-
-        let popup3 = UIView()
-        popup3.frame = CGRect(x: 0, y: 0, width: 503, height: 35)
-        popup3.backgroundColor = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 1.0)
-
-        let popup4 = UIView()
-        popup4.frame = CGRect(x: 0, y: 0, width: 503, height: 35)
-        popup4.backgroundColor = UIColor.clear
-
-        
-       
-        // Verifier contenu de data
-        //print("data est egal a \(data[indexPath.section][indexPath.row])")
-        
-        //print("indexPath section est a \(indexPath.section)")
-        
-        // On ajoute l'icone de l'element de la liste
-        
-        if dataTableView[indexPath.section][indexPath.row] != "wayPoint" {
-         
-            let IconeName = iconesData[indexPath.section]
-            let iconeElement = UIImage(named: IconeName)
-            let imageView = UIImageView(image: iconeElement!)
-            imageView.frame = CGRect(x: 20, y: 2, width: 30, height: 30)
+        if tableView == tableViewPopUp {
             
-            popup3.addSubview(imageView)
-            
-            // parametrer nom de l'element dans la liste
-            let titrePopup = UIButton(type: .custom)
-            titrePopup.frame = CGRect(x:65, y:2, width:420, height:30)
-            titrePopup.setTitleColor(UIColor.black, for: .normal)
-            titrePopup.titleLabel?.font = titrePopup.titleLabel?.font.withSize(20)
-            titrePopup.contentHorizontalAlignment = .left
-            
-            //creer nom de l'element dans la liste
-            titrePopup.setTitle("\(data[indexPath.section][indexPath.row])", for: .normal)
-            
-            // Afficher le nom de l'element de la liste
-            popup3.addSubview(titrePopup)
-            
-            // Creer icone de l'element de la liste quand clic
-            let imageNameClic = iconesData[indexPath.section]
-            let iconeElementClic = UIImage(named: imageNameClic)
-            let imageViewClic = UIImageView(image: iconeElementClic!)
-            imageViewClic.frame = CGRect(x: 20, y: 2, width: 30, height: 30)
-            popup1.addSubview(imageViewClic)
-            
-            // parametrer nom de l'element dans la liste quand clic
-            let titrepopupClic = UIButton(type: .custom)
-            titrepopupClic.frame = CGRect(x: 65, y: 2, width: 420 , height: 30)
-            titrepopupClic.setTitleColor(UIColor.black, for: .normal)
-            titrepopupClic.titleLabel?.font = titrepopupClic.titleLabel?.font.withSize(20)
-            titrepopupClic.contentHorizontalAlignment = .left
-            
-            //creer nom de l'element dans la liste quand clic
-            titrepopupClic.setTitle("\(data[indexPath.section][indexPath.row])", for: .normal)
-            
-            // Afficher le nom de l'element de la liste quand clic
-            popup1.addSubview(titrepopupClic)
-            
-            popup1.addSubview(popup4)
+            //let cell = UITableViewCell(style: .default, reuseIdentifier: imageLigne)
+            //print (iconesData[indexPath.section])
+            let popup1 = UIView()
+            popup1.frame = CGRect(x: 0, y: 0, width: 503, height: 105)
+            popup1.backgroundColor = UIColor(red: 186/255, green: 212/255, blue: 235/255, alpha: 1.0)
             
             
-            let popup5 = UIView()
-            popup5.frame = CGRect(x: 0, y: 0, width: 503, height: 35)
-            popup5.backgroundColor = UIColor.clear
-            popup3.addSubview(popup5)
+            let popup2 = UIView()
+            popup2.frame = CGRect(x: 0, y: 32, width: 503, height: 60)
+            popup2.backgroundColor = UIColor(red: 186/255, green: 212/255, blue: 235/255, alpha: 1.0)
+            popup1.addSubview(popup2)
             
-        } else {
+            let popup3 = UIView()
+            popup3.frame = CGRect(x: 0, y: 0, width: 503, height: 35)
+            popup3.backgroundColor = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 1.0)
             
-            //let IconeFlightPlan = iconesData[indexPath.section]
-            let iconeElementFlightPlan = UIImage(named: "Waypoint_45x45")
-            let imageViewFlightPlan = UIImageView(image: iconeElementFlightPlan!)
-            imageViewFlightPlan.frame = CGRect(x: 20, y: 2, width: 30, height: 30)
-            
-            popup3.addSubview(imageViewFlightPlan)
-            
-            let IconeName = iconesData[indexPath.section]
-            let iconeElement = UIImage(named: IconeName)
-            let imageView = UIImageView(image: iconeElement!)
-            imageView.frame = CGRect(x: 65, y: 2, width: 30, height: 30)
-            
-            popup3.addSubview(imageView)
-            
-            // parametrer nom de l'element dans la liste
-            let titrePopup = UIButton(type: .custom)
-            titrePopup.frame = CGRect(x: 110, y:2, width:420, height:30)
-            titrePopup.setTitleColor(UIColor.black, for: .normal)
-            titrePopup.titleLabel?.font = titrePopup.titleLabel?.font.withSize(20)
-            titrePopup.contentHorizontalAlignment = .left
-            
-            //creer nom de l'element dans la liste
-            titrePopup.setTitle("\(data[indexPath.section][indexPath.row])", for: .normal)
-            
-            // Afficher le nom de l'element de la liste
-            popup3.addSubview(titrePopup)
-            
-            //let imageNameFlightPlanClic = iconesData[indexPath.section]
-            let iconeElementFlightPlanClic = UIImage(named: "Waypoint_45x45")
-            let imageViewFlightPlanClic = UIImageView(image: iconeElementFlightPlanClic!)
-            imageViewFlightPlanClic.frame = CGRect(x: 20, y: 2, width: 30, height: 30)
-            
-            popup1.addSubview(imageViewFlightPlanClic)
-            
-            // Creer icone de l'element de la liste quand clic
-            let imageNameClic = iconesData[indexPath.section]
-            let iconeElementClic = UIImage(named: imageNameClic)
-            let imageViewClic = UIImageView(image: iconeElementClic!)
-            imageViewClic.frame = CGRect(x: 65, y: 2, width: 30, height: 30)
-            
-            popup1.addSubview(imageViewClic)
-            
-            // parametrer nom de l'element dans la liste quand clic
-            let titrepopupClic = UIButton(type: .custom)
-            titrepopupClic.frame = CGRect(x: 110, y: 2, width: 420 , height: 30)
-            titrepopupClic.setTitleColor(UIColor.black, for: .normal)
-            titrepopupClic.titleLabel?.font = titrepopupClic.titleLabel?.font.withSize(20)
-            titrepopupClic.contentHorizontalAlignment = .left
-            
-            //creer nom de l'element dans la liste quand clic
-            titrepopupClic.setTitle("\(data[indexPath.section][indexPath.row])", for: .normal)
-            
-            // Afficher le nom de l'element de la liste quand clic
-            popup1.addSubview(titrepopupClic)
-            
-            popup1.addSubview(popup4)
+            let popup4 = UIView()
+            popup4.frame = CGRect(x: 0, y: 0, width: 503, height: 35)
+            popup4.backgroundColor = UIColor.clear
             
             
-            let popup5 = UIView()
-            popup5.frame = CGRect(x: 0, y: 0, width: 503, height: 35)
-            popup5.backgroundColor = UIColor.clear
-            popup3.addSubview(popup5)
-        }
- 
-
-        //print("dataTable est \(dataTableView[indexPath.section][indexPath.row])")
-        
-        let buttonPopup1  = UIButton(type: .custom)
-        buttonPopup1.setImage(UIImage(named: "Zoom_45x45"), for: .normal)
-        buttonPopup1.frame = CGRect(x: 13, y: 8, width: 45, height: 45)
-        buttonPopup1.tag = indexPath.section
-        buttonPopup1.addTarget(self, action: #selector(zoomPopup(_:)), for: .touchUpInside)
-        buttonPopup1.alpha = 1.0
-        popup2.addSubview(buttonPopup1)
-        
-        if dataTableView[indexPath.section][indexPath.row] == "Departures" || dataTableView[indexPath.section][indexPath.row] == "Arrivals" {
-            let buttonPopup8  = UIButton(type: .custom)
-            buttonPopup8.setImage(UIImage(named: "Information_45x45"), for: .normal)
-            buttonPopup8.frame = CGRect(x: 61, y: 8, width: 45, height: 45)
-            buttonPopup8.tag = indexPath.section
-            buttonPopup8.addTarget(self, action: #selector(popupPist(_:)), for: .touchUpInside)
-            buttonPopup8.alpha = 1.0
-            popup2.addSubview(buttonPopup8)
-        }
-        
-        if dataTableView[indexPath.section][indexPath.row] == "Airports" {
             
-            let buttonPopup2  = UIButton(type: .custom)
-            buttonPopup2.setImage(UIImage(named: "Departure_45x45"), for: .normal)
-            buttonPopup2.frame = CGRect(x: 61, y: 8, width: 45, height: 45)
-            buttonPopup2.tag = indexPath.section
-            buttonPopup2.addTarget(self, action: #selector(departurePopup(_:)), for: .touchUpInside)
-            buttonPopup2.alpha = 1.0
-            popup2.addSubview(buttonPopup2)
+            // Verifier contenu de data
+            //print("data est egal a \(data[indexPath.section][indexPath.row])")
             
-            let buttonPopup3  = UIButton(type: .custom)
-            buttonPopup3.setImage(UIImage(named: "Arrival_45x45"), for: .normal)
-            buttonPopup3.frame = CGRect(x: 109, y: 8, width: 45, height: 45)
-            buttonPopup3.tag = indexPath.section
-            buttonPopup3.addTarget(self, action: #selector(arrivalPopup(_:)), for: .touchUpInside)
-            buttonPopup3.alpha = 1.0
-            popup2.addSubview(buttonPopup3)
+            //print("indexPath section est a \(indexPath.section)")
             
-        }
-        
-        // Affichage du bouton fonction "Waypoint"
-        if dataTableView[indexPath.section][indexPath.row] != "Departures" && dataTableView[indexPath.section][indexPath.row] != "Arrivals" && dataTableView[indexPath.section][indexPath.row] != "wayPoint" {
+            // On ajoute l'icone de l'element de la liste
             
-            // On affiche seulement si on a un point de départ et d'arrivée
-            if departureOn && arrivalOn {
+            if dataTableView[indexPath.section][indexPath.row] != "wayPoint" {
                 
-                let buttonPopup5  = UIButton(type: .custom)
-                buttonPopup5.setImage(UIImage(named: "Waypoint_45x45"), for: .normal)
+                let IconeName = iconesData[indexPath.section]
+                let iconeElement = UIImage(named: IconeName)
+                let imageView = UIImageView(image: iconeElement!)
+                imageView.frame = CGRect(x: 20, y: 2, width: 30, height: 30)
                 
-                // Positionnement selon le type
-                if dataTableView[indexPath.section][indexPath.row] == "Airports" {
+                popup3.addSubview(imageView)
+                
+                // parametrer nom de l'element dans la liste
+                let titrePopup = UIButton(type: .custom)
+                titrePopup.frame = CGRect(x:65, y:2, width:420, height:30)
+                titrePopup.setTitleColor(UIColor.black, for: .normal)
+                titrePopup.titleLabel?.font = titrePopup.titleLabel?.font.withSize(20)
+                titrePopup.contentHorizontalAlignment = .left
+                
+                //creer nom de l'element dans la liste
+                titrePopup.setTitle("\(data[indexPath.section][indexPath.row])", for: .normal)
+                
+                // Afficher le nom de l'element de la liste
+                popup3.addSubview(titrePopup)
+                
+                // Creer icone de l'element de la liste quand clic
+                let imageNameClic = iconesData[indexPath.section]
+                let iconeElementClic = UIImage(named: imageNameClic)
+                let imageViewClic = UIImageView(image: iconeElementClic!)
+                imageViewClic.frame = CGRect(x: 20, y: 2, width: 30, height: 30)
+                popup1.addSubview(imageViewClic)
+                
+                // parametrer nom de l'element dans la liste quand clic
+                let titrepopupClic = UIButton(type: .custom)
+                titrepopupClic.frame = CGRect(x: 65, y: 2, width: 420 , height: 30)
+                titrepopupClic.setTitleColor(UIColor.black, for: .normal)
+                titrepopupClic.titleLabel?.font = titrepopupClic.titleLabel?.font.withSize(20)
+                titrepopupClic.contentHorizontalAlignment = .left
+                
+                //creer nom de l'element dans la liste quand clic
+                titrepopupClic.setTitle("\(data[indexPath.section][indexPath.row])", for: .normal)
+                
+                // Afficher le nom de l'element de la liste quand clic
+                popup1.addSubview(titrepopupClic)
+                
+                popup1.addSubview(popup4)
+                
+                
+                let popup5 = UIView()
+                popup5.frame = CGRect(x: 0, y: 0, width: 503, height: 35)
+                popup5.backgroundColor = UIColor.clear
+                popup3.addSubview(popup5)
+                
+            } else {
+                
+                //let IconeFlightPlan = iconesData[indexPath.section]
+                let iconeElementFlightPlan = UIImage(named: "Waypoint_45x45")
+                let imageViewFlightPlan = UIImageView(image: iconeElementFlightPlan!)
+                imageViewFlightPlan.frame = CGRect(x: 20, y: 2, width: 30, height: 30)
+                
+                popup3.addSubview(imageViewFlightPlan)
+                
+                let IconeName = iconesData[indexPath.section]
+                let iconeElement = UIImage(named: IconeName)
+                let imageView = UIImageView(image: iconeElement!)
+                imageView.frame = CGRect(x: 65, y: 2, width: 30, height: 30)
+                
+                popup3.addSubview(imageView)
+                
+                // parametrer nom de l'element dans la liste
+                let titrePopup = UIButton(type: .custom)
+                titrePopup.frame = CGRect(x: 110, y:2, width:420, height:30)
+                titrePopup.setTitleColor(UIColor.black, for: .normal)
+                titrePopup.titleLabel?.font = titrePopup.titleLabel?.font.withSize(20)
+                titrePopup.contentHorizontalAlignment = .left
+                
+                //creer nom de l'element dans la liste
+                titrePopup.setTitle("\(data[indexPath.section][indexPath.row])", for: .normal)
+                
+                // Afficher le nom de l'element de la liste
+                popup3.addSubview(titrePopup)
+                
+                //let imageNameFlightPlanClic = iconesData[indexPath.section]
+                let iconeElementFlightPlanClic = UIImage(named: "Waypoint_45x45")
+                let imageViewFlightPlanClic = UIImageView(image: iconeElementFlightPlanClic!)
+                imageViewFlightPlanClic.frame = CGRect(x: 20, y: 2, width: 30, height: 30)
+                
+                popup1.addSubview(imageViewFlightPlanClic)
+                
+                // Creer icone de l'element de la liste quand clic
+                let imageNameClic = iconesData[indexPath.section]
+                let iconeElementClic = UIImage(named: imageNameClic)
+                let imageViewClic = UIImageView(image: iconeElementClic!)
+                imageViewClic.frame = CGRect(x: 65, y: 2, width: 30, height: 30)
+                
+                popup1.addSubview(imageViewClic)
+                
+                // parametrer nom de l'element dans la liste quand clic
+                let titrepopupClic = UIButton(type: .custom)
+                titrepopupClic.frame = CGRect(x: 110, y: 2, width: 420 , height: 30)
+                titrepopupClic.setTitleColor(UIColor.black, for: .normal)
+                titrepopupClic.titleLabel?.font = titrepopupClic.titleLabel?.font.withSize(20)
+                titrepopupClic.contentHorizontalAlignment = .left
+                
+                //creer nom de l'element dans la liste quand clic
+                titrepopupClic.setTitle("\(data[indexPath.section][indexPath.row])", for: .normal)
+                
+                // Afficher le nom de l'element de la liste quand clic
+                popup1.addSubview(titrepopupClic)
+                
+                popup1.addSubview(popup4)
+                
+                
+                let popup5 = UIView()
+                popup5.frame = CGRect(x: 0, y: 0, width: 503, height: 35)
+                popup5.backgroundColor = UIColor.clear
+                popup3.addSubview(popup5)
+            }
+            
+            
+            //print("dataTable est \(dataTableView[indexPath.section][indexPath.row])")
+            
+            let buttonPopup1  = UIButton(type: .custom)
+            buttonPopup1.setImage(UIImage(named: "Zoom_45x45"), for: .normal)
+            buttonPopup1.frame = CGRect(x: 13, y: 8, width: 45, height: 45)
+            buttonPopup1.tag = indexPath.section
+            buttonPopup1.addTarget(self, action: #selector(zoomPopup(_:)), for: .touchUpInside)
+            buttonPopup1.alpha = 1.0
+            popup2.addSubview(buttonPopup1)
+            
+            if dataTableView[indexPath.section][indexPath.row] == "Departures" || dataTableView[indexPath.section][indexPath.row] == "Arrivals" {
+                let buttonPopup8  = UIButton(type: .custom)
+                buttonPopup8.setImage(UIImage(named: "Information_45x45"), for: .normal)
+                buttonPopup8.frame = CGRect(x: 61, y: 8, width: 45, height: 45)
+                buttonPopup8.tag = indexPath.section
+                buttonPopup8.addTarget(self, action: #selector(popupPist(_:)), for: .touchUpInside)
+                buttonPopup8.alpha = 1.0
+                popup2.addSubview(buttonPopup8)
+            }
+            
+            if dataTableView[indexPath.section][indexPath.row] == "Airports" {
+                
+                let buttonPopup2  = UIButton(type: .custom)
+                buttonPopup2.setImage(UIImage(named: "Departure_45x45"), for: .normal)
+                buttonPopup2.frame = CGRect(x: 61, y: 8, width: 45, height: 45)
+                buttonPopup2.tag = indexPath.section
+                buttonPopup2.addTarget(self, action: #selector(departurePopup(_:)), for: .touchUpInside)
+                buttonPopup2.alpha = 1.0
+                popup2.addSubview(buttonPopup2)
+                
+                let buttonPopup3  = UIButton(type: .custom)
+                buttonPopup3.setImage(UIImage(named: "Arrival_45x45"), for: .normal)
+                buttonPopup3.frame = CGRect(x: 109, y: 8, width: 45, height: 45)
+                buttonPopup3.tag = indexPath.section
+                buttonPopup3.addTarget(self, action: #selector(arrivalPopup(_:)), for: .touchUpInside)
+                buttonPopup3.alpha = 1.0
+                popup2.addSubview(buttonPopup3)
+                
+            }
+            
+            // Affichage du bouton fonction "Waypoint"
+            if dataTableView[indexPath.section][indexPath.row] != "Departures" && dataTableView[indexPath.section][indexPath.row] != "Arrivals" && dataTableView[indexPath.section][indexPath.row] != "wayPoint" {
+                
+                // On affiche seulement si on a un point de départ et d'arrivée
+                if departureOn && arrivalOn {
                     
-                    buttonPopup5.frame = CGRect(x: 157, y: 8, width: 45, height: 45)
+                    let buttonPopup5  = UIButton(type: .custom)
+                    buttonPopup5.setImage(UIImage(named: "Waypoint_45x45"), for: .normal)
+                    
+                    // Positionnement selon le type
+                    if dataTableView[indexPath.section][indexPath.row] == "Airports" {
+                        
+                        buttonPopup5.frame = CGRect(x: 157, y: 8, width: 45, height: 45)
+                        
+                    } else {
+                        
+                        buttonPopup5.frame = CGRect(x: 61, y: 8, width: 45, height: 45)
+                        
+                    }
+                    buttonPopup5.tag = indexPath.section
+                    buttonPopup5.addTarget(self, action: #selector(wayPointPopup(_:)), for: .touchUpInside)
+                    buttonPopup5.alpha = 1.0
+                    popup2.addSubview(buttonPopup5)
+                    
+                }
+                
+            }
+            
+            if dataTableView[indexPath.section][indexPath.row] == "wayPoint" {
+                
+                let buttonPopup4  = UIButton(type: .custom)
+                buttonPopup4.setImage(UIImage(named: "Delete_45x45"), for: .normal)
+                buttonPopup4.frame = CGRect(x: 61, y: 8, width: 45, height: 45)
+                buttonPopup4.tag = indexPath.section
+                buttonPopup4.addTarget(self, action: #selector(suppWayPointData(_:)), for: .touchUpInside)
+                buttonPopup4.alpha = 1.0
+                popup2.addSubview(buttonPopup4)
+                
+                let buttonPopup6  = UIButton(type: .custom)
+                buttonPopup6.setImage(UIImage(named: "Backward_45x45"), for: .normal)
+                buttonPopup6.frame = CGRect(x: 109, y: 8, width: 45, height: 45)
+                buttonPopup6.tag = indexPath.section
+                buttonPopup6.addTarget(self, action: #selector(backwardWayPointData(_:)), for: .touchUpInside)
+                buttonPopup6.alpha = 1.0
+                popup2.addSubview(buttonPopup6)
+                
+                let buttonPopup7  = UIButton(type: .custom)
+                buttonPopup7.setImage(UIImage(named: "Forward_45x45"), for: .normal)
+                buttonPopup7.frame = CGRect(x: 157, y: 8, width: 45, height: 45)
+                buttonPopup7.tag = indexPath.section
+                buttonPopup7.addTarget(self, action: #selector(forwardWayPointData(_:)), for: .touchUpInside)
+                buttonPopup7.alpha = 1.0
+                popup2.addSubview(buttonPopup7)
+                
+            }
+            
+            /**
+             
+             let buttonPopup4  = UIButton(type: .custom)
+             buttonPopup4.setImage(UIImage(named: "Alternate_45x45"), for: .normal)
+             buttonPopup4.frame = CGRect(x: 157, y: 8, width: 45, height: 45)
+             buttonPopup4.addTarget(self, action: #selector(alertPopup), for: .touchUpInside)
+             buttonPopup4.tag = 2104
+             buttonPopup4.alpha = 1.0
+             popup2.addSubview(buttonPopup4)
+             
+             let buttonPopup5  = UIButton(type: .custom)
+             buttonPopup5.setImage(UIImage(named: "Waypoint_45x45"), for: .normal)
+             buttonPopup5.frame = CGRect(x: 205, y: 8, width: 45, height: 45)
+             buttonPopup5.addTarget(self, action: #selector(alertPopup), for: .touchUpInside)
+             buttonPopup5.tag = 2105
+             buttonPopup5.alpha = 1.0
+             popup2.addSubview(buttonPopup5)
+             
+             let buttonPopup6  = UIButton(type: .custom)
+             buttonPopup6.setImage(UIImage(named: "Landmark_45x45"), for: .normal)
+             buttonPopup6.frame = CGRect(x: 253, y: 8, width: 45, height: 45)
+             buttonPopup6.addTarget(self, action: #selector(alertPopup), for: .touchUpInside)
+             buttonPopup6.tag = 2106
+             buttonPopup6.alpha = 1.0
+             popup2.addSubview(buttonPopup6)
+             
+             let buttonPopup7  = UIButton(type: .custom)
+             buttonPopup7.setImage(UIImage(named: "Pictures_45x45"), for: .normal)
+             buttonPopup7.frame = CGRect(x: 301, y: 8, width: 45, height: 45)
+             buttonPopup7.addTarget(self, action: #selector(alertPopup), for: .touchUpInside)
+             buttonPopup7.tag = 2107
+             buttonPopup7.alpha = 1.0
+             popup2.addSubview(buttonPopup7)
+             
+             let buttonPopup8  = UIButton(type: .custom)
+             buttonPopup8.setImage(UIImage(named: "Information_45x45"), for: .normal)
+             buttonPopup8.frame = CGRect(x: 349, y: 8, width: 45, height: 45)
+             buttonPopup8.addTarget(self, action: #selector(alertPopup), for: .touchUpInside)
+             buttonPopup8.tag = 2108
+             buttonPopup8.alpha = 1.0
+             popup2.addSubview(buttonPopup8)
+             
+             let buttonPopup9  = UIButton(type: .custom)
+             buttonPopup9.setImage(UIImage(named: "Zoom_45x45"), for: .normal)
+             buttonPopup9.frame = CGRect(x: 397, y: 8, width: 45, height: 45)
+             buttonPopup9.addTarget(self, action: #selector(alertPopup), for: .touchUpInside)
+             buttonPopup9.tag = 2109
+             buttonPopup9.alpha = 1.0
+             popup2.addSubview(buttonPopup9)
+             
+             let buttonPopup10  = UIButton(type: .custom)
+             buttonPopup10.setImage(UIImage(named: "Zoom_45x45"), for: .normal)
+             buttonPopup10.frame = CGRect(x: 445, y: 8, width: 45, height: 45)
+             buttonPopup10.addTarget(self, action: #selector(alertPopup), for: .touchUpInside)
+             buttonPopup10.tag = 2109
+             buttonPopup10.alpha = 1.0
+             popup2.addSubview(buttonPopup10)
+             
+             let buttonPopup11  = UIButton(type: .custom)
+             buttonPopup11.setImage(UIImage(named: "Zoom_45x45"), for: .normal)
+             buttonPopup11.frame = CGRect(x: 445, y: 8, width: 45, height: 45)
+             buttonPopup11.addTarget(self, action: #selector(alertPopup), for: .touchUpInside)
+             buttonPopup11.tag = 2109
+             buttonPopup11.alpha = 1.0
+             popup2.addSubview(buttonPopup11)
+             
+             **/
+            
+            // Premier if -> On test si il y a qu'un seul element dans la liste
+            if indexPath.section == 0 && data.count == 1 {
+                // On affiche les fonctions
+                cell.accessoryView = popup1
+                // On ne peut pas les retirer
+            } else {
+                
+                if indexPath.section == selectedSectionIndex && indexPath.section != -1 {
+                    
+                    cell.accessoryView =  popup1
                     
                 } else {
                     
-                    buttonPopup5.frame = CGRect(x: 61, y: 8, width: 45, height: 45)
+                    cell.accessoryView =  popup3
                     
                 }
-                buttonPopup5.tag = indexPath.section
-                buttonPopup5.addTarget(self, action: #selector(wayPointPopup(_:)), for: .touchUpInside)
-                buttonPopup5.alpha = 1.0
-                popup2.addSubview(buttonPopup5)
-                
             }
             
+            //indexPath.section == 0 && selectedSectionIndex > 0
+            /**
+             switch indexPath.section {
+             case _ where indexPath.section == 0:
+             
+             if selectedSectionIndex == -1{
+             cell.accessoryView = popup1
+             //print("Afficher fonction 1er element")
+             } else if selectedSectionIndex == 0{
+             cell.accessoryView = popup3
+             //print("Fermeture fonction 1er element")
+             }
+             
+             case _ where indexPath.section > 0:
+             
+             if indexPath.section == selectedSectionIndex{
+             cell.accessoryView = popup1
+             //print("Afficher fonction d'un element diff du 1er")
+             } else {
+             cell.accessoryView = popup3
+             //print("Fermeture fonction d'un element diff du 1er")
+             }
+             
+             default:
+             print("erreur")
+             }
+             
+             **/
+            //print ("\(data[indexPath.section].count)")
+            //print("\(indexPath.section)")
+            
+            //print ("\(indexPath.index(after: indexPath.section))")
+            //print ("\(indexPath.endIndex)")
+            
+            
+            return cell
         }
-        
-        if dataTableView[indexPath.section][indexPath.row] == "wayPoint" {
-            
-            let buttonPopup4  = UIButton(type: .custom)
-            buttonPopup4.setImage(UIImage(named: "Delete_45x45"), for: .normal)
-            buttonPopup4.frame = CGRect(x: 61, y: 8, width: 45, height: 45)
-            buttonPopup4.tag = indexPath.section
-            buttonPopup4.addTarget(self, action: #selector(suppWayPointData(_:)), for: .touchUpInside)
-            buttonPopup4.alpha = 1.0
-            popup2.addSubview(buttonPopup4)
-            
-            let buttonPopup6  = UIButton(type: .custom)
-            buttonPopup6.setImage(UIImage(named: "Backward_45x45"), for: .normal)
-            buttonPopup6.frame = CGRect(x: 109, y: 8, width: 45, height: 45)
-            buttonPopup6.tag = indexPath.section
-            buttonPopup6.addTarget(self, action: #selector(backwardWayPointData(_:)), for: .touchUpInside)
-            buttonPopup6.alpha = 1.0
-            popup2.addSubview(buttonPopup6)
-            
-            let buttonPopup7  = UIButton(type: .custom)
-            buttonPopup7.setImage(UIImage(named: "Forward_45x45"), for: .normal)
-            buttonPopup7.frame = CGRect(x: 157, y: 8, width: 45, height: 45)
-            buttonPopup7.tag = indexPath.section
-            buttonPopup7.addTarget(self, action: #selector(forwardWayPointData(_:)), for: .touchUpInside)
-            buttonPopup7.alpha = 1.0
-            popup2.addSubview(buttonPopup7)
-            
-        }
-
-        /**
-         
-        let buttonPopup4  = UIButton(type: .custom)
-        buttonPopup4.setImage(UIImage(named: "Alternate_45x45"), for: .normal)
-        buttonPopup4.frame = CGRect(x: 157, y: 8, width: 45, height: 45)
-        buttonPopup4.addTarget(self, action: #selector(alertPopup), for: .touchUpInside)
-        buttonPopup4.tag = 2104
-        buttonPopup4.alpha = 1.0
-        popup2.addSubview(buttonPopup4)
-
-        let buttonPopup5  = UIButton(type: .custom)
-        buttonPopup5.setImage(UIImage(named: "Waypoint_45x45"), for: .normal)
-        buttonPopup5.frame = CGRect(x: 205, y: 8, width: 45, height: 45)
-        buttonPopup5.addTarget(self, action: #selector(alertPopup), for: .touchUpInside)
-        buttonPopup5.tag = 2105
-        buttonPopup5.alpha = 1.0
-        popup2.addSubview(buttonPopup5)
-
-        let buttonPopup6  = UIButton(type: .custom)
-        buttonPopup6.setImage(UIImage(named: "Landmark_45x45"), for: .normal)
-        buttonPopup6.frame = CGRect(x: 253, y: 8, width: 45, height: 45)
-        buttonPopup6.addTarget(self, action: #selector(alertPopup), for: .touchUpInside)
-        buttonPopup6.tag = 2106
-        buttonPopup6.alpha = 1.0
-        popup2.addSubview(buttonPopup6)
-
-        let buttonPopup7  = UIButton(type: .custom)
-        buttonPopup7.setImage(UIImage(named: "Pictures_45x45"), for: .normal)
-        buttonPopup7.frame = CGRect(x: 301, y: 8, width: 45, height: 45)
-        buttonPopup7.addTarget(self, action: #selector(alertPopup), for: .touchUpInside)
-        buttonPopup7.tag = 2107
-        buttonPopup7.alpha = 1.0
-        popup2.addSubview(buttonPopup7)
-
-        let buttonPopup8  = UIButton(type: .custom)
-        buttonPopup8.setImage(UIImage(named: "Information_45x45"), for: .normal)
-        buttonPopup8.frame = CGRect(x: 349, y: 8, width: 45, height: 45)
-        buttonPopup8.addTarget(self, action: #selector(alertPopup), for: .touchUpInside)
-        buttonPopup8.tag = 2108
-        buttonPopup8.alpha = 1.0
-        popup2.addSubview(buttonPopup8)
-        
-        let buttonPopup9  = UIButton(type: .custom)
-        buttonPopup9.setImage(UIImage(named: "Zoom_45x45"), for: .normal)
-        buttonPopup9.frame = CGRect(x: 397, y: 8, width: 45, height: 45)
-        buttonPopup9.addTarget(self, action: #selector(alertPopup), for: .touchUpInside)
-        buttonPopup9.tag = 2109
-        buttonPopup9.alpha = 1.0
-        popup2.addSubview(buttonPopup9)
-
-        let buttonPopup10  = UIButton(type: .custom)
-        buttonPopup10.setImage(UIImage(named: "Zoom_45x45"), for: .normal)
-        buttonPopup10.frame = CGRect(x: 445, y: 8, width: 45, height: 45)
-        buttonPopup10.addTarget(self, action: #selector(alertPopup), for: .touchUpInside)
-        buttonPopup10.tag = 2109
-        buttonPopup10.alpha = 1.0
-        popup2.addSubview(buttonPopup10)
-
-        let buttonPopup11  = UIButton(type: .custom)
-        buttonPopup11.setImage(UIImage(named: "Zoom_45x45"), for: .normal)
-        buttonPopup11.frame = CGRect(x: 445, y: 8, width: 45, height: 45)
-        buttonPopup11.addTarget(self, action: #selector(alertPopup), for: .touchUpInside)
-        buttonPopup11.tag = 2109
-        buttonPopup11.alpha = 1.0
-        popup2.addSubview(buttonPopup11)
-        
-        **/
-        
-        // Premier if -> On test si il y a qu'un seul element dans la liste
-        if indexPath.section == 0 && data.count == 1 {
-            // On affiche les fonctions
-            cell.accessoryView = popup1
-            // On ne peut pas les retirer
-        } else {
-            
-            if indexPath.section == selectedSectionIndex && indexPath.section != -1 {
-                
-                cell.accessoryView =  popup1
-                
-            } else {
-                
-                cell.accessoryView =  popup3
-                
-            }
-        }
-        
-        //indexPath.section == 0 && selectedSectionIndex > 0
-        /**
-        switch indexPath.section {
-        case _ where indexPath.section == 0:
-            
-            if selectedSectionIndex == -1{
-                cell.accessoryView = popup1
-                //print("Afficher fonction 1er element")
-            } else if selectedSectionIndex == 0{
-                cell.accessoryView = popup3
-                //print("Fermeture fonction 1er element")
-            }
-            
-        case _ where indexPath.section > 0:
-            
-            if indexPath.section == selectedSectionIndex{
-                cell.accessoryView = popup1
-                //print("Afficher fonction d'un element diff du 1er")
-            } else {
-                cell.accessoryView = popup3
-                //print("Fermeture fonction d'un element diff du 1er")
-            }
-            
-        default:
-            print("erreur")
-        }
-        
-        **/
-        //print ("\(data[indexPath.section].count)")
-        //print("\(indexPath.section)")
-        
-        //print ("\(indexPath.index(after: indexPath.section))")
-        //print ("\(indexPath.endIndex)")
-
-        
         return cell
     }
     
@@ -968,7 +1016,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
                     if wayStartLFCL && wayEndLFCH {
                         self.displayRoutePlane()
                     } } ))
-                selPist.addAction(UIAlertAction(title: "LFCL Départ Sud", style: UIAlertAction.Style.default, handler: nil))
+                selPist.addAction(UIAlertAction(title: "LFCL Départ Sud", style: UIAlertAction.Style.destructive, handler: nil))
             }else if dataTableView[sender.tag][1] == "LFCH" {
                 selPist.message = "Sélection Arrivée"
                 selPist.addAction(UIAlertAction(title: "LFCH Arrivée Nord-Est", style: UIAlertAction.Style.default, handler: { action in
@@ -976,7 +1024,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
                     if wayStartLFCL && wayEndLFCH {
                         self.displayRoutePlane()
                     } } ))
-                selPist.addAction(UIAlertAction(title: "LFCH Arrivée Ouest", style: UIAlertAction.Style.default, handler: nil))
+                selPist.addAction(UIAlertAction(title: "LFCH Arrivée Ouest", style: UIAlertAction.Style.destructive, handler: nil))
             }
             
             self.present(selPist, animated: true, completion: nil)
@@ -990,8 +1038,13 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section < headerTitles.count {
-            return headerTitles[section]
+        
+        if tableView == tableViewPopUp{
+            if section < headerTitles.count {
+                return headerTitles[section]
+            }
+            
+            return nil
         }
         
         return nil
@@ -1409,12 +1462,16 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
     }
     
     func mapView(_ mapView: MGLMapView, annotationCanShowCallout annotation: MGLAnnotation) -> Bool {
+        
         return true
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         
-        return 85;
+        if tableView == tableViewPopUp {
+            return 85;
+        }
+        return 0;
         
     }
 //     func mapView(_ mapView: MGLMapView, imageFor annotation: MGLAnnotation) -> MGLAnnotationImage? {
