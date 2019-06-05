@@ -33,6 +33,8 @@ var arrival = MGLPointAnnotation()
 
 var flight_Plan = FlightPlan()
 
+var calculation = Calculation()
+
 var latitudeDepartures: Double = 0.0
 var longitudeDepartures: Double = 0.0
 
@@ -70,6 +72,8 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
     
     var dataTableView = [["A", "B"], ["D", "E"]]
     
+    var progressView: UIProgressView!
+    
 //    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 //
 //        return tableData.count
@@ -101,14 +105,11 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         if tableView == tableViewPopUp {
-            //print("1il y a ", data[section].count)
-            //return data[section].count
-            return 1
+            return data[section].count
         }
         
         if tableView == tableViewFlightPlan {
-            //return wayPointData.count
-            return 1
+            return dataListFlightPlan[section].count
         }
         return 0
     }
@@ -585,6 +586,47 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             
             return cell
         }
+        
+        if tableView == tableViewFlightPlan {
+           
+            print("indexPath.section est à : ", indexPath.section)
+            
+            if indexPath.section - 1 > -1 {
+                print("le point précédent est :", dataListFlightPlan[indexPath.section - 1][indexPath.row])
+            }
+            
+            let IconeName = iconesDataFlightPlan[indexPath.section]
+            let iconeElement = UIImage(named: IconeName)
+            let imageView = UIImageView(image: iconeElement!)
+            imageView.frame = CGRect(x: 20, y: 35, width: 30, height: 30)
+            
+            cell.addSubview(imageView)
+            
+            let titreView = UIButton(type: .custom)
+            titreView.frame = CGRect(x:65, y: 35, width:760, height:30)
+            titreView.setTitleColor(UIColor.black, for: .normal)
+            titreView.titleLabel?.font = titreView.titleLabel?.font.withSize(20)
+            titreView.contentHorizontalAlignment = .left
+            
+            //creer nom de l'element dans la liste
+            titreView.setTitle("\(dataListFlightPlan[indexPath.section][indexPath.row])", for: .normal)
+            
+            // Afficher le nom de l'element de la liste
+            
+            cell.addSubview(titreView)
+            
+            let buttonZoom  = UIButton(type: .custom)
+            buttonZoom.setImage(UIImage(named: "Zoom_45x45"), for: .normal)
+            //buttonZoom.contentHorizontalAlignment = .right
+            buttonZoom.frame = CGRect(x: 700, y: 30, width: 45, height: 45)
+            buttonZoom.tag = indexPath.section
+            buttonZoom.addTarget(self, action: #selector(zoomPopup(_:)), for: .touchUpInside)
+            buttonZoom.alpha = 1.0
+            cell.addSubview(buttonZoom)
+            
+            return cell
+        }
+        
         return cell
     }
     
@@ -654,6 +696,10 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
             
         }
      
+        // Fermer le menu "Plan de Vol"
+        applicationParametres.visibleClipBoardMapView = false
+        clipBoardPanel(visible: applicationParametres.visibleClipBoardMapView)
+        navigationBarMenu(visible: true)
     }
     
     @objc func alertPopup() {
@@ -1108,7 +1154,19 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate, MKMapViewDe
         override func viewDidLoad() {
             super.viewDidLoad()
 
+            // Setup offline pack notification handlers.
+            NotificationCenter.default.addObserver(self, selector: #selector(offlinePackProgressDidChange), name: NSNotification.Name.MGLOfflinePackProgressChanged, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(offlinePackDidReceiveError), name: NSNotification.Name.MGLOfflinePackError, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(offlinePackDidReceiveMaximumAllowedMapboxTiles), name: NSNotification.Name.MGLOfflinePackMaximumMapboxTilesReached, object: nil)
         }
+    
+    
+        deinit {
+            // Remove offline pack observers.
+            NotificationCenter.default.removeObserver(self)
+        }
+    
+    
  
         override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

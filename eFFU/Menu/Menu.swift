@@ -112,83 +112,83 @@ extension ViewController {
         
     if visible {
         
-    //Status Background
-    let statusMenuBackground = UIView()
-    statusMenuBackground.frame = CGRect(x: 0, y:  0, width: UIScreen.main.bounds.size.width, height: -20)
-    statusMenuBackground.backgroundColor = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 1.0)
+        //Status Background
+        let statusMenuBackground = UIView()
+        statusMenuBackground.frame = CGRect(x: 0, y:  0, width: UIScreen.main.bounds.size.width, height: -20)
+        statusMenuBackground.backgroundColor = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 1.0)
         
-    //Navigation Bar
-    let navigationMenuBar = UIView()
-    navigationMenuBar.frame = CGRect(x: 0, y:  20, width: UIScreen.main.bounds.size.width, height: 44)
-    navigationMenuBar.backgroundColor = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.8)
-    navigationMenuBar.tag = viewLayer
-    navigationMenuBar.isUserInteractionEnabled = true
+        //Navigation Bar
+        let navigationMenuBar = UIView()
+        navigationMenuBar.frame = CGRect(x: 0, y:  20, width: UIScreen.main.bounds.size.width, height: 44)
+        navigationMenuBar.backgroundColor = UIColor(red: 0/255, green: 0/255, blue: 0/255, alpha: 0.8)
+        navigationMenuBar.tag = viewLayer
+        navigationMenuBar.isUserInteractionEnabled = true
         
-    navigationMenuBar.addSubview(statusMenuBackground)
+        navigationMenuBar.addSubview(statusMenuBackground)
         
-    // Insertion Menu
-    let titre = UIButton(type: .custom)
-    titre.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 44)
-    titre.setTitleColor(UIColor.white, for: .normal)
-    titre.titleLabel?.font = UIFont(name: "SF UI Display Ultralight", size: 30)
-    titre.titleLabel?.font = UIFont.boldSystemFont(ofSize: 24.0)
-    titre.setTitle("Planification", for: .normal)
-    navigationMenuBar.addSubview(titre)
+        // Insertion Menu
+        let titre = UIButton(type: .custom)
+        titre.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 44)
+        titre.setTitleColor(UIColor.white, for: .normal)
+        titre.titleLabel?.font = UIFont(name: "SF UI Display Ultralight", size: 30)
+        titre.titleLabel?.font = UIFont.boldSystemFont(ofSize: 24.0)
+        titre.setTitle("Planification", for: .normal)
+        navigationMenuBar.addSubview(titre)
         
-    //Menu Principal
-    let iconeMenuPrincipal  = UIButton(type: .custom)
-    if applicationParametres.visibleMenuPrincipal {
-            iconeMenuPrincipal.setImage(UIImage(named: "navbarIconMenuActive.png"), for: .normal)
+        //Menu Principal
+        let iconeMenuPrincipal  = UIButton(type: .custom)
+        if applicationParametres.visibleMenuPrincipal {
+                iconeMenuPrincipal.setImage(UIImage(named: "navbarIconMenuActive.png"), for: .normal)
+            
+        } else {
+                iconeMenuPrincipal.setImage(UIImage(named: "icon_hamburger_round.png"), for: .normal)
+        }
         
-    } else {
-            iconeMenuPrincipal.setImage(UIImage(named: "icon_hamburger_round.png"), for: .normal)
-    }
-    
-    iconeMenuPrincipal.frame = CGRect(x: 14, y: 2, width: 40, height: 40)
-    iconeMenuPrincipal.addTarget(self, action: #selector(actionOpenMenuPrincipalView), for: .touchUpInside)
-    iconeMenuPrincipal.tag = 101
-    navigationMenuBar.addSubview(iconeMenuPrincipal)
-    
-    //Menu Options Map View
-    let optionMapViewPlan  = UIButton(type: .custom)
-    if applicationParametres.visibleMenuOptionMapView {
-            optionMapViewPlan.setImage(UIImage(named: "navbarIconMapMenuActive.png"), for: .normal)
-    } else {
-            optionMapViewPlan.setImage(UIImage(named: "icon_layers_round.png"), for: .normal)
-    }
+        iconeMenuPrincipal.frame = CGRect(x: 14, y: 2, width: 40, height: 40)
+        iconeMenuPrincipal.addTarget(self, action: #selector(actionOpenMenuPrincipalView), for: .touchUpInside)
+        iconeMenuPrincipal.tag = 101
+        navigationMenuBar.addSubview(iconeMenuPrincipal)
+        
+        //Menu Options Map View
+        let optionMapViewPlan  = UIButton(type: .custom)
+        if applicationParametres.visibleMenuOptionMapView {
+                optionMapViewPlan.setImage(UIImage(named: "navbarIconMapMenuActive.png"), for: .normal)
+        } else {
+                optionMapViewPlan.setImage(UIImage(named: "icon_layers_round.png"), for: .normal)
+        }
 
-    optionMapViewPlan.frame = CGRect(x: UIScreen.main.bounds.size.width - 120, y: 2, width: 40, height: 40)
-    optionMapViewPlan.addTarget(self, action: #selector(actionOpenMenuOptionMapView), for: .touchUpInside)
-    optionMapViewPlan.tag = 102
-    navigationMenuBar.addSubview(optionMapViewPlan)
+        optionMapViewPlan.frame = CGRect(x: UIScreen.main.bounds.size.width - 120, y: 2, width: 40, height: 40)
+        optionMapViewPlan.addTarget(self, action: #selector(actionOpenMenuOptionMapView), for: .touchUpInside)
+        optionMapViewPlan.tag = 102
+        navigationMenuBar.addSubview(optionMapViewPlan)
         
-    //Menu Vue Plan de Vol ClipBoard
-    let iconePlanVol  = UIButton(type: .custom)
-    if applicationParametres.visibleClipBoardMapView {
-        iconePlanVol.setImage(UIImage(named: "navbarIconClipboardActive.png"), for: .normal)
-    } else {
-        iconePlanVol.setImage(UIImage(named: "icon_clipboard_round.png"), for: .normal)
-    }
-    
-    iconePlanVol.frame = CGRect(x: UIScreen.main.bounds.size.width - 60, y: 2, width: 40, height: 40)
-    iconePlanVol.addTarget(self, action: #selector(actionOpenMenuClipBoardView), for: .touchUpInside)
-    iconePlanVol.tag = 103
-    iconePlanVol.alpha = 1.0
-    navigationMenuBar.addSubview(iconePlanVol)
+        //Menu Vue Plan de Vol ClipBoard
+        let iconePlanVol  = UIButton(type: .custom)
+        if applicationParametres.visibleClipBoardMapView {
+            iconePlanVol.setImage(UIImage(named: "navbarIconClipboardActive.png"), for: .normal)
+        } else {
+            iconePlanVol.setImage(UIImage(named: "icon_clipboard_round.png"), for: .normal)
+        }
         
-    //Refresh Maps
-    let iconeRefreshMaps  = UIButton(type: .custom)
+        iconePlanVol.frame = CGRect(x: UIScreen.main.bounds.size.width - 60, y: 2, width: 40, height: 40)
+        iconePlanVol.addTarget(self, action: #selector(actionOpenMenuClipBoardView), for: .touchUpInside)
+        iconePlanVol.tag = 103
+        iconePlanVol.alpha = 1.0
+        navigationMenuBar.addSubview(iconePlanVol)
+        
+        //Refresh Maps
+        let iconeRefreshMaps  = UIButton(type: .custom)
 
-    iconeRefreshMaps.setImage(UIImage(named: "emblemsynchronizing_93485"), for: .normal)
+        iconeRefreshMaps.setImage(UIImage(named: "emblemsynchronizing_93485"), for: .normal)
         
-    iconeRefreshMaps.frame = CGRect(x: UIScreen.main.bounds.size.width - 180, y: -1, width: 45, height: 45)
-    iconeRefreshMaps.addTarget(self, action: #selector(resetLocalisation), for: .touchUpInside)
-    //iconeRefreshMaps.addTarget(self, action: #selector(updateMap), for: .touchUpInside)
-    iconeRefreshMaps.tag = 104
-    iconeRefreshMaps.alpha = 1.0
-    navigationMenuBar.addSubview(iconeRefreshMaps)
+        iconeRefreshMaps.frame = CGRect(x: UIScreen.main.bounds.size.width - 180, y: -1, width: 45, height: 45)
+        iconeRefreshMaps.addTarget(self, action: #selector(resetLocalisation), for: .touchUpInside)
+        //iconeRefreshMaps.addTarget(self, action: #selector(updateMap), for: .touchUpInside)
+        iconeRefreshMaps.tag = 104
+        iconeRefreshMaps.alpha = 1.0
+        navigationMenuBar.addSubview(iconeRefreshMaps)
 
-    self.view.insertSubview(navigationMenuBar, at: viewLayer)
+        self.view.insertSubview(navigationMenuBar, at: viewLayer)
         
     }
         
@@ -196,9 +196,12 @@ extension ViewController {
     }
     
     @objc func resetLocalisation() {
+    // Centrer sur Toulouse
+    //localisationCenterMap = CLLocationCoordinate2D(latitude: 43.587778, longitude: 1.498611)
     
-    localisationCenterMap = CLLocationCoordinate2D(latitude: 43.587778, longitude: 1.498611)
-    zoomLevelMap = 11
+    // Centrer sur la zone de démonstration
+    localisationCenterMap = CLLocationCoordinate2D(latitude: 44.09611102371298, longitude: 0.4751101975805341)
+    zoomLevelMap = 7.5
     directionMap = 0
     affichageFondCartesMapbox()
         
@@ -570,22 +573,16 @@ extension ViewController {
         
         print (" \(positionmenuLandscapeWidth) ")
         
-        let panelContainer = UIView()
-        panelContainer.frame = CGRect(x: Int(positionmenuLandscapeWidth) + applicationParametres.paddingBorder, y: 64 + applicationParametres.paddingBorder, width: 760, height: 1040)
-        panelContainer.layer.cornerRadius = CGFloat(applicationParametres.borderCornerRadius)
-        panelContainer.backgroundColor = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 1.0)
-        panelContainer.tag = viewLayer
-        
-        panelContainer.isUserInteractionEnabled = true
-        
         if visible {
             // Liste pour afficher les données
             dataListFlightPlan = []
             iconesDataFlightPlan = []
+            dataTableView = []
             
             if departureOn {
                 dataListFlightPlan.append(["\(flight_Plan.get_Departure_Airfield_aiIcao()) (\(flight_Plan.get_Departure_Airfield_Name()))"])
                 iconesDataFlightPlan.append("departures_map")
+                dataTableView.append(["Departures", "\(flight_Plan.get_Departure_Airfield_aiIcao())"])
             }
             if wayPointOn {
                 var keyNoNil: Int = 0
@@ -595,13 +592,23 @@ extension ViewController {
                     }
                     dataListFlightPlan.append(["\(wayPointData[keyNoNil]!.aiName)"])
                     iconesDataFlightPlan.append("\(wayPointData[keyNoNil]!.icon)")
+                    dataTableView.append(["wayPoint", "\(keyNoNil)"])
                     keyNoNil = keyNoNil + 1
                 }
             }
             if arrivalOn {
                 dataListFlightPlan.append(["\(flight_Plan.get_Arrival_Airfield_aiIcao()) (\(flight_Plan.get_Arrival_Airfield_Name()))"])
                 iconesDataFlightPlan.append("arrivals_map")
+                dataTableView.append(["Arrivals", "\(flight_Plan.get_Arrival_Airfield_aiIcao())"])
             }
+            
+            let panelContainer = UIView()
+            panelContainer.frame = CGRect(x: Int(positionmenuLandscapeWidth) + applicationParametres.paddingBorder, y: 64 + applicationParametres.paddingBorder, width: 760, height: 1040)
+            panelContainer.layer.cornerRadius = CGFloat(applicationParametres.borderCornerRadius)
+            panelContainer.backgroundColor = UIColor(red: 255/255, green: 255/255, blue: 255/255, alpha: 1.0)
+            panelContainer.tag = viewLayer
+            panelContainer.alpha = 0.95
+            panelContainer.isUserInteractionEnabled = true
             
             // Insertion Texte
             let titre = UIButton(type: .custom)
@@ -624,7 +631,6 @@ extension ViewController {
             
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             
             tableViewFlightPlan.reloadData()
             tableViewFlightPlan = UITableView(frame: panelContainer.frame, style: UITableView.Style.plain)
@@ -636,7 +642,7 @@ extension ViewController {
             
             tableViewFlightPlan.register(UITableViewCell.self, forCellReuseIdentifier: "my")
             
-            //tableViewFlightPlan.contentInset.top = 5
+            tableViewFlightPlan.contentInset.top = 5
             
             tableViewFlightPlan.frame = CGRect(x: 0, y: 61, width: 760, height: 980)
             
@@ -649,10 +655,8 @@ extension ViewController {
             
             self.tableViewFlightPlan.tableFooterView = footer
             
-            
             panelContainer.addSubview(tableViewFlightPlan)
             
-            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             

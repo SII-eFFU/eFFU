@@ -134,6 +134,8 @@ class FlightPlan {
     **/
 }
 
+// Utilisation d'une structure pour créer les "wayPoint"
+// Plus simple pour les gérer
 struct wayPoint {
     var swLatitude: Double
     var swLongitude: Double
